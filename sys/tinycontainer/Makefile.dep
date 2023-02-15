@@ -1,0 +1,49 @@
+# TinyContainer
+#
+#  Copyright (C) 2023 Orange
+#
+# Please refer to the README.md and LICENSE files of tinycontainer
+
+#tinycontainer modules includes all required submodules
+ifneq (,$(filter tinycontainer,$(USEMODULE)))
+  USEMODULE += tinycontainer_service
+  USEMODULE += tinycontainer_container
+  ifneq (,$(filter jerryscript,$(TINYCONTAINER_CONTAINER)))
+    USEMODULE += tinycontainer_container_jerryscript
+  endif
+  ifneq (,$(filter wamr,$(TINYCONTAINER_CONTAINER)))
+    USEMODULE += tinycontainer_container_wamr
+  endif
+  USEMODULE += tinycontainer_controller
+  USEMODULE += tinycontainer_firewall
+  USEMODULE += tinycontainer_memmgr
+  ifneq (,$(filter ram,$(TINYCONTAINER_MEMMGR)))
+    USEMODULE += tinycontainer_memmgr_ram
+  endif
+endif
+
+#submodules dependencies
+
+ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
+  USEMODULE += tinycontainer
+  USEMODULE += tinycontainer_firewall
+  USEMODULE += tinycontainer_container
+endif
+
+ifneq (,$(filter tinycontainer_container,$(USEMODULE)))
+  USEMODULE += ztimer
+  USEMODULE += ztimer_msec
+endif
+
+ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
+  USEMODULE += tinycontainer
+  USEMODULE += tinycontainer_container
+  USEMODULE += tinycontainer_memmgr
+  USEPKG += wamr
+endif
+ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
+  USEMODULE += tinycontainer_container
+  USEMODULE += tinycontainer_memmgr
+  USEPKG += jerryscript
+endif
+
