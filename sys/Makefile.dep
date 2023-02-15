@@ -706,3 +706,9 @@ ifneq (,$(filter wifi_scan_list,$(USEMODULE)))
 endif
 
 include $(RIOTBASE)/sys/test_utils/Makefile.dep
+
+# include TinyContainer dependencies
+ifneq (,$(filter tinycontainer,$(USEMODULE)))
+  include $(RIOTBASE)/sys/tinycontainer/Makefile.dep
+endif
+

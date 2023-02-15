@@ -218,6 +218,9 @@ endif
 ifneq (,$(filter tiny_strerror,$(USEMODULE)))
   DIRS += tiny_strerror
 endif
+ifneq (,$(filter tinycontainer%,$(USEMODULE)))
+  DIRS += tinycontainer
+endif
 ifneq (,$(filter udp,$(USEMODULE)))
   DIRS += net/transport_layer/udp
 endif
