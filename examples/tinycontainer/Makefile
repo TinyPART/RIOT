@@ -5,7 +5,7 @@ APPLICATION = tinycontainer
 BOARD ?= dwm1001
 
 # Currently, TinyContainer has only been tested on native, dwm1001 and arduino-nano-33-ble
-BOARD_WHITELIST := dwm1001 arduino-nano-33-ble native
+BOARD_WHITELIST := dwm1001 arduino-nano-33-ble nrf52840dk native
 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../..
