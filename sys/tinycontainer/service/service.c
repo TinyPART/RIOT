@@ -33,7 +33,12 @@
 static kernel_pid_t service_pid = -1;
 static int container_priority;
 
-#define MAX_NB_OF_CONTAINER 2
+/* note: some better code is required to properly handle the state of
+ *       container. Right now, this array is used to record pid of the thread
+ *       running the container and to determine the running status of the
+ *       container.
+ */
+#define MAX_NB_OF_CONTAINER 3
 static int container_pids[MAX_NB_OF_CONTAINER];
 
 bool container_exist(int *list, int id_cont)
@@ -55,7 +60,7 @@ bool container_exist(int *list, int id_cont)
 
  * @param uri uri CoAP
  */
-kernel_pid_t create_container( char *uri, uint32_t periodicity)
+kernel_pid_t create_container_runtime(char *uri, uint32_t periodicity)
 {
     LOG_ENTER();
 
@@ -82,6 +87,28 @@ kernel_pid_t create_container( char *uri, uint32_t periodicity)
     return pid;
 }
 
+static bool is_container_running(int slot_id)
+{
+    /* note: Probably the right way would be to directly return true if the
+     *       pid value in container_pids array is positive. Right now, we
+     *       do not properly handle the end of a container execution.
+     *       Also, it seems better to check if a running thread is really
+     *       associated with the container pid.
+     */
+    if (container_pids[slot_id] > 0) {
+        thread_t *thread = thread_get(container_pids[slot_id]);
+        if (thread != NULL) {
+            thread_status_t status = thread_get_status(thread);
+            if (!(status == STATUS_STOPPED ||
+                status == STATUS_ZOMBIE)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 
 void *handler_service(void *arg)
 {
@@ -91,6 +118,7 @@ void *handler_service(void *arg)
     memset(container_pids, -1, sizeof(container_pids));
 
     while (1) {
+
         LOG_PID_FUNC("awaiting message...\n");
 
         /* block the thread until a message is received */
@@ -100,7 +128,8 @@ void *handler_service(void *arg)
         service_msg_type type = service_msg_req.type;
         uint32_t value = service_msg_req.value;
 
-        /* note: an uint32_t is not always an unsigned long (e.g. native board)
+        /* note: here the cast is mandatory because an uint32_t is not always
+         *       an unsigned long (e.g. native board).
          */
         LOG_PID_FUNC("new message received: type= %d, value= %ld\n", type, (unsigned long)value);
 
@@ -114,18 +143,25 @@ void *handler_service(void *arg)
         case run:
             LOG_PID_FUNC("type %d -> run\n", run);
 
-            LOG_PID_FUNC("calling create_container()\n");
 
-            /* create the container with 1s periodicity */
-            kernel_pid_t container_pid = create_container("container", 1000 /*ms*/);
-
-            if (container_pid == -1) {
-                LOG_PID_FUNC("create_container() failed\n");
+            /* check the running status of the container */
+            if(is_container_running(value)) {
+                LOG_PID_FUNC("Container %ld already started!\n", (unsigned long)value);
                 response_type = ko;
                 break;
             }
 
-            LOG_PID_FUNC("create_container() success\n");
+            /* create the container with 1s periodicity */
+            LOG_PID_FUNC("calling create_container_runtime()\n");
+            kernel_pid_t container_pid = create_container_runtime("container", 1000 /*ms*/);
+
+            if (container_pid == -1) {
+                LOG_PID_FUNC("create_container_runtime() failed\n");
+                response_type = ko;
+                break;
+            }
+
+            LOG_PID_FUNC("create_container_runtime() success\n");
             container_pids[value] = container_pid;
             response_type = ok;
             break;
@@ -147,13 +183,8 @@ void *handler_service(void *arg)
             response_type = ko;
 
             /* 'value' contains the slot id of the container */
-            thread_t *thread = thread_get(container_pids[value]);
-            if (thread != NULL) {
-                thread_status_t status = thread_get_status(thread);
-                if (!(status == STATUS_STOPPED ||
-                      status == STATUS_ZOMBIE)) {
-                    response_type = ok;
-                }
+            if (is_container_running(value)) {
+                response_type = ok;
             }
 
             break;
