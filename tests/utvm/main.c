@@ -25,11 +25,12 @@
 #include <string.h>
 #include <tvmgen_default.h>
 
+char input[TVMGEN_DEFAULT_SERVING_DEFAULT_INPUT_0_SIZE];
+char output[TVMGEN_DEFAULT_PARTITIONEDCALL_0_SIZE];
+
 int main(void)
 {
     (void) puts("uTVM test application");
-    char input[TVMGEN_DEFAULT_SERVING_DEFAULT_INPUT_0_SIZE];
-    char output[TVMGEN_DEFAULT_PARTITIONEDCALL_0_SIZE];
     struct tvmgen_default_inputs default_inputs = {
         .serving_default_input_0 = input
     };
