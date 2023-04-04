@@ -19,10 +19,12 @@
  */
 
 
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 #include "tinycontainer/container/container.h"
 #include "tinycontainer/container/container_runtime.h"
+#include "tinycontainer/memmgr/memmgr_container.h"
 
 #include "ztimer.h"
 
@@ -36,7 +38,18 @@ void *container_handler(void *arg)
 {
     /* TODO: retrieve metadata from arg */
 
-    container_handle_t handle = container_create();
+    /* retrieve the data and code part of the container */
+
+    memmgr_block_t data;
+    memmgr_block_t code;
+    if (memmgr_getcontainer(&data, &code) < 0) {
+        DEBUG("container_handler: failed to retrieve container from memory manager\n");
+        return NULL;
+    }
+
+    /* create the container */
+
+    container_handle_t handle = container_create(&data, &code);
 
     if (!handle) {
         DEBUG("container_handler: failed to create container\n");

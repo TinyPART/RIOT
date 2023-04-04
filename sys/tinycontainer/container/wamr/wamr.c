@@ -21,13 +21,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define ENABLE_DEBUG 0
+#define ENABLE_DEBUG (0)
 #include "tinycontainer/debugging.h"
 
 #include "ztimer.h"
 
 #include "tinycontainer/container/container_runtime.h"
-#include "tinycontainer/memmgr/memmgr_container.h"
 #include "wamr.h"
 #include "wamr_natives.h"
 
@@ -144,56 +143,10 @@ static bool handle_destroy(container_handle_t handle)
     return true;
 }
 
-static void *malloc_and_load_code(int *code_size_ptr)
+container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code)
 {
-    file_descriptor_t fd = memmgr_opencodefile();
-    char *code_buffer = NULL;
+    (void)data;
 
-    if (fd < 0) {
-        DEBUG("Invalid file descriptor %d\n", fd);
-        goto close_fd;
-    }
-
-    int file_size = memmgr_getsize(fd);
-
-    *code_size_ptr = file_size;
-
-    if (file_size < 0) {
-        DEBUG("Could not retrieve size of file descriptor %d\n", fd);
-        goto close_fd;
-    }
-
-    if (file_size == 0) {
-        DEBUG("The wasm code is empty\n");
-        goto close_fd;
-    }
-
-    code_buffer = malloc(file_size);
-    if (code_buffer == NULL) {
-        DEBUG("Fail not allocated %d bytes for wasm buffer\n", file_size);
-        goto close_fd;
-    }
-
-    int pos = 0;
-
-    while (pos < file_size) {
-        int len = memmgr_read(fd, code_buffer, file_size);
-        if (len == -1) {
-            DEBUG("Error on reading file descriptor %d\n", fd);
-            free(code_buffer);
-            code_buffer = NULL;
-            goto close_fd;
-        }
-        pos += len;
-    }
-
-close_fd:
-    memmgr_close(fd);
-    return code_buffer;
-}
-
-container_handle_t container_create(void)
-{
     LOG_ENTER();
 
     /* Generic error buffer into which potential errors can be written */
@@ -206,18 +159,10 @@ container_handle_t container_create(void)
         goto container_create_fail;
     }
 
-    int code_size;
-
-    /* load the wasm code from the code file. If not possible, just return NULL. */
-    new_handle->wasm_buf = malloc_and_load_code(&code_size);
-    if (!new_handle->wasm_buf) {
-        goto container_create_fail;
-    }
-
     /* Load the module from the bytecode */
     new_handle->module = wasm_runtime_load(
-        new_handle->wasm_buf,
-        code_size,
+        code -> ptr,
+        code -> size,
         error_buf,
         sizeof(error_buf)
         );
@@ -260,8 +205,8 @@ container_create_fail:
     if (!new_handle) {
         DEBUG_PID("EE unable to get container handle\n");
     }
-    else if (!new_handle->wasm_buf) {
-        DEBUG_PID("EE unable to load wasm code\n");
+    else if (code -> ptr == NULL) {
+        DEBUG_PID("EE unable to read wasm code\n");
     }
     else if (!new_handle->module) {
         DEBUG_PID("EE unable to load wasm module: %s\n", error_buf);

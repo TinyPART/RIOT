@@ -179,6 +179,11 @@ msg_t rcv_asynchrone_queue(void)
     return msg;
 }
 
+kernel_pid_t firewall_getpid(void)
+{
+    return thread_getpid();
+}
+
 int tinycontainer_firewall_init(void)
 {
     /*nothing to do*/

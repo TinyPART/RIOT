@@ -39,6 +39,27 @@ static uint8_t *_get_meta_start(struct container *container)
     return container->meta;
 }
 
+static uint32_t _get_meta_max_size(struct container *container)
+{
+    (void)container;
+    return META_DATA_SIZE;
+}
+
+static uint8_t *_get_data_start(struct container *container)
+{
+    return _get_code_start(container) + _get_code_size_rounded(container);
+}
+
+static uint32_t _get_data_size_rounded(struct container *container)
+{
+    return (container->data_len + 3) & ~3;
+}
+
+static uint32_t _get_data_max_size(struct container *container)
+{
+    return CONTAINER_DATA_SIZE - _get_code_size_rounded(container);
+}
+
 static uint8_t *_get_code_start(struct container *container)
 {
     return container->container_data;
@@ -49,26 +70,10 @@ static uint32_t _get_code_size_rounded(struct container *container)
     return (container->code_len + 3) & ~3;
 }
 
-static uint8_t *_get_data_start(struct container *container)
-{
-    return _get_code_start(container) + _get_code_size_rounded(container);
-}
-
-static uint32_t _get_data_max_size(struct container *container)
-{
-    return CONTAINER_DATA_SIZE - _get_code_size_rounded(container);
-}
-
 static uint32_t _get_code_max_size(struct container *container)
 {
     (void)container;
     return CONTAINER_DATA_SIZE;
-}
-
-static uint32_t _get_meta_max_size(struct container *container)
-{
-    (void)container;
-    return META_DATA_SIZE;
 }
 
 static container_id_t _fd_get_id(file_descriptor_t fd)
@@ -269,12 +274,6 @@ int memmgr_opencodefileforcontainer(container_id_t id)
     return (id + 1) * 10 + 1;
 }
 
-int memmgr_opencodefile(void)
-{
-    //FIXME: temporary workaround to retrieve container id
-    return memmgr_opencodefileforcontainer(0);
-}
-
 int memmgr_opendatafileforcontainer(container_id_t id)
 {
     if (id < 0 || id >= CONTAINER_MAX_NUM) {
@@ -298,12 +297,6 @@ int memmgr_opendatafileforcontainer(container_id_t id)
     descriptor->data_pos = 0;
 
     return (id + 1) * 10;
-}
-
-int memmgr_opendatafile(void)
-{
-    //FIXME: temporary workaround to retrieve container id
-    return memmgr_opendatafileforcontainer(0);
 }
 
 int memmgr_getsize(file_descriptor_t fd)
@@ -444,6 +437,29 @@ int memmgr_read(file_descriptor_t fd, char *buf, uint32_t count)
 int tinycontainer_memmgr_init(void)
 {
     /* nothing to do */
+
+    return 0;
+}
+
+int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * container_code)
+{
+    if (container_data == NULL || container_code == NULL) {
+        return -1;
+    }
+
+    int container_id = service_getcontaineridfrompid(firewall_getpid());
+
+    if(container_id == -1) {
+        return -1;
+    }
+    
+    struct container * container = & containers[container_id];
+
+    container_data -> ptr = _get_data_start(container);
+    container_data -> size = _get_data_size_rounded(container);
+
+    container_code -> ptr = _get_code_start(container);
+    container_code -> size = container -> code_len;
 
     return 0;
 }
