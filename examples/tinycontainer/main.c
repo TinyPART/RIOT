@@ -121,7 +121,7 @@ static int cmd_wait(int argc, char **argv)
     {
         n = atoi(argv[1]);
     }
-    printf("let the container running a while. Please wait %ds.", n);
+    printf("let the container running a while. Please wait %ds.\n", n);
     xtimer_sleep(n);
 
     return 0;
