@@ -53,7 +53,7 @@ bool container_impl_init(void)
     return true;
 }
 
-container_handle_t container_create(void)
+container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code)
 {
     DEBUG("[%d] -> container:create()\n", thread_getpid());
 
@@ -81,37 +81,18 @@ container_handle_t container_create(void)
         jerry_init(JERRY_INIT_EMPTY);
     }
 
-    /* read, parse and load data */
-
-    /* FIXME: checks return and do a proper read loop */
-    char data[32];
-    int fd = memmgr_opendatafile();
-    int data_size = memmgr_read(fd, data, 32);
-
-    memmgr_close(fd);
+    /* parse and load data */
 
     jerry_value_t data_json;
 
-    if (data_size < 0) {
-
-        DEBUG("[%d] EE unable to read container data\n", thread_getpid());
-
-        new_handler->is_used = false;
-        handlers_in_use--;
-        if (handlers_in_use == 0) {
-            jerry_cleanup();
-        }
-
-        return NULL;
-    }
-    else if (data_size == 0) {
+    if (data -> size == 0) {
 
         DEBUG("[%d] WW container data is empty\n", thread_getpid());
 
         data_json = jerry_create_object();
     }
     else {
-        data_json = jerry_json_parse((jerry_char_t *)data, data_size);
+        data_json = jerry_json_parse((jerry_char_t *)data -> ptr, data -> size);
     }
 
     if (jerry_value_is_error(data_json)) {
@@ -174,37 +155,11 @@ container_handle_t container_create(void)
         return NULL;
     }
 
-    /* read and parse code */
-
-    char code[MAX_CODE_SIZE];
-
-    /* FIXME: check return values and do a proper read loop */
-    fd = memmgr_opencodefile();
-    int code_size = memmgr_read(fd, code, MAX_CODE_SIZE);
-
-    memmgr_close(fd);
-
-    if (code_size <= 0) {
-        if (code_size < 0) {
-            DEBUG("[%d] EE unable to read code function\n", thread_getpid());
-        }
-        else {
-            DEBUG("[%d] WW function is empty!\n", thread_getpid());
-        }
-
-        new_handler->is_used = false;
-        handlers_in_use--;
-
-        if (handlers_in_use == 0) {
-            jerry_cleanup();
-        }
-
-        return NULL;
-    }
+    /* parse code */
 
     new_handler->looper = jerry_parse_function(NULL, 0, NULL, 0,
-                                               (jerry_char_t *)code,
-                                               code_size,
+                                               (jerry_char_t *)code -> ptr,
+                                               code -> size,
                                                JERRY_PARSE_NO_OPTS);
 
     if (jerry_value_is_error(new_handler->looper)) {

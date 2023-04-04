@@ -24,9 +24,11 @@
 
 #include <stdbool.h>
 
+#include "tinycontainer/memmgr/memmgr_runtime.h"
+
 typedef void *container_handle_t;
 
-container_handle_t container_create(void);
+container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code);
 
 void container_on_start(container_handle_t);
 int container_on_loop(container_handle_t);

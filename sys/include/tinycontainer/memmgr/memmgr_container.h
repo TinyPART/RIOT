@@ -26,52 +26,16 @@
 
 #include "tinycontainer/memmgr/memmgr_common.h"
 
-/*
- * open the metadata file and return a file descriptor id
+/**
+ * @brief Retrieve the memory blocks for data and code of the container
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
- */
-file_descriptor_t memmgr_openmetadatafile(void);
-
-/*
- * open the data file and return a file descriptor id
+ * @param[out] container_data     Memory block to the data part of the container
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
- */
-file_descriptor_t memmgr_opendatafile(void);
-
-/*
- * open the code file and return a file descriptor id
+ * @param[out] container_code     Memory block to the code part of the container
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
+ * @return negative value on error
  */
-file_descriptor_t memmgr_opencodefile(void);
-
-/* Retrieve the size of a file
- *
- * On success, the file size is returned.
- * On invalid file descriptor, -1 is returned.
- */
-int memmgr_getsize(file_descriptor_t fd);
-
-/*
- * close a file descriptor id
- */
-void memmgr_close(file_descriptor_t fd);
-
-/* Attemps to read up to count bytes from file descriptor fd into buffer
- * starting at buf.
- *
- * return the number of bytes read (zero indicates end of file). It is not an
- * error if this number is smaller than count.
- * On error, -1 is returned.
- */
-int memmgr_read(file_descriptor_t fd,
-                char *buf,
-                uint32_t count);
+int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * container_code);
 
 #endif /* TINYCONTAINER_MEMMGR_CONTAINER_H */
 /** @} */

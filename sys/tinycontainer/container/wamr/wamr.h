@@ -59,15 +59,6 @@ static container_handle_t handle_init(void);
 static bool handle_destroy(container_handle_t handle);
 
 
-/**
- * @brief Opens a code file, allocates memory for it and loads it into memory.
- *
- * @param[in] code_size_ptr A pointer to an integer to which the size of the code will be written.
- *
- * @return A pointer to the allocated memory, or NULL on error.
- */
-static void *malloc_and_load_code(int *code_size_ptr);
-
 #define MAX_HANDLES 3
 
 #define STACK_SIZE 1024

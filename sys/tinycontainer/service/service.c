@@ -163,6 +163,7 @@ void *handler_service(void *arg)
 
             LOG_PID_FUNC("create_container_runtime() success\n");
             container_pids[value] = container_pid;
+            LOG_PID_FUNC("slot_id=%ld, pid=%d\n", (unsigned long)value, container_pid);
             response_type = ok;
             break;
 
@@ -193,18 +194,21 @@ void *handler_service(void *arg)
 
             LOG_PID_FUNC("type %d -> container_id\n", service_msg_req.type);
 
+            /* no container associated with this pid yet */
+            response_type = ko;
+
+            /* value contains the searched pid*/
+            int pid = (int)value;
             for (int i = 0; i < MAX_NB_OF_CONTAINER; i++) {
-                /* value contains the searched pid*/
-                int pid = (int)value;
                 if (container_pids[i] == pid) {
                     /* container found  */
                     response_type = ok;
                     response_value = (uint32_t)i;
+                    LOG_PID_FUNC("slot_id=%d matched\n", i);
+                    break;
                 }
             }
 
-            /* no container associated with this pid */
-            response_type = ko;
             break;
 
         default:
@@ -275,8 +279,15 @@ int service_isrunning(int container_id)
 
 int service_getcontaineridfrompid(int pid)
 {
+    LOG_ENTER();
     service_msg_t msg = { .type = container_id, .value = pid };
 
     SERVICE_MSG_SEND_RECEIVE_INPLACE(&msg);
+    if (msg.type == ok) {
+        LOG_PID_FUNC("container %ld is associated with pid %d\n", (unsigned long)msg.value, pid);
+    } else {
+        LOG_PID_FUNC("no container is associated with pid %d\n", pid);
+    }
+    LOG_EXIT();
     return (msg.type == ok)?(int)msg.value:-1;
 }
