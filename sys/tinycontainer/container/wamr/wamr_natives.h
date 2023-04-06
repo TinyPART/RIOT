@@ -17,10 +17,17 @@
  * @}
  */
 
+#ifndef WAMR_NATIVES_H
+#define WAMR_NATIVES_H
 
-#ifndef TINYCONTAINER_CONTAINER_WAMR_NATIVES_H
-#define TINYCONTAINER_CONTAINER_WAMR_NATIVES_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 bool register_natives(void);
 
-#endif /* TINYCONTAINER_CONTAINER_WAMR_NATIVES_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* WAMR_NATIVES_H */

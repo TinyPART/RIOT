@@ -18,11 +18,18 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_MEMMGR_RUNTIME_H
-#define TINYCONTAINER_MEMMGR_RUNTIME_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
 
 #include "tinycontainer/memmgr/memmgr_common.h"
 
-#endif /* TINYCONTAINER_MEMMGR_RUNTIME_H */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H */
 /** @} */

@@ -700,4 +700,3 @@ include $(RIOTBASE)/sys/test_utils/Makefile.dep
 ifneq (,$(filter tinycontainer,$(USEMODULE)))
   include $(RIOTBASE)/sys/tinycontainer/Makefile.dep
 endif
-

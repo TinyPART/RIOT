@@ -17,12 +17,15 @@
  * @}
  */
 
-
 #ifndef SERVICE_INTERNAL_H
 #define SERVICE_INTERNAL_H
 
 #include <thread.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum {
     ok              = 1,
@@ -60,5 +63,8 @@ typedef struct service_msg {
 #define SERVICE_MSG_SEND_RECEIVE_INPLACE(msg_ptr) \
     SERVICE_MSG_SEND_RECEIVE(msg_ptr, msg_ptr)
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SERVICE_INTERNAL_H */

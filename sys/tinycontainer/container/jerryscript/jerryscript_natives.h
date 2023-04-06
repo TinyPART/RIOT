@@ -17,12 +17,19 @@
  * @}
  */
 
-
-#ifndef TINYCONTAINER_JERRYSCRIPT_NATIVES_H
-#define TINYCONTAINER_JERRYSCRIPT_NATIVES_H
+#ifndef JERRYSCRIPT_NATIVES_H
+#define JERRYSCRIPT_NATIVES_H
 
 #include "jerryscript.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 bool register_natives(void);
 
-#endif /* TINYCONTAINER_JERRYSCRIPT_NATIVES_H*/
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* JERRYSCRIPT_NATIVES_H */

@@ -20,7 +20,7 @@ USEMODULE += tinycontainer
 TINYCONTAINER_CONTAINER ?= wamr
 ```
 
-to your makefile to use WAMR containers. All requires sub-modules will be included. 
+to your makefile to use WAMR containers. All requires sub-modules will be included.
 If you prefer using JerryScript containers add
 
 ```

@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_SERVICE_MEMMGR_H
-#define TINYCONTAINER_SERVICE_MEMMGR_H
+#ifndef TINYCONTAINER_SERVICE_SERVICE_MEMMGR_H
+#define TINYCONTAINER_SERVICE_SERVICE_MEMMGR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,5 +36,5 @@ int service_getcontaineridfrompid(int pid);
 }
 #endif
 
-#endif /* TINYCONTAINER_SERVICE_MEMMGR_H */
+#endif /* TINYCONTAINER_SERVICE_SERVICE_MEMMGR_H */
 /** @} */

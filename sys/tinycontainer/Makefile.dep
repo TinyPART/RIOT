@@ -46,4 +46,3 @@ ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
   USEMODULE += tinycontainer_memmgr
   USEPKG += jerryscript
 endif
-

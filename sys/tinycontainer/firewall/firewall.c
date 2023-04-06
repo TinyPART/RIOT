@@ -17,7 +17,6 @@
  * @}
  */
 
-
 #define DEBUG_ENABLE
 #include "debug.h"
 
@@ -25,8 +24,6 @@
 
 /* size que msg */
 #define RCV_QUEUE_SIZE  (8)
-
-
 
 /**
  * @brief secure_thread lets create a thread returns its pid
@@ -67,7 +64,6 @@ kernel_pid_t secure_thread( char *context, char *stack, int stacksize,
 
 }
 
-
 /**
  * @brief send msg_req and wait for mg_resp
  *
@@ -86,8 +82,6 @@ void send_synchrone(msg_t msg_req, msg_t msg_resp, kernel_pid_t rcv_pid)
     DEBUG("[%d] <- firewall:send_synchrone()\n", thread_getpid());
 
 }
-
-
 
 /**
  * @brief
@@ -139,7 +133,7 @@ int send_asynchrone(msg_t msg_req, kernel_pid_t rcv_pid)
 }
 
 /**
- * @brief waits for a message whithout queue
+ * @brief waits for a message without queue
  *
  * @param arg
  * @return msg_t
@@ -158,7 +152,7 @@ msg_t rcv_asynchrone(void)
 }
 
 /**
- * @brief waits for a message whith queue
+ * @brief waits for a message with queue
  *
  * @param arg
  * @return msg_t
@@ -169,7 +163,6 @@ msg_t rcv_asynchrone_queue(void)
 
     msg_t msg;
     msg_t rcv_queue[RCV_QUEUE_SIZE];
-
 
     msg_init_queue(rcv_queue, RCV_QUEUE_SIZE);
     msg_receive(&msg);

@@ -18,11 +18,15 @@
  *
  */
 
-#ifndef TINYCONTAINER_CONTROLLER_H
-#define TINYCONTAINER_CONTROLLER_H
+#ifndef TINYCONTAINER_CONTROLLER_CONTROLLER_H
+#define TINYCONTAINER_CONTROLLER_CONTROLLER_H
 
 #include <string.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief initialize the thread controller
@@ -66,6 +70,9 @@ bool controller_load(
     int code_len
     );
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* TINYCONTAINER_CONTROLLER_H */
+#endif /* TINYCONTAINER_CONTROLLER_CONTROLLER_H */
 /** @} */

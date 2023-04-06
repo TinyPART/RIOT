@@ -47,5 +47,3 @@ Supported Board
 | arduino-nano-33-ble | build only   | build only   |
 | nrf52840dk          | build & test | build only   |
 | others              | :x:          | :x:          |
-
-

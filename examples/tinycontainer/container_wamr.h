@@ -6,10 +6,14 @@
  * directory of the TinyContainer module for more details.
  */
 
-#ifndef _CONTAINER_WAMR_H_
-#define _CONTAINER_WAMR_H_
+#ifndef CONTAINER_WAMR_H
+#define CONTAINER_WAMR_H
 
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 uint8_t meta[] = "not use yet";
 int meta_size = 11 /*strlen(meta)*/;
@@ -50,4 +54,8 @@ uint8_t code[] = {
 };
 int code_size = 340 /*strlen(code)*/;
 
-#endif /*_CONTAINER_WAMR_H_*/
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* CONTAINER_WAMR_H */
