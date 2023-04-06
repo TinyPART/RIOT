@@ -17,7 +17,6 @@
  * @}
  */
 
-
 #include "debug.h"
 #include "thread.h"
 #include "xtimer.h"
@@ -143,7 +142,7 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
     /* parse and load low level api */
 
     if (register_natives() != 0) {
-        DEBUG("[%d] EE container can't intialize low level API\n",
+        DEBUG("[%d] EE container can't intialiaze low level API\n",
               thread_getpid());
 
         new_handler->is_used = false;

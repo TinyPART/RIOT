@@ -67,12 +67,13 @@ kernel_pid_t create_container_runtime(char *uri, uint32_t periodicity)
     static char *context = 0;
     kernel_pid_t pid;
 
-    /*declare the thread stack for containers */
-    static char container_stack[5 * THREAD_STACKSIZE_SMALL];     //FIXME: dynamic alloc from static buf?
+    /* declare the thread stack for containers */
+    //FIXME: dynamic alloc from static buf?
+    static char container_stack[5 * THREAD_STACKSIZE_SMALL];
 
-    /*create Container */
+    /* create Container */
     pid = secure_thread(
-        context,                    // context to create thred man
+        context,                    // context to create thread man
         container_stack,            // stack array pointer
         sizeof(container_stack),    // stack size
         container_priority,         // thread priority
@@ -109,7 +110,6 @@ static bool is_container_running(int slot_id)
     return false;
 }
 
-
 void *handler_service(void *arg)
 {
     LOG_ENTER();
@@ -143,9 +143,8 @@ void *handler_service(void *arg)
         case run:
             LOG_PID_FUNC("type %d -> run\n", run);
 
-
             /* check the running status of the container */
-            if(is_container_running(value)) {
+            if (is_container_running(value)) {
                 LOG_PID_FUNC("Container %ld already started!\n", (unsigned long)value);
                 response_type = ko;
                 break;
@@ -239,7 +238,7 @@ int tinycontainer_service_init(int service_prio, int container_prio)
     container_priority = container_prio;
 
     service_pid = secure_thread(
-        NULL,                       // context to create thred man
+        NULL,                       // context to create thread man
         service_stack,              // stack array pointer
         sizeof(service_stack),      // stack size
         service_prio,               // thread priority

@@ -18,13 +18,16 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_MEMMGR_CONTAINER_H
-#define TINYCONTAINER_MEMMGR_CONTAINER_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H
 
 #include <stdint.h>
 
 #include "tinycontainer/memmgr/memmgr_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Retrieve the memory blocks for data and code of the container
@@ -37,5 +40,9 @@
  */
 int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * container_code);
 
-#endif /* TINYCONTAINER_MEMMGR_CONTAINER_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H */
 /** @} */

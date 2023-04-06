@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_FIREWALL_H
-#define TINYCONTAINER_FIREWALL_H
+#ifndef TINYCONTAINER_FIREWALL_FIREWALL_H
+#define TINYCONTAINER_FIREWALL_FIREWALL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,5 +36,5 @@ int tinycontainer_firewall_init(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_FIREWALL_H */
+#endif /* TINYCONTAINER_FIREWALL_FIREWALL_H */
 /** @} */

@@ -39,7 +39,7 @@ static int cmd_load(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if( tinycontainer_loadcontainer(meta, meta_size, data, data_size, code, code_size) == true)
+    if (tinycontainer_loadcontainer(meta, meta_size, data, data_size, code, code_size) == true)
     {
         (void) puts("container loaded");
     } else
@@ -63,7 +63,7 @@ static int cmd_start(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if(tinycontainer_startcontainer((uint8_t*)"") == true)
+    if (tinycontainer_startcontainer((uint8_t*)"") == true)
     {
         (void) puts("container started");
     } else
@@ -78,7 +78,7 @@ static int cmd_stop(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if(tinycontainer_stopcontainer((uint8_t*)"") ==  true)
+    if (tinycontainer_stopcontainer((uint8_t*)"") ==  true)
     {
         (void) puts("container stopped");
     } else
@@ -93,7 +93,7 @@ static int cmd_status(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if(tinycontainer_iscontainerrunning((uint8_t*)"") ==  true)
+    if (tinycontainer_iscontainerrunning((uint8_t*)"") ==  true)
     {
         (void) puts("container is started");
     } else
@@ -109,10 +109,10 @@ static int cmd_wait(int argc, char **argv)
     (void)argc;
     (void)argv;
     int n;
-    if(argc == 1)
+    if (argc == 1)
     {
         n = 10;
-    } else if(argc != 2)
+    } else if (argc != 2)
     {
         (void) puts("please enter a valid number of second!");
 

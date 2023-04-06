@@ -18,7 +18,6 @@
  * @}
  */
 
-
 #include <string.h>
 #include <stddef.h>
 
@@ -282,7 +281,9 @@ int memmgr_opendatafileforcontainer(container_id_t id)
 
     struct descriptor *descriptor = &descriptors[id];
 
-    /* check that the container has been allocated and that the data section hasn't already been opened */
+    /* check that the container has been allocated and that the data section
+     * hasn't already been opened
+     */
     if (!descriptor->allocated) {
         return -1;
     }
@@ -384,14 +385,20 @@ int memmgr_write(file_descriptor_t fd, const char *buf, uint32_t count)
     /* make sure we don't write past the end of the section */
     count = MIN(count, remaining_space);
 
-    /* copy the data from the buffer to the container, starting at the current position in the section */
+    /* copy the data from the buffer to the container, starting at the current
+     * position in the section
+     */
     memcpy(section_pos_ptr, buf, count);
 
-    /* update the position offset in the descriptor, and the section length in the container */
+    /* update the position offset in the descriptor, and the section length in
+     * the container
+     */
     *section.pos_offset_ptr += count;
     *section.len_ptr = *section.pos_offset_ptr;
 
-    /* return the number of bytes actually written (may be less than original count) */
+    /* return the number of bytes actually written (may be less than original
+     * count)
+     */
     return count;
 }
 
@@ -424,7 +431,9 @@ int memmgr_read(file_descriptor_t fd, char *buf, uint32_t count)
     /* pointer to the current position in the section */
     uint8_t *section_pos_ptr = section.start + *section.pos_offset_ptr;
 
-    /* copy the data from the container to the buffer, starting at the current position in the section */
+    /* copy the data from the container to the buffer, starting at the current
+     * position in the section
+     */
     memcpy(buf, section_pos_ptr, count);
 
     /* update the position offset in the descriptor */
@@ -449,10 +458,10 @@ int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * contai
 
     int container_id = service_getcontaineridfrompid(firewall_getpid());
 
-    if(container_id == -1) {
+    if (container_id == -1) {
         return -1;
     }
-    
+
     struct container * container = & containers[container_id];
 
     container_data -> ptr = _get_data_start(container);

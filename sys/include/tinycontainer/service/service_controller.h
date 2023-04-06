@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_SERVICE_CONTROLLER_H
-#define TINYCONTAINER_SERVICE_CONTROLLER_H
+#ifndef TINYCONTAINER_SERVICE_SERVICE_CONTROLLER_H
+#define TINYCONTAINER_SERVICE_SERVICE_CONTROLLER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,5 +50,5 @@ int service_isrunning(int container_id);
 }
 #endif
 
-#endif /* TINYCONTAINER_SERVICE_CONTROLLER_H */
+#endif /* TINYCONTAINER_SERVICE_SERVICE_CONTROLLER_H */
 /** @} */

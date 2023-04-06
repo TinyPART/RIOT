@@ -17,13 +17,16 @@
  * @}
  */
 
-
-#ifndef TINYCONTAINER_CONTAINER_WAMR_H
-#define TINYCONTAINER_CONTAINER_WAMR_H
+#ifndef WAMR_H
+#define WAMR_H
 
 #include "wasm_export.h"
 #include <stdbool.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct InterpHandle {
     bool is_used;
@@ -36,7 +39,6 @@ struct InterpHandle {
     wasm_function_inst_t loop_func;
     wasm_function_inst_t stop_func;
 };
-
 
 /**
  * @brief Attempt to find a free container handle, assign it and return it.
@@ -53,11 +55,10 @@ static container_handle_t handle_init(void);
  *
  * @details This will also free the memory used by the container if this is the last handle.
  *
- * @param[in] interp_handle The handle to free.
+ * @param[in] handle The handle to free.
  * @return true on success, false on error.
  */
 static bool handle_destroy(container_handle_t handle);
-
 
 #define MAX_HANDLES 3
 
@@ -67,5 +68,8 @@ static bool handle_destroy(container_handle_t handle);
 static bool runtime_init(void);
 static void runtime_destroy(void);
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* TINYCONTAINER_CONTAINER_WAMR_H */
+#endif /* WAMR_H */

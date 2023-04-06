@@ -8,14 +8,14 @@
 /**
  * @defgroup    sys_tinycontainer TinyContainer
  * @ingroup     sys
- * @brief       TinyContainer is containerisation solution for RIOT that support WASM and JerryScript.
+ * @brief       Containerisation solution for RIOT that support WASM and JerryScript.
  *
  * @experimental
  *
  * @{
  *
  * @file
- * @brief       TinyContainer is containerisation solution for RIOT that support WASM and JerryScript.
+ * @brief       Containerisation solution for RIOT that support WASM and JerryScript.
  *
  * @author      Samuel legouix <samuel.legouix@orange.com>
  */

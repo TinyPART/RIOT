@@ -18,7 +18,6 @@
  * @}
  */
 
-
 //#define ENABLE_DEBUG (1)
 #include "tinycontainer/debugging.h"
 #include "thread.h"
@@ -29,7 +28,6 @@
 #include "tinycontainer/firewall/firewall_all.h"
 
 #include <stdbool.h>
-
 
 enum controller_msg_type {
     msg_type_ok             = 0,
@@ -49,7 +47,6 @@ enum controller_msg_type {
 
 /* Message type */
 typedef enum controller_msg_type s_msg_type;
-
 
 const char *controller_msg_type_str[] = {
     "msg_type_ok",
@@ -85,7 +82,6 @@ const char *controller_loading_state_str[] = {
     "loading_code",
     "loading_end",
 };
-
 
 static kernel_pid_t controller_pid = -1;
 static enum controller_loading_state loading_state = loading_none;
@@ -191,9 +187,8 @@ static bool _write_byte_to_section(enum controller_loading_state expected_state,
     return true;
 }
 
-
 /**
- * @brief fonction du thrtead controller
+ * @brief function du thrtead controller
  *
  * @return void*
  */
@@ -282,7 +277,6 @@ static void *handler_controller(void *arg)
                 goto loading_fail;
             }
 
-
         /* load next byte of container data */
         case msg_type_data:
             if (_write_byte_to_section(loading_data, (char)value)) {
@@ -328,8 +322,6 @@ static void *handler_controller(void *arg)
             goto loading_fail;
         }
 
-
-
 /* something went wrong, abort the loading */
 loading_fail:
         loading_state = loading_none;
@@ -348,13 +340,11 @@ reply:
         thread_yield();
     }
 
-    DEBUG_PID("EE unreacheable line\n");
+    DEBUG_PID("EE unreachable line\n");
 
     LOG_EXIT();
     return NULL;
 }
-
-
 
 int tinycontainer_controller_init(int prio)
 {
@@ -370,7 +360,7 @@ int tinycontainer_controller_init(int prio)
     DEBUG_PID("-- calling secure_thread()\n");
 
     controller_pid = secure_thread(
-        NULL,                       // context to create thred man
+        NULL,                       // context to create thread man
         controller_stack,           // thread stack
         sizeof(controller_stack),   // stack size
         prio,                       // thread priority
@@ -413,8 +403,6 @@ bool controller_isrunning(int container_id)
 
     return reply.type == msg_type_ok;
 }
-
-
 
 /* send msg, receive type
  */
@@ -474,7 +462,6 @@ static bool _send_section(
     }
     return true;
 }
-
 
 bool controller_load(uint8_t *metadata, int meta_size,
                      uint8_t *data, int data_size,

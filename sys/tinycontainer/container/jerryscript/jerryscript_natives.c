@@ -17,7 +17,6 @@
  * @}
  */
 
-
 #include "debug.h"
 
 #include "string.h"
@@ -105,7 +104,6 @@ static jerry_value_t bar_handler(
     (void)args_cnt;
 
     DEBUG("[%d] -> jerryscript:bar_handler()\n", thread_getpid());
-
 
     DEBUG("[%d] <- jerryscript:bar_handler()\n", thread_getpid());
     return jerry_create_undefined();

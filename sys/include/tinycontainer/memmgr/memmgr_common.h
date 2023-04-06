@@ -18,11 +18,21 @@
  *
  */
 
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_COMMON_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_COMMON_H
 
-#ifndef TINYCONTAINER_MEMMGR_COMMON_H
-#define TINYCONTAINER_MEMMGR_COMMON_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+/**
+ * @brief   file descriptor to a container
+ */
 typedef int file_descriptor_t;
+
+/**
+ * @brief   internal slot identifier of a container
+ */
 typedef int container_id_t;
 
 /**
@@ -33,6 +43,9 @@ typedef struct {
     size_t size;     /**< size of the memory block */
 } memmgr_block_t;
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* TINYCONTAINER_MEMMGR_COMMON_H */
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_COMMON_H */
 /** @} */

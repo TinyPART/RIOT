@@ -8,7 +8,7 @@ MODULE := tinycontainer_container
 
 # check for tinycontainer_container_wamr and tinycontainer_container_jerryscript
 
-CONTAINER_PSEUDOMODULES := 
+CONTAINER_PSEUDOMODULES :=
 
 ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
   CONTAINER_PSEUDOMODULES += tinycontainer_container_wamr

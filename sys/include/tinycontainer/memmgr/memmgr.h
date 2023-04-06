@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_MEMMGR_H
-#define TINYCONTAINER_MEMMGR_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,5 +36,5 @@ int tinycontainer_memmgr_init(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_MEMMGR_H */
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_H */
 /** @} */

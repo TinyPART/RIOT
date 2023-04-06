@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_FIREWALL_ALL_H
-#define TINYCONTAINER_FIREWALL_ALL_H
+#ifndef TINYCONTAINER_FIREWALL_FIREWALL_ALL_H
+#define TINYCONTAINER_FIREWALL_FIREWALL_ALL_H
 
 #include <stdint.h>
 
@@ -28,6 +27,10 @@
 #include "msg.h"
 /* Include threads header*/
 #include "thread.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief create a new thread using context
@@ -57,12 +60,12 @@ msg_t rcv_synchrone(void);
 int send_asynchrone(msg_t msg_req, kernel_pid_t rcv_pid);
 
 /**
- * @brief waits for a message whithout queue
+ * @brief waits for a message without queue
  */
 msg_t rcv_asynchrone(void);
 
 /**
- * @brief waits for a message whith queue
+ * @brief waits for a message with queue
  *
  */
 msg_t rcv_asynchrone_queue(void);
@@ -73,5 +76,9 @@ msg_t rcv_asynchrone_queue(void);
  */
 kernel_pid_t firewall_getpid(void);
 
-#endif /* TINYCONTAINER_FIREWALL_ALL_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* TINYCONTAINER_FIREWALL_FIREWALL_ALL_H */
 /** @} */

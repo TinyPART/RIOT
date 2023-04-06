@@ -16,8 +16,6 @@
  * @}
  */
 
-
-
 #include <stdio.h>
 #include "wasm_export.h"
 #include "wamr_natives.h"
@@ -39,8 +37,6 @@ static void bar(void)
 }
 #endif
 
-
-
 /* registering native functions */
 bool register_natives(void)
 {
@@ -55,7 +51,7 @@ bool register_natives(void)
         EXPORT_WASM_API(bar),
     };
 
-    int n_native_symbols = sizeof(native_symbols) / sizeof(NativeSymbol);
+    int n_native_symbols = ARRAY_SIZE(native_symbols);
 
     if (wasm_runtime_register_natives("env", native_symbols, n_native_symbols)) {
         return true;

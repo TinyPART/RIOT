@@ -18,9 +18,8 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_SERVICE_H
-#define TINYCONTAINER_SERVICE_H
+#ifndef TINYCONTAINER_SERVICE_SERVICE_H
+#define TINYCONTAINER_SERVICE_SERVICE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,5 +36,5 @@ int tinycontainer_service_init(int service_prio, int container_prio);
 }
 #endif
 
-#endif /* TINYCONTAINER_SERVICE_H */
+#endif /* TINYCONTAINER_SERVICE_SERVICE_H */
 /** @} */

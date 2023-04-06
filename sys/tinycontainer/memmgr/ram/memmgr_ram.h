@@ -17,14 +17,17 @@
  * @}
  */
 
-
-#ifndef TINYCONTAINER_MEMMGR_RAM_H
-#define TINYCONTAINER_MEMMGR_RAM_H
+#ifndef MEMMGR_RAM_H
+#define MEMMGR_RAM_H
 
 #include <stdint.h>
 #include <stdbool.h>
 
 #include "tinycontainer/memmgr/memmgr_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
@@ -79,7 +82,7 @@ struct section_info {
 
     /* [1]  Within the descriptor, we store an offset from the start of the
      *      section to the current position in the section.
-     *      Here we have a pointer to that offset, not a pointer to the acutal
+     *      Here we have a pointer to that offset, not a pointer to the actual
      *       position in the section.
      *
      * [2]  Same idea as [1]. Within the container memory, we also store the
@@ -88,7 +91,6 @@ struct section_info {
      *      the section.
      */
 };
-
 
 /* get a pointer to the start of the meta section */
 static uint8_t *_get_meta_start(struct container *container);
@@ -115,7 +117,6 @@ static uint32_t _get_code_max_size(struct container *container);
 
 /* get the maximum size the meta section can be at the current time */
 static uint32_t _get_meta_max_size(struct container *container);
-
 
 /* get the id of the container that the file descriptor belongs to */
 static container_id_t _fd_get_id(file_descriptor_t fd);
@@ -156,4 +157,8 @@ static bool _is_meta_readable(struct descriptor *descriptor);
 /* is the given section ready to be read from? */
 static bool _is_section_readable(struct descriptor *descriptor, enum section_type section_type);
 
-#endif /*TINYCONTAINER_MEMMGR_RAM_H*/
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MEMMGR_RAM_H */

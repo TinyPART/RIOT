@@ -21,7 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define ENABLE_DEBUG (0)
+#define ENABLE_DEBUG 0
 #include "tinycontainer/debugging.h"
 
 #include "ztimer.h"
@@ -63,7 +63,6 @@ runtime_init_fail:
     return false;
 }
 
-
 static void runtime_destroy(void)
 {
     /* free all handles, but log those that are still in use */
@@ -82,7 +81,6 @@ static void runtime_destroy(void)
 
     is_initialised = false;
 }
-
 
 static container_handle_t handle_init(void)
 {
@@ -182,8 +180,7 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
         goto container_create_fail;
     }
 
-
-    /* Create an execution environement to go with our module instance */
+    /* Create an execution environment to go with our module instance */
     new_handle->exec_env = wasm_runtime_create_exec_env(new_handle->module_instance, STACK_SIZE);
     if (!new_handle->exec_env) {
         goto container_create_fail;

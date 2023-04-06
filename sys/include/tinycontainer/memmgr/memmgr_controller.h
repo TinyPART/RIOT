@@ -18,60 +18,81 @@
  *
  */
 
-
-#ifndef TINYCONTAINER_MEMMGR_CONTROLLER_H
-#define TINYCONTAINER_MEMMGR_CONTROLLER_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_CONTROLLER_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_CONTROLLER_H
 
 #include <stdint.h>
 
 #include "memmgr_common.h"
 
-/*
- * Create a new empty container
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief   Create a new empty container
  *
- * On success a container id is returned.
- * On failure, -1 is returned.
+ * @return   container_id_t   (On success a container id is returned)
+ * @return   container_id_t   (On failure, -1 is returned)
  */
 container_id_t memmgr_newcontainer(void);
 
-/*
- * open the metadata file and return a file descriptor id
+/**
+ * @brief   open the metadata file and return a file descriptor id
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
+ * @param[in]   id    container file descriptor
+ *
+ * @return   int  (On success, a file descriptor id is returned)
+ * @return   int  (On error, -1 is returned)
  */
 file_descriptor_t memmgr_openmetadatafileforcontainer(container_id_t id);
 
-/*
- * open the data file and return a file descriptor id
+/**
+ * @brief open the data file and return a file descriptor id
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
+ * @param[in]   id    container file descriptor
+ *
+ * @return   int   (On success, a file descriptor id is returned)
+ * @return   int   (On error, -1 is returned)
  */
 file_descriptor_t memmgr_opendatafileforcontainer(container_id_t id);
 
-/*
- * open the code file and return a file descriptor id
+/**
+ * @brief   open the code file and return a file descriptor id
  *
- * On success, a file descriptor id is returned.
- * On error, -1 is returned.
+ * @param[in]  id   container file descriptor
+ *
+ * @return   int   (On success, a file descriptor id is returned)
+ * @return   int   (On error, -1 is returned.
  */
 file_descriptor_t memmgr_opencodefileforcontainer(container_id_t id);
 
-/*
- * close a file descriptor id
+/**
+ * @brief   close a file descriptor id
  */
 void memmgr_close(file_descriptor_t fd);
 
-/* write up to count bytes from the buffer starting at buf to the file referred
+/**
+ * @brief write a container section (data, code, or metadata)
+ * write up to count bytes from the buffer starting at buf to the file referred
  * to by the file descriptor fd.
  *
- * On success, the number of bytes written is returned (zero indicates nothing was written). It is not an error if this number is smaller than count.
- * On error, -1 is returned.
+ * @param[in]   fd    container file descriptor
+ * @param[out]  buf   buffer to write into
+ * @param[in]   count number of byte from fd to write to buf
+ *
+ * @return   int   (On success, the number of bytes written is returned (zero
+ *                  indicates nothing was written). It is not an error if this
+ *                  number is smaller than count.)
+ * @ return  int   (On error, -1 is returned)
  */
 int memmgr_write(file_descriptor_t fd,
                  char const *buf,
                  uint32_t count);
 
-#endif /* TINYCONTAINER_MEMMGR_CONTROLLER_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_CONTROLLER_H */
 /** @} */

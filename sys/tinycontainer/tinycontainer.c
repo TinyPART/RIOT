@@ -27,7 +27,7 @@
 #include "debug.h"
 
 /*
- * private funtions
+ * private functions
  * ================
  */
 
