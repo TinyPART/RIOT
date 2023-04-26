@@ -18,6 +18,9 @@ ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
   CONTAINER_PSEUDOMODULES += tinycontainer_container_jerryscript
 endif
 
+ifneq (,$(filter tinycontainer_container_rbpf,$(USEMODULE)))
+  CONTAINER_PSEUDOMODULES += tinycontainer_container_rbpf
+endif
 
 CONTAINER_COUNT := $(words $(CONTAINER_PSEUDOMODULES))
 
@@ -35,6 +38,10 @@ endif
 
 ifneq (,$(filter tinycontainer_service_jerryscript,$(CONTAINER)))
   DIRS += jerryscript
+endif
+
+ifneq (,$(filter tinycontainer_container_rbpf,$(CONTAINER)))
+  DIRS += rbpf
 endif
 
 include $(RIOTBASE)/Makefile.base
