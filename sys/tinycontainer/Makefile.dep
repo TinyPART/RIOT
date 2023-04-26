@@ -14,6 +14,9 @@ ifneq (,$(filter tinycontainer,$(USEMODULE)))
   ifneq (,$(filter wamr,$(TINYCONTAINER_CONTAINER)))
     USEMODULE += tinycontainer_container_wamr
   endif
+  ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
+    USEMODULE += tinycontainer_container_rbpf
+  endif
   USEMODULE += tinycontainer_controller
   USEMODULE += tinycontainer_firewall
   USEMODULE += tinycontainer_memmgr
@@ -45,4 +48,9 @@ ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
   USEMODULE += tinycontainer_container
   USEMODULE += tinycontainer_memmgr
   USEPKG += jerryscript
+endif
+ifneq (,$(filter tinycontainer_container_rbpf,$(USEMODULE)))
+  USEMODULE += tinycontainer_container
+  USEMODULE += tinycontainer_memmgr
+  USEMODULE += rbpf
 endif
