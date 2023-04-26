@@ -27,8 +27,16 @@
 #include "container_wamr.h"
 #elif defined(MODULE_TINYCONTAINER_CONTAINER_JERRYSCRIPT)
 #include "container_jerryscript.h"
+#elif defined(MODULE_TINYCONTAINER_CONTAINER_RBPF)
+#include "blob/rbpf/example_app.bin.h"
+static const uint8_t *meta = NULL;
+static const int meta_size = 0;
+static const uint8_t *data = NULL;
+static const int data_size = 0;
+static const uint8_t *code = example_app_bin;
+static const int code_size = example_app_bin_len;
 #else
-#error "WARM or JERRYSCRIPT module is required"
+#error "WARM or JERRYSCRIPT or RBPF module is required"
 #endif
 
 #define SERVICE_PRIO     10
@@ -39,7 +47,7 @@ static int cmd_load(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if (tinycontainer_loadcontainer(meta, meta_size, data, data_size, code, code_size) == true)
+    if (tinycontainer_loadcontainer((uint8_t*)meta, meta_size, (uint8_t*)data, data_size, (uint8_t*)code, code_size) == true)
     {
         (void) puts("container loaded");
     } else
