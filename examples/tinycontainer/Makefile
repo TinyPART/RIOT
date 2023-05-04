@@ -15,10 +15,16 @@ USEMODULE += tinycontainer
 
 # TinyContainer supports following container backend
 TINYCONTAINER_CONTAINER ?= wamr
-TINYCONTAINER_CONTAINER ?= jerryscript
+#TINYCONTAINER_CONTAINER ?= rbpf
+#TINYCONTAINER_CONTAINER ?= jerryscript
 
 # TinyContainer supports following memory manager
 TINYCONTAINER_MEMMGR ?= ram
+
+
+ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
+  BLOBS += rbpf/example_app.bin
+endif
 
 # shell
 USEMODULE += shell
