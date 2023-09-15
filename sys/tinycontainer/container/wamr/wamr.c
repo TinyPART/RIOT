@@ -1,8 +1,9 @@
 /*
  * Copyright (C) 2022-2023 Orange
  *
- * Please, refer to the README.md and LICENSE files of TinyContainer
- *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
  */
 
 /**
@@ -13,7 +14,7 @@
  * @brief       TinyContainer WAMR runtime implementation
  *
  * @author      Samuel legouix <samuel.legouix@orange.com>
- * @author      Gregory Holder <gregory.holder@orange.com>
+ * @author      Gregory Holder <gregory.holder76@gmail.com>
  *
  * @}
  */

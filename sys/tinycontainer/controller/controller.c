@@ -1,8 +1,9 @@
 /*
  * Copyright (C) 2020-2023 Orange
  *
- * Please, refer to the README.md and LICENSE files of TinyContainer
- *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
  */
 
 /**
@@ -13,7 +14,7 @@
  * @brief       TinyContainer Controller sub-module implementation
  *
  * @author      BERKANE Ghilas (ghilas.berkane@gmail.com)
- *              HOLDER Gregory (gregory.holder@orange.com)
+ *              HOLDER Gregory (gregory.holder76@gmail.com)
  *
  * @}
  */
