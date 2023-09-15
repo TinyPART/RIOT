@@ -2,8 +2,9 @@
  *
  * Copyright (C) 2022-2023, Orange.
  *
- * Please, refer to the README.md and LICENSE files of TinyContainer
- *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
  */
 
 /**
@@ -19,7 +20,7 @@
  *          Define DO_LOG_FILENAME to log the filename in addition to the
  *          function name for LOG_ENTER and LOG_EXIT
  *
- * @author  Gregory Holder <gregory.holder@orange.com>
+ * @author  Gregory Holder <gregory.holder76@gmail.com>
  *
  */
 
