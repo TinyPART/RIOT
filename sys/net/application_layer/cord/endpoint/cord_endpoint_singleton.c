@@ -56,7 +56,7 @@ void cord_endpoint_singleton_run(void)
         }
     }
     cord_endpoint_init(&_cord, CONFIG_CORD_ENDPOINT_SINGLETON_EVENT_QUEUE,
-            &remote, NULL);
+            &remote, NULL, 2);
 }
 
 int cord_endpoint_singleton_update(void)

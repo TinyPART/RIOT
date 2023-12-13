@@ -154,12 +154,13 @@ void cord_endpoint_remove(cord_endpoint_t *cord);
  * @param   remote  Remote endpoint to register at, can be NULL to only
  *                  initialize
  * @param   regif   Endpoint to register at, can be NULL to use discovery
+ * @param   start_delay Seconds to delay the start of registration process with, zero for no delay
  *
  * @return  CORD_ENDPOINT_OK on success
  * @return  CORD_ENDPOINT_OVERFLOW when the registration interface is too long
  * to store
  */
-int cord_endpoint_init(cord_endpoint_t *cord, event_queue_t *queue, const sock_udp_ep_t *remote, const char *regif);
+int cord_endpoint_init(cord_endpoint_t *cord, event_queue_t *queue, const sock_udp_ep_t *remote, const char *regif, unsigned start_delay);
 
 /**
  * @brief   Copy the endpoint name into the provided buffer

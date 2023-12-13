@@ -464,7 +464,7 @@ static void _on_state_update(event_t *event)
     mutex_unlock(&cord->lock);
 }
 
-int cord_endpoint_init(cord_endpoint_t *cord, event_queue_t *queue, const sock_udp_ep_t *remote, const char *regif)
+int cord_endpoint_init(cord_endpoint_t *cord, event_queue_t *queue, const sock_udp_ep_t *remote, const char *regif, unsigned start_delay)
 {
     _init_epname();
 
@@ -480,16 +480,19 @@ int cord_endpoint_init(cord_endpoint_t *cord, event_queue_t *queue, const sock_u
         return res;
     }
 
+    cord_state_t start_state = CORD_STATE_REGISTRY;
+
     res = _set_rd_settings(cord, remote, regif);
-    if (IS_ACTIVE(MODULE_CORD_ENDPOINT)) {
-        if (remote && regif) {
-            _post_state(cord, CORD_STATE_REGISTRY);
-        } else {
-            _post_state(cord, CORD_STATE_DISCOVERY);
-        }
+    if (IS_ACTIVE(MODULE_CORD_ENDPOINT) &&
+            (!remote || !regif)) {
+        start_state = CORD_STATE_DISCOVERY;
+    }
+
+    if (start_delay) {
+        _post_timeout(cord, start_state, start_delay);
     }
     else {
-        _post_state(cord, CORD_STATE_REGISTRY);
+        _post_state(cord, start_state);
     }
     return res;
 }
