@@ -21,10 +21,23 @@ TINYCONTAINER_CONTAINER ?= wamr
 # TinyContainer supports following memory manager
 TINYCONTAINER_MEMMGR ?= ram
 
-
 ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
   BLOBS += rbpf/example_app.bin
 endif
+
+# network stack - ble ipv6 coap
+CFLAGS=-DCONFIG_GNRC_IPV6_NIB_SLACC=1 -DNIMBLE_AUTOCONN_NODE_ID=\"TinyContainerNetwork\"
+USEMODULE += nimble_autoconn_ipsp
+USEMODULE += netdev_default
+USEMODULE += gnrc_ipv6_default
+USEMODULE += gnrc_icmpv6_echo
+USEMODULE += gcoap
+# the next module is deactivated, because, on debug mode, it generate an error
+# message on RIOT startup "NETOPT_TX_END_IRQ not implemented by driver", and
+# the ble interface is not stable anymore
+#USEMODULE += netstats_l2
+USEMODULE += netstats_ipv6
+USEMODULE += netstats_rpl
 
 # shell
 USEMODULE += shell
@@ -41,3 +54,20 @@ DEVELHELP ?= 1
 QUIET ?= 0
 
 include $(RIOTBASE)/Makefile.include
+
+# For now this goes after the inclusion of Makefile.include so Kconfig symbols
+# are available. Only set configuration via CFLAGS if Kconfig is not being used
+# for this module.
+ifndef CONFIG_KCONFIG_MODULE_GCOAP
+## Uncomment to redefine port, for example use 61616 for RFC 6282 UDP compression.
+#GCOAP_PORT = 5683
+#CFLAGS += -DCONFIG_GCOAP_PORT=$(GCOAP_PORT)
+
+## Uncomment to redefine request token length, max 8.
+#GCOAP_TOKENLEN = 2
+#CFLAGS += -DCONFIG_GCOAP_TOKENLEN=$(GCOAP_TOKENLEN)
+
+# Increase from default for confirmable block2 follow-on requests
+GCOAP_RESEND_BUFS_MAX ?= 2
+CFLAGS += -DCONFIG_GCOAP_RESEND_BUFS_MAX=$(GCOAP_RESEND_BUFS_MAX)
+endif

@@ -19,9 +19,13 @@
  */
 
 #include <stdlib.h>
+
 #include "tinycontainer.h"
+
 #include "shell.h"
 #include "xtimer.h"
+
+#include "coap_server.h"
 
 #if defined(MODULE_TINYCONTAINER_CONTAINER_WAMR)
 #include "container_wamr.h"
@@ -135,6 +139,31 @@ static int cmd_wait(int argc, char **argv)
     return 0;
 }
 
+static int cmd_coap(int argc, char ** argv)
+{
+    if (argc == 1) {
+        (void) puts("usage: coap start|stop|status");
+
+        return 0;
+    } else if (argc == 2) {
+        if(strncmp(argv[1], "start", strlen("start")) == 0 ) {
+            coap_server_start();
+        } else if(strncmp(argv[1], "stop", strlen("stop")) == 0) {
+            coap_server_stop();
+        } else if(strncmp(argv[1], "status", strlen("status")) == 0) {
+            if (coap_server_isrunning()) {
+                (void) puts("CoAP Server is running");
+            } else {
+                (void) puts("CoAP Server is not running");
+            }
+        } else {
+          (void) puts("usage: coap start|stop|status");
+        }
+    }
+
+    return 0;
+}
+
 static const shell_command_t shell_commands[] = {
     { "load",   "load container",                cmd_load },
     { "unload", "unload container",              cmd_unload},
@@ -142,6 +171,7 @@ static const shell_command_t shell_commands[] = {
     { "stop",   "stop the container",            cmd_stop},
     { "status", "status of the container",       cmd_status},
     { "wait",   "let the container run a while", cmd_wait},
+    { "coap",   "coap server",                   cmd_coap},
     { NULL, NULL, NULL }
 };
 
@@ -150,6 +180,9 @@ int main(void)
     /* Start TinyContainer */
 
     tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO);
+
+    /* setup coap server */
+    coap_server_init();
 
     /* provides a shell */
 
