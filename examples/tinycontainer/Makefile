@@ -25,12 +25,22 @@ ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
   BLOBS += rbpf/example_app.bin
 endif
 
-TINYCONTAINER_NETWORK ?= 0
+# These parameters may be used to fine tune TinyContainer configuration
+NUMBER_OF_CONTAINERS ?= 3
+MAX_SIZE_FOR_METADATA ?= 64
+MAX_SIZE_FOR_CONTAINER ?= 1024
+
+CFLAGS += -DTINYCONTAINER_NUMBER_OF_CONTAINERS=${NUMBER_OF_CONTAINERS}
+CFLAGS += -DTINYCONTAINER_MAX_SIZE_FOR_METADATA=${MAX_SIZE_FOR_METADATA}
+CFLAGS += -DTINYCONTAINER_MAX_SIZE_FOR_CONTAINER=${MAX_SIZE_FOR_CONTAINER}
+
+# Uncomment to activate the networking
+#TINYCONTAINER_NETWORK ?= 1
 
 ifeq (1,$(TINYCONTAINER_NETWORK))
 
   # network stack - ble ipv6 coap
-  CFLAGS=-DCONFIG_GNRC_IPV6_NIB_SLACC=1 -DNIMBLE_AUTOCONN_NODE_ID=\"TinyContainerNetwork\"
+  CFLAGS += -DCONFIG_GNRC_IPV6_NIB_SLACC=1 -DNIMBLE_AUTOCONN_NODE_ID=\"TinyContainerNetwork\"
   USEMODULE += nimble_autoconn_ipsp
   USEMODULE += netdev_default
   USEMODULE += gnrc_ipv6_default
@@ -57,7 +67,7 @@ USEMODULE += xtimer
 DEVELHELP ?= 1
 
 # Change this to 0 show compiler invocation lines by default:
-QUIET ?= 0
+QUIET ?= 1
 
 include $(RIOTBASE)/Makefile.include
 
