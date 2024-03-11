@@ -24,8 +24,11 @@
 
 #include "shell.h"
 #include "xtimer.h"
+#include "kernel_defines.h"
 
+#if IS_USED(MODULE_GCOAP)
 #include "coap_server.h"
+#endif
 
 #if defined(MODULE_TINYCONTAINER_CONTAINER_WAMR)
 #include "container_wamr.h"
@@ -139,6 +142,7 @@ static int cmd_wait(int argc, char **argv)
     return 0;
 }
 
+#if IS_USED(MODULE_GCOAP)
 static int cmd_coap(int argc, char ** argv)
 {
     if (argc == 1) {
@@ -163,6 +167,7 @@ static int cmd_coap(int argc, char ** argv)
 
     return 0;
 }
+#endif /* MODULE_GCOAP */
 
 static const shell_command_t shell_commands[] = {
     { "load",   "load container",                cmd_load },
@@ -171,7 +176,9 @@ static const shell_command_t shell_commands[] = {
     { "stop",   "stop the container",            cmd_stop},
     { "status", "status of the container",       cmd_status},
     { "wait",   "let the container run a while", cmd_wait},
+#if IS_USED(MODULE_GCOAP)
     { "coap",   "coap server",                   cmd_coap},
+#endif
     { NULL, NULL, NULL }
 };
 
@@ -181,8 +188,10 @@ int main(void)
 
     tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO);
 
+#if IS_USED(MODULE_GCOAP)
     /* setup coap server */
     coap_server_init();
+#endif
 
     /* provides a shell */
 

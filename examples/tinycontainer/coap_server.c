@@ -6,13 +6,17 @@
  * directory of the TinyContainer module for more details.
  */
 
+#include "kernel_defines.h"
+
+#if IS_USED(MODULE_GCOAP)
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 
 #include "coap_server.h"
-
 #include "sched.h"
+
 #include "net/gcoap.h"
 
 #include "tinycontainer.h"
@@ -297,3 +301,4 @@ bool coap_server_isrunning(void) {
     return config.state == STATE_ON;
 }
 
+#endif /* MODULE_GCOAP */
