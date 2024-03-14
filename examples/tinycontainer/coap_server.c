@@ -21,8 +21,6 @@
 
 #include "tinycontainer.h"
 
-typedef enum { STATE_UNINIALIAZED, STATE_OFF, STATE_ON, } state_t;
-
 enum { ACTION_LOAD       = 1,
        ACTION_START      = 2,
        ACTION_IS_RUNNING = 3,
@@ -43,11 +41,9 @@ enum { OPTION_ACTION   = 65001,
 
 #define DEVICE_ID_MAX_SIZE 64
 static struct {
-    state_t state;
-    kernel_pid_t thread_pid;
     uint8_t device_id[DEVICE_ID_MAX_SIZE];
     uint32_t device_id_size;
-} config = { STATE_UNINIALIAZED, KERNEL_PID_UNDEF, "", 0 };
+} config = { "", 0 };
 
 /* list of option:
  *   - 1 action, uint:
@@ -270,35 +266,12 @@ static gcoap_listener_t _listener = {
 /* public function */
 
 void coap_server_init(void) {
-    config.state = STATE_OFF;
-}
-
-void coap_server_start(void) {
-    if (config.state == STATE_OFF) {
-        config.thread_pid = gcoap_init();
-        if(config.thread_pid < KERNEL_PID_FIRST || config.thread_pid > KERNEL_PID_LAST) {
-            //FIXME: add error log
-            config.thread_pid = KERNEL_PID_UNDEF;
-        } else {
-            gcoap_register_listener(&_listener);
-            config.state = STATE_ON;
-        }
-            gcoap_register_listener(&_listener);
-            config.state = STATE_ON;
-    }
-}
-
-void coap_server_stop(void) {
-    if (config.state == STATE_ON) {
-        //FIXME: how to kill another thread on riot?
-        //TODO: add warm log or remove the function
-        config.thread_pid = KERNEL_PID_UNDEF;
-        config.state = STATE_OFF;
-    }
-}
-
-bool coap_server_isrunning(void) {
-    return config.state == STATE_ON;
+    /* note: we don't check the returned value of the next functions : it is
+     * called once when the program started and we have tested the program on supported
+     * devices.
+     */
+    gcoap_init();
+    gcoap_register_listener(&_listener);
 }
 
 #endif /* MODULE_GCOAP */

@@ -142,33 +142,6 @@ static int cmd_wait(int argc, char **argv)
     return 0;
 }
 
-#if IS_USED(MODULE_GCOAP)
-static int cmd_coap(int argc, char ** argv)
-{
-    if (argc == 1) {
-        (void) puts("usage: coap start|stop|status");
-
-        return 0;
-    } else if (argc == 2) {
-        if(strncmp(argv[1], "start", strlen("start")) == 0 ) {
-            coap_server_start();
-        } else if(strncmp(argv[1], "stop", strlen("stop")) == 0) {
-            coap_server_stop();
-        } else if(strncmp(argv[1], "status", strlen("status")) == 0) {
-            if (coap_server_isrunning()) {
-                (void) puts("CoAP Server is running");
-            } else {
-                (void) puts("CoAP Server is not running");
-            }
-        } else {
-          (void) puts("usage: coap start|stop|status");
-        }
-    }
-
-    return 0;
-}
-#endif /* MODULE_GCOAP */
-
 static const shell_command_t shell_commands[] = {
     { "load",   "load container",                cmd_load },
     { "unload", "unload container",              cmd_unload},
@@ -176,9 +149,6 @@ static const shell_command_t shell_commands[] = {
     { "stop",   "stop the container",            cmd_stop},
     { "status", "status of the container",       cmd_status},
     { "wait",   "let the container run a while", cmd_wait},
-#if IS_USED(MODULE_GCOAP)
-    { "coap",   "coap server",                   cmd_coap},
-#endif
     { NULL, NULL, NULL }
 };
 
