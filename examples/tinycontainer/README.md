@@ -54,7 +54,7 @@ Networking
 ==========
 
 By default, the network isn't activated. If you wish to build with networking
-capability uncomments the related line in the ```Makefile``` file or just use
+capability uncomment the related line in the ```Makefile``` file or just use
 a command line directive:
 
 ```
