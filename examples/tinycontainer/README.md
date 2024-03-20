@@ -53,8 +53,8 @@ Supported Board
 Networking
 ==========
 
-By default, the network isn't activated. If you whish to build with networking
-capability, uncomment the related line in the ```Makefile``` file or just use
+By default, the network isn't activated. If you wish to build with networking
+capability uncomments the related line in the ```Makefile``` file or just use
 a command line directive:
 
 ```
@@ -62,7 +62,7 @@ TINYCONTAINER_NETWORK=1 make
 ```
 
 Whenever activated, the device annonces itself using the string
-_TinyContainerNetwork_ as node id and can be remotely managed through CoAP
+_TinyContainerNetwork_ as BLE node id and can be remotely managed through CoAP
 commands.
 
 The supported CoAP commands are describes in the file
