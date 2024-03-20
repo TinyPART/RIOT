@@ -12,7 +12,8 @@ To build the code, just select your board and l as usual:
 BOARD=<YOUR_BOARD_NAME> make
 ```
 
-You can use ```TINYCONTAINER_CONTAINER``` directive to select another runtime. By default the WebAssembly runtime is used.
+You can use ```TINYCONTAINER_CONTAINER``` directive to select another runtime.
+By default the WebAssembly runtime is used.
 
 ```
 TINYCONTAINER_CONTAINER=jerryscript make
@@ -28,7 +29,8 @@ The example adds some TinyContainer commands to the shell prompt:
 
 You can also use the _ps_ command to display a threads table.
 
-The container is prebuilt and displays some messages to the console when running:
+The container is prebuilt and displays some messages to the console when
+running:
 
 > WASM: start()
 > WASM: loop n=1 of 100
@@ -47,3 +49,22 @@ Supported Board
 | arduino-nano-33-ble | build only   | build only   |
 | nrf52840dk          | build & test | build only   |
 | others              | :x:          | :x:          |
+
+Networking
+==========
+
+By default, the network isn't activated. If you whish to build with networking
+capability, uncomment the related line in the ```Makefile``` file or just use
+a command line directive:
+
+```
+TINYCONTAINER_NETWORK=1 make
+```
+
+Whenever activated, the device annonces itself using the string
+_TinyContainerNetwork_ as node id and can be remotely managed through CoAP
+commands.
+
+The supported CoAP commands are describes in the file
+```TinyContainerNetwork.md```.
+
