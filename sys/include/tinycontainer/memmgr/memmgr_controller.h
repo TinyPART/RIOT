@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2020-2023, Orange.
+ * Copyright (C) 2020-2024, Orange.
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -23,6 +23,7 @@
 #define TINYCONTAINER_MEMMGR_MEMMGR_CONTROLLER_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "memmgr_common.h"
 
@@ -90,6 +91,25 @@ void memmgr_close(file_descriptor_t fd);
 int memmgr_write(file_descriptor_t fd,
                  char const *buf,
                  uint32_t count);
+
+/**
+ * @brief Check container metadata.
+ *
+ * @param[in]   fd    container file descriptor
+ *
+ * @ return  bool   (true if metadata is parsable and valid and false otherwise)
+ */
+bool memmgr_check_metadata(container_id_t slot_id);
+
+/**
+ * @brief Get slot id for a container base on a container UID
+ *
+ * @param[in]   uid   array of bytes for the container uid
+ * @param[in]   size  nb of bytes of the array
+ *
+ * @ return  int   (the slot id of the container if present or -1 otherwise)
+ */
+int memmgr_get_slot_id(uint8_t *uid, size_t size);
 
 #ifdef __cplusplus
 }

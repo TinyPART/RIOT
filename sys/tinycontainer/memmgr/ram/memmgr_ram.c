@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Orange
+ * Copyright (C) 2020-2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -27,6 +27,7 @@
 #include "tinycontainer/memmgr/memmgr_container.h"
 #include "tinycontainer/service/service_memmgr.h"
 #include "tinycontainer/firewall/firewall_all.h"
+#include "tinycontainer/metadata/metadata_memmgr.h"
 
 #include "memmgr_ram.h"
 
@@ -451,7 +452,7 @@ int tinycontainer_memmgr_init(void)
     return 0;
 }
 
-int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * container_code)
+int memmgr_getcontainer(memmgr_block_t *container_data, memmgr_block_t *container_code)
 {
     if (container_data == NULL || container_code == NULL) {
         return -1;
@@ -463,13 +464,71 @@ int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * contai
         return -1;
     }
 
-    struct container * container = & containers[container_id];
+    struct container *container = &containers[container_id];
 
-    container_data -> ptr = _get_data_start(container);
-    container_data -> size = _get_data_size_rounded(container);
+    container_data->ptr = _get_data_start(container);
+    container_data->size = _get_data_size_rounded(container);
 
-    container_code -> ptr = _get_code_start(container);
-    container_code -> size = container -> code_len;
+    container_code->ptr = _get_code_start(container);
+    container_code->size = container->code_len;
 
     return 0;
+}
+
+bool memmgr_check_metadata(container_id_t slot_id)
+{
+
+    metadata_t metadata;
+
+    if (metadata_parse(&metadata, containers[slot_id].meta,
+                       containers[slot_id].meta_len) != METADATA_OK) {
+        goto on_error;
+    }
+
+    metadata_container_t container;
+
+    if (metadata_container_parse(&container, metadata.container,
+                                 metadata.container_len) != METADATA_OK) {
+        goto on_error;
+    }
+
+    //TODO: parse endpoints
+    //TODO: parse security
+    //TODO: control checksum
+
+    return true;
+
+on_error:
+
+    return false;
+}
+
+int memmgr_get_slot_id(uint8_t *uid, size_t size)
+{
+    for (int slot_id = 0; slot_id < CONTAINER_MAX_NUM; slot_id++) {
+        if (descriptors[slot_id].allocated == false) {
+            continue;
+        }
+
+        metadata_t metadata;
+
+        if (metadata_parse(&metadata, containers[slot_id].meta,
+                           containers[slot_id].meta_len) != METADATA_OK) {
+            //FIXME: should not occur.
+            continue;
+        }
+
+        metadata_container_t container;
+        if (metadata_container_parse(&container, metadata.container,
+                                     metadata.container_len) != METADATA_OK) {
+            //FIXME: should not occur.
+            continue;
+        }
+
+        if (container.uid_len == size && memcmp(container.uid, uid, size) == 0) {
+            return slot_id;
+        }
+    }
+
+    return -1;
 }
