@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023, Orange.
+ * Copyright (C) 2022-2024, Orange.
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -61,7 +61,11 @@ static container_handle_t handle_init(void);
  */
 static bool handle_destroy(container_handle_t handle);
 
+#ifndef TINYCONTAINER_NUMBER_OF_CONTAINERS
 #define MAX_HANDLES 3
+#else
+#define MAX_HANDLES TINYCONTAINER_NUMBER_OF_CONTAINERS
+#endif
 
 #define STACK_SIZE 1024
 #define HEAP_SIZE 1024

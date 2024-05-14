@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Orange
+ * Copyright (C) 2022-2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -36,6 +36,10 @@
 static struct InterpHandle handles[MAX_HANDLES];
 static uint8_t handles_in_use = 0;
 
+/* FIXME: how to have a per container allocation?
+ */
+static char global_heap_buf[8760] = { 0 };
+
 static bool is_initialised = false;
 static bool runtime_init(void)
 {
@@ -45,7 +49,10 @@ static bool runtime_init(void)
     }
 
     static RuntimeInitArgs init_args = {
-        .mem_alloc_type = Alloc_With_System_Allocator
+//        .mem_alloc_type = Alloc_With_System_Allocator
+        .mem_alloc_type = Alloc_With_Pool,
+        .mem_alloc_option.pool.heap_buf = global_heap_buf,
+        .mem_alloc_option.pool.heap_size = sizeof(global_heap_buf),
     };
 
     if (!wasm_runtime_full_init(&init_args)) {
@@ -142,7 +149,7 @@ static bool handle_destroy(container_handle_t handle)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code)
+container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     (void)data;
 
@@ -160,8 +167,8 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
 
     /* Load the module from the bytecode */
     new_handle->module = wasm_runtime_load(
-        code -> ptr,
-        code -> size,
+        code->ptr,
+        code->size,
         error_buf,
         sizeof(error_buf)
         );
@@ -172,8 +179,10 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
     /* Instantiate the module */
     new_handle->module_instance = wasm_runtime_instantiate(
         new_handle->module,
-        STACK_SIZE,
-        HEAP_SIZE,
+//        STACK_SIZE, //default
+        0,  // no default stack size
+//        HEAP_SIZE,
+        0,  // no host managed heap size
         error_buf,
         sizeof(error_buf)
         );
@@ -203,7 +212,7 @@ container_create_fail:
     if (!new_handle) {
         DEBUG_PID("EE unable to get container handle\n");
     }
-    else if (code -> ptr == NULL) {
+    else if (code->ptr == NULL) {
         DEBUG_PID("EE unable to read wasm code\n");
     }
     else if (!new_handle->module) {
