@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Orange
+ * Copyright (C) 2023-2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -65,21 +65,24 @@ bool tinycontainer_loadcontainer(uint8_t *metadata, int metadata_size,
  *
  * @return bool (true if the container has been started)
  */
-bool tinycontainer_startcontainer(uint8_t *container_uid);
+bool tinycontainer_startcontainer(uint8_t *container_uid,
+                                  size_t container_len);
 
 /**
  * @brief stop a container
  *
  * @return bool (true if the container has been stopped)
  */
-bool tinycontainer_stopcontainer(uint8_t *container_uid);
+bool tinycontainer_stopcontainer(uint8_t *container_uid,
+                                 size_t container_len);
 
 /**
  * @brief check the running status of a container
  *
  * @return bool (true if the container is running)
  */
-bool tinycontainer_iscontainerrunning(uint8_t *container_uid);
+bool tinycontainer_iscontainerrunning(uint8_t *container_uid,
+                                      size_t container_len);
 
 #ifdef __cplusplus
 }

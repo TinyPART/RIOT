@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Orange
+ * Copyright (C) 2023-2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -33,14 +33,11 @@
  * ================
  */
 
-static int get_container_slot_id(uint8_t *uid)
+static int get_container_slot_id(uint8_t *uid, size_t len)
 {
-    /* TODO: searching the container slot id from uid string is not yet
-     *       implemented. Until that, return the 1st slot
-     */
+    int slot_id = controller_get_slot_id(uid, len);
 
-    (void)uid;
-    return 0;
+    return slot_id;
 }
 
 /* public functions
@@ -92,23 +89,35 @@ bool tinycontainer_loadcontainer(uint8_t *metadata, int metadata_size,
                            code, code_size);
 }
 
-bool tinycontainer_startcontainer(uint8_t *container_uid)
+bool tinycontainer_startcontainer(uint8_t *container_uid, size_t container_uid_len)
 {
-    int slot_id = get_container_slot_id(container_uid);
+    int slot_id = get_container_slot_id(container_uid, container_uid_len);
+
+    if (slot_id == -1) {
+        return false;
+    }
 
     return controller_start(slot_id);
 }
 
-bool tinycontainer_stopcontainer(uint8_t *container_uid)
+bool tinycontainer_stopcontainer(uint8_t *container_uid, size_t container_uid_len)
 {
-    int slot_id = get_container_slot_id(container_uid);
+    int slot_id = get_container_slot_id(container_uid, container_uid_len);
+
+    if (slot_id == -1) {
+        return false;
+    }
 
     return controller_stop(slot_id);
 }
 
-bool tinycontainer_iscontainerrunning(uint8_t *container_uid)
+bool tinycontainer_iscontainerrunning(uint8_t *container_uid, size_t container_uid_len)
 {
-    int slot_id = get_container_slot_id(container_uid);
+    int slot_id = get_container_slot_id(container_uid, container_uid_len);
+
+    if (slot_id == -1) {
+        return false;
+    }
 
     return controller_isrunning(slot_id);
 }

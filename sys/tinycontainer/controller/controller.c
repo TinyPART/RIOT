@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Orange
+ * Copyright (C) 2020-2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -15,6 +15,7 @@
  *
  * @author      BERKANE Ghilas (ghilas.berkane@gmail.com)
  *              HOLDER Gregory (gregory.holder76@gmail.com)
+ *              Samuel Legouix <samuel.legouix@orange.com>
  *
  * @}
  */
@@ -44,6 +45,9 @@ enum controller_msg_type {
     msg_type_code_size      = 10,
     msg_type_code           = 11,
     msg_type_load_end       = 12,
+    msg_type_uid_len        = 13,
+    msg_type_uid            = 14,
+    msg_type_get_slot_id    = 15,
 };
 
 /* Message type */
@@ -84,11 +88,22 @@ const char *controller_loading_state_str[] = {
     "loading_end",
 };
 
+enum controller_uid_state {
+    uid_ready       = 0,
+    uid_read        = 1,
+    uid_get_slot_id = 2,
+};
+
 static kernel_pid_t controller_pid = -1;
 static enum controller_loading_state loading_state = loading_none;
 static uint32_t container_id = 0;
 static file_descriptor_t fd = -1;
 static int remaining_section_size = 0;
+static enum controller_uid_state uid_state = uid_ready;
+#define UID_MAX_LEN 64
+static uint8_t uid[UID_MAX_LEN] = { 0 };
+static size_t uid_len;
+static uint8_t uid_next;
 
 typedef int (*open_section_fn)(container_id_t);
 
@@ -289,8 +304,12 @@ static void *handler_controller(void *arg)
 
         /* set container code size */
         case msg_type_code_size:
-            if (_start_section_write(loading_meta, loading_code, value,
-                                     memmgr_opencodefileforcontainer)) {
+            /* here we are first checking metadata before contiuing loading code */
+            if (memmgr_check_metadata(container_id) == false) {
+                goto loading_fail;
+            }
+            else if (_start_section_write(loading_meta, loading_code, value,
+                                          memmgr_opencodefileforcontainer)) {
                 goto reply;
             }
             else {
@@ -318,6 +337,56 @@ static void *handler_controller(void *arg)
 
             goto reply;
 
+        /* read uid_len */
+        case msg_type_uid_len:
+            if (uid_state != uid_ready) {
+                goto uid_fail;
+            }
+
+            uid_len =  (size_t)value;
+
+            if (uid_len == 0 || uid_len >= UID_MAX_LEN) {
+                goto loading_fail;
+            }
+
+            uid_state = uid_read;
+            uid_next = 0;
+
+            goto reply;
+
+        /* read next uid byte */
+        case msg_type_uid:
+            if (uid_state != uid_read) {
+                goto uid_fail;
+            }
+
+            uid[uid_next] = (uint8_t)value;
+            uid_next++;
+
+            if (uid_next == uid_len) {
+                uid_state = uid_get_slot_id;
+            }
+
+            goto reply;
+
+        /* retrieve slot id for uid */
+        case msg_type_get_slot_id:
+            if (uid_state != uid_get_slot_id) {
+                goto uid_fail;
+            }
+
+            int slot_id = memmgr_get_slot_id(uid, uid_len);
+
+            if (slot_id < 0) {
+                goto uid_fail;
+            }
+
+            value = slot_id;
+
+            uid_state = uid_ready;
+
+            goto reply;
+
         default:
             DEBUG("[%d] EE invalid message type: %d\n", controller_pid, type);
             goto loading_fail;
@@ -336,8 +405,18 @@ loading_fail:
         }
         fd = -1;
 
+        goto reply;
+
+uid_fail:
+        uid_state = uid_ready;
+        memset(uid, 0, sizeof(uid));
+
+        /* send the reply */
+        reply_type = msg_type_ko;
+
 reply:
-        msg_reply(&received_msg, &(msg_t){ .type = reply_type });
+        msg_reply(&received_msg, &(msg_t){ .type = reply_type,
+                                           .content.value = value });
         thread_yield();
     }
 
@@ -500,4 +579,39 @@ bool controller_load(uint8_t *metadata, int meta_size,
 
     return true;
 
+}
+
+int controller_get_slot_id(uint8_t *uid, size_t size)
+{
+    msg_t reply;
+    msg_t m = { .type = msg_type_uid_len, .content.value = size };
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    for (unsigned int i = 0; i < size; i++) {
+        m.type = msg_type_uid;
+        m.content.value = uid[i];
+
+        msg_send_receive(&m, &reply, controller_pid);
+
+        if (reply.type != msg_type_ok) {
+            return -1;
+        }
+    }
+
+    m.type = msg_type_get_slot_id;
+    m.content.value = -1;
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type == msg_type_ok) {
+        return reply.content.value;
+    }
+    else {
+        return -1;
+    }
 }

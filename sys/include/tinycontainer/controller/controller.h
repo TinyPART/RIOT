@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2020-2023, Orange
+ * Copyright (C) 2020-2024, Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -16,6 +16,7 @@
  * @brief   API of TinyContainer Controller sub-module
  *
  * @author  BERKANE ghilas <ghilas.berkane@gmail.com>
+ * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 
@@ -70,6 +71,14 @@ bool controller_load(
     uint8_t *code,
     int code_len
     );
+
+/**
+ * @brief get slot id for a container based on container uid
+ *
+ * @return int (container slot id if exist or -1 otherwise)
+ */
+int controller_get_slot_id(uint8_t *uid, size_t size);
+
 
 #ifdef __cplusplus
 }
