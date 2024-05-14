@@ -20,11 +20,12 @@
 
 #include <string.h>
 
-#define ENABLE_DEBUG 0
+//#define ENABLE_DEBUG (1)
 
 #include "tinycontainer/debugging.h"
 
 #include "service_internal.h"
+#include "service_container.h"
 #include "tinycontainer/service/service.h"
 #include "tinycontainer/service/service_controller.h"
 
@@ -34,13 +35,13 @@
 static kernel_pid_t service_pid = -1;
 static int container_priority;
 
-/* note: some better code is required to properly handle the state of
- *       container. Right now, this array is used to record pid of the thread
- *       running the container and to determine the running status of the
- *       container.
- */
-#define MAX_NB_OF_CONTAINER 3
-static int container_pids[MAX_NB_OF_CONTAINER];
+#ifdef TINYCONTAINER_NUMBER_OF_CONTAINERS
+#define MAX_NB_OF_CONTAINER   TINYCONTAINER_NUMBER_OF_CONTAINERS
+#else
+#define MAX_NB_OF_CONTAINER   3
+#endif
+
+static container_t containers[MAX_NB_OF_CONTAINER];
 
 bool container_exist(int *list, int id_cont)
 {
@@ -61,7 +62,7 @@ bool container_exist(int *list, int id_cont)
 
  * @param uri uri CoAP
  */
-kernel_pid_t create_container_runtime(char *uri, uint32_t periodicity)
+kernel_pid_t create_container_runtime(int slot_id, uint32_t periodicity)
 {
     LOG_ENTER();
 
@@ -70,18 +71,19 @@ kernel_pid_t create_container_runtime(char *uri, uint32_t periodicity)
 
     /* declare the thread stack for containers */
     //FIXME: dynamic alloc from static buf?
-    static char container_stack[5 * THREAD_STACKSIZE_SMALL];
+    char *stack = (char *)containers[slot_id].stack;
+    size_t size = sizeof(containers[slot_id].stack);
 
     /* create Container */
     pid = secure_thread(
         context,                    // context to create thread man
-        container_stack,            // stack array pointer
-        sizeof(container_stack),    // stack size
+        stack,                      // stack array pointer
+        size,                       // stack size
         container_priority,         // thread priority
         THREAD_CREATE_STACKTEST,    // thread configuration flag
         container_handler,          // thread handler function
         (void *)periodicity /*ms*/, // argument of thread_handler function
-        uri                         // Name of thread
+        "container"                 // Name of thread
         );
 
     thread_yield();
@@ -97,12 +99,15 @@ static bool is_container_running(int slot_id)
      *       Also, it seems better to check if a running thread is really
      *       associated with the container pid.
      */
-    if (container_pids[slot_id] > 0) {
-        thread_t *thread = thread_get(container_pids[slot_id]);
+
+    kernel_pid_t pid = container_getpid(&containers[slot_id]);
+
+    if (pid > 0) {
+        thread_t *thread = thread_get(pid);
         if (thread != NULL) {
             thread_status_t status = thread_get_status(thread);
             if (!(status == STATUS_STOPPED ||
-                status == STATUS_ZOMBIE)) {
+                  status == STATUS_ZOMBIE)) {
                 return true;
             }
         }
@@ -116,7 +121,7 @@ void *handler_service(void *arg)
     LOG_ENTER();
     (void)arg;
 
-    memset(container_pids, -1, sizeof(container_pids));
+    memset(containers, 0, sizeof(containers));
 
     while (1) {
 
@@ -153,7 +158,7 @@ void *handler_service(void *arg)
 
             /* create the container with 1s periodicity */
             LOG_PID_FUNC("calling create_container_runtime()\n");
-            kernel_pid_t container_pid = create_container_runtime("container", 1000 /*ms*/);
+            kernel_pid_t container_pid = create_container_runtime(value, 1000 /*ms*/);
 
             if (container_pid == -1) {
                 LOG_PID_FUNC("create_container_runtime() failed\n");
@@ -162,7 +167,7 @@ void *handler_service(void *arg)
             }
 
             LOG_PID_FUNC("create_container_runtime() success\n");
-            container_pids[value] = container_pid;
+            containers[value].pid = container_pid;
             LOG_PID_FUNC("slot_id=%ld, pid=%d\n", (unsigned long)value, container_pid);
             response_type = ok;
             break;
@@ -200,7 +205,7 @@ void *handler_service(void *arg)
             /* value contains the searched pid*/
             int pid = (int)value;
             for (int i = 0; i < MAX_NB_OF_CONTAINER; i++) {
-                if (container_pids[i] == pid) {
+                if (containers[i].pid == pid) {
                     /* container found  */
                     response_type = ok;
                     response_value = (uint32_t)i;
@@ -285,7 +290,8 @@ int service_getcontaineridfrompid(int pid)
     SERVICE_MSG_SEND_RECEIVE_INPLACE(&msg);
     if (msg.type == ok) {
         LOG_PID_FUNC("container %ld is associated with pid %d\n", (unsigned long)msg.value, pid);
-    } else {
+    }
+    else {
         LOG_PID_FUNC("no container is associated with pid %d\n", pid);
     }
     LOG_EXIT();

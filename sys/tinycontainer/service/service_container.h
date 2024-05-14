@@ -1,0 +1,82 @@
+/*
+ * Copyright (C) 2022-2023, Orange.
+ *
+ * Please, refer to the README.md and LICENSE files of TinyContainer
+ *
+ */
+
+/**
+ * @ingroup     sys_tinycontainer
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer Service sub-module definitions for container
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
+ */
+
+#ifndef SERVICE_CONTAINER_H
+#define SERVICE_CONTAINER_H
+
+#include <thread.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define UID_MAXSIZE 64
+
+#define BIT(x) (1 << x)
+#define CONTAINER_FLAGS_PROVISIONNING  BIT(0)
+#define CONTAINER_FLAGS_READY          BIT(1)
+#define CONTAINER_FLAGS_RUNNING        BIT(2)
+#define CONTAINER_FLAGS_STOPPING       BIT(3)
+#define CONTAINER_FLAGS_DELETING       BIT(4)
+
+typedef struct {
+    uint8_t id;                             /* internal id of the container */
+    uint8_t uid[UID_MAXSIZE];               /* container uid retrieving from metadata */
+    uint8_t stack[4 * THREAD_STACKSIZE_SMALL];
+    kernel_pid_t pid;                       /* pid of the thread that run this container */
+    uint32_t flags;                         /* bit array to manage the container state */
+    uint32_t natives_mask;                  /* bitmask for native calls which is retrieving from metadata */
+} container_t;
+
+inline bool container_isprovisionning(container_t *container)
+{
+    return container->flags & CONTAINER_FLAGS_PROVISIONNING;
+}
+
+inline bool container_isready(container_t *container)
+{
+    return container->flags & CONTAINER_FLAGS_READY;
+}
+
+inline bool container_isrunning(container_t *container)
+{
+    return container->flags & CONTAINER_FLAGS_RUNNING;
+}
+
+inline bool container_isstopping(container_t *container)
+{
+    return container->flags & CONTAINER_FLAGS_STOPPING;
+}
+
+inline bool container_isdeleting(container_t *container)
+{
+    return container->flags & CONTAINER_FLAGS_DELETING;
+}
+
+inline kernel_pid_t container_getpid(container_t *container)
+{
+    return container->pid;
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* SERVICE_CONTAINER_H */
