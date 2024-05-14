@@ -1,6 +1,6 @@
 # TinyContainer
 #
-#  Copyright (C) 2023 Orange
+#  Copyright (C) 2023-2024 Orange
 #
 # This file is subject to the terms and conditions of the GNU Lesser
 # General Public License v2.1. See the file LICENSE in the top level
@@ -29,6 +29,10 @@ endif
 
 ifneq (,$(filter tinycontainer_firewall,$(USEMODULE)))
   DIRS += firewall
+endif
+
+ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
+  DIRS += metadata
 endif
 
 ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))

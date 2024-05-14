@@ -1,0 +1,195 @@
+;
+;  Copyright (C) 2024 Orange
+;
+; This file is subject to the terms and conditions of the GNU Lesser
+; General Public License v2.1. See the file LICENSE in the top level
+; directory for more details.
+
+; CDDL specification for TinyContainer Metadata
+
+; ========
+; metadata
+; ========
+
+metadata-tag = #6.6082514239057121876(metadata) ; decimal(hex("tinyPART")) gives 6082514239057121876
+metadata = {
+    metadata-container => bstr .cbor container
+    ? metadata-endpoints => bstr .cbor endpoints
+    ? metadata-security => bstr .cbor security
+}
+
+metadata-container = 1
+metadata-endpoints = 2
+metadata-security  = 3
+
+; =========
+; container
+; =========
+
+container = {
+    container-uid => bstr
+    container-type => interpreter-types
+    container-syscall-mask => bstr .cbor cwt
+}
+
+container-uid = 1
+container-type = 2
+container-syscall-mask = 3
+
+interpreter-types /= interpreter-undefined
+interpreter-types /= interpreter-native
+interpreter-types /= interpreter-shell
+interpreter-types /= interpreter-bpf
+interpreter-types /= interpreter-wasm
+interpreter-types /= interpreter-javacard-applet
+interpreter-types /= interpreter-javascript
+interpreter-types /= interpreter-python
+
+; we don't know how to run the container code (e.g. before container building step)
+interpreter-undefined = 0
+
+; the container code shall be run as native code on the IoT device
+interpreter-native = 1
+
+; the container code is a list of commands in UTF-8 that can be run using IoT device shell
+interpreter-shell = 2
+
+; the container code shall be run as binary inside a virtual machine
+interpreter-bpf = 3               ; virtual machine is BPF
+interpreter-wasm = 4              ; virtual machine is WebAssembly
+interpreter-javacard-applet = 5   ; virtual machine is Java Card
+
+; the container code is a script to be run using an interpreter
+interpreter-javascript = 6        ; interpreter is ECMAScript
+interpreter-python = 7            ; interpreter is Python
+; =========
+; endpoints
+; =========
+
+endpoints = [ * endpoint ]
+endpoint = {
+    endpoint-id => int
+    endpoint-peer => bstr .cbor one-peer
+    ? endpoint-token => bstr .cbor cwt
+}
+
+endpoint-id = 1
+endpoint-peer = 2
+one-peer = {
+    container-peer //
+    local-peer //
+    remote-peer
+}
+endpoint-token = 3
+
+container-peer = (
+    peer-type => peer-type-container
+    container-id => bstr
+    container-endpoint-id => int
+)
+local-peer = (
+    local-alt
+)
+remote-peer = (
+    remote-alt
+)
+
+peer-type = 1
+peer-type-container = 0
+container-id = 4
+container-endpoint-id = 5
+local-alt = ( local-spi // local-i2c // local-gpio )
+remote-alt = ( remote-dtls // remote-mqtt // remote-lwm2m )
+
+local-spi = (
+    peer-type => peer-type-local
+    local-type => local-type-spi
+    local-port => uint
+    direction => &directions
+)
+local-i2c = (
+    peer-type => peer-type-local
+    local-type => local-type-i2c
+    local-port => uint
+    direction => &directions
+    i2c-addr => bstr .size (1..2)
+)
+local-gpio = (
+    peer-type => peer-type-local
+    local-type => local-type-gpio
+    local-port => uint
+    direction => &directions
+)
+remote-dtls = (
+    peer-type => peer-type-remote
+    remote-type => remote-type-dtls
+)
+remote-mqtt = (
+    peer-type => peer-type-remote
+    remote-type => remote-type-mqtt
+    direction => &directions
+    mqtt-qos => int
+    mqtt-broker-addr => bstr .size (4 / 8)
+    mqtt-broker-port => uint
+    mqtt-topic => tstr
+)
+remote-lwm2m = (
+    peer-type => peer-type-remote
+    remote-type => remote-type-lwm2m
+)
+
+peer-type-local = 1
+peer-type-remote = 2
+local-type = 6
+local-type-spi = 0
+local-type-i2c = 1
+local-type-gpio = 2
+local-port = 10
+remote-type = 7
+remote-type-dtls = 0
+remote-type-mqtt = 1
+remote-type-lwm2m = 2
+direction = 8
+directions = ( in: 0, out: 1, both: 2)
+i2c-addr = 9
+mqtt-qos = 11
+mqtt-broker-addr = 12
+mqtt-broker-port = 13
+mqtt-topic = 14
+; ========
+; security
+; ========
+
+security = [
+    metadata-token: bstr .cbor checksum
+    data-token: bstr .cbor checksum
+    code-token: bstr .cbor checksum
+    container-lifetime: uint
+    ? vendor-security: bstr
+]
+
+checksum = COSE_Mac / COSE_Sign
+COSE_Mac = COSE_Mac_Tagged / COSE_Mac0_Tagged
+COSE_Sign = COSE_Mac_Tagged / COSE_Mac0_Tagged
+
+; ==================
+; from RFC8392 - CWT
+; ==================
+
+cwt = #6.61( COSE_Tagged_Message )
+
+; ===================
+; from RFC8152 - COSE
+; ===================
+
+COSE_Tagged_Message = COSE_Sign_Tagged / COSE_Sign1_Tagged /
+    COSE_Encrypt_Tagged / COSE_Encrypt0_Tagged /
+    COSE_Mac_Tagged / COSE_Mac0_Tagged
+
+COSE_Sign_Tagged = #6.98(bstr)
+COSE_Sign1_Tagged = #6.18(bstr)
+COSE_Encrypt_Tagged = #6.96(bstr)
+COSE_Encrypt0_Tagged = #6.16(bstr)
+COSE_Mac_Tagged = #6.97(bstr)
+COSE_Mac0_Tagged = #6.17(bstr)
+
