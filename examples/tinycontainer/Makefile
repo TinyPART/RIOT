@@ -1,3 +1,11 @@
+# TinyContainer
+#
+#  Copyright (C) 2023-2024 Orange
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+
 # name of the application
 APPLICATION = tinycontainer
 
@@ -38,6 +46,11 @@ CFLAGS += -DTINYCONTAINER_MAX_SIZE_FOR_CONTAINER=${MAX_SIZE_FOR_CONTAINER}
 #TINYCONTAINER_NETWORK ?= 1
 
 ifeq (1,$(TINYCONTAINER_NETWORK))
+
+  ifeq ($(BOARD),native)
+    $(error "TinyContainerNetwork isn't supported for native")
+    false;
+  endif
 
   # network stack - ble ipv6 coap
   CFLAGS += -DCONFIG_GNRC_IPV6_NIB_SLACC=1 -DNIMBLE_AUTOCONN_NODE_ID=\"TinyContainerNetwork\"
@@ -89,5 +102,9 @@ ifeq (1,$(TINYCONTAINER_NETWORK))
   GCOAP_RESEND_BUFS_MAX ?= 2
   CFLAGS += -DCONFIG_GCOAP_RESEND_BUFS_MAX=$(GCOAP_RESEND_BUFS_MAX)
   endif
+
+  # Increase buffer used to build CoAP request or response to 1204 (64 octets for
+  # metadata, 1024 for code+data, and 116 octets for CoAP structure
+  CFLAGS += -DCONFIG_GCOAP_PDU_BUF_SIZE=1204
 
 endif
