@@ -112,10 +112,12 @@ int metadata_parse(metadata_t *metadata,
                 break;
 
             case METADATA_ENDPOINTS:
+                //TODO: Metadata endpoints is not yet implemented
                 DEBUG("Metadata endpoints is not yet implemented");
                 return METADATA_INVALID_CBOR_STRUCTURE;
 
             case METADATA_SECURITY:
+                //TODO: Metadata security is not yet implemented
                 DEBUG("Metadata security is not yet implemented");
                 return METADATA_INVALID_CBOR_STRUCTURE;
 

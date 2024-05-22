@@ -176,7 +176,7 @@ void *handler_service(void *arg)
 
             LOG_PID_FUNC("type %d -> stop\n", service_msg_req.type);
 
-            /* TODO: not yet implemented */
+            //TODO: not yet implemented
             LOG_PID_FUNC("not yet implemented\n");
 
             response_type = ko;
