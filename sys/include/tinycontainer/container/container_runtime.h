@@ -43,7 +43,7 @@ typedef void *container_handle_t;
  *
  * @return container_handler_t (on success return a container handler, NULL otherwise)
  */
-container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code);
+container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code);
 
 /**
  * @brief   runtime function called whenever the container is started

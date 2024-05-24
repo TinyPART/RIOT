@@ -39,7 +39,7 @@ extern "C" {
  *
  * @return negative value on error
  */
-int memmgr_getcontainer(memmgr_block_t * container_data, memmgr_block_t * container_code);
+int memmgr_getcontainer(memmgr_block_t *container_data, memmgr_block_t *container_code);
 
 #ifdef __cplusplus
 }

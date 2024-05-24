@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef METADATA_COMMON_H
-#define METADATA_COMMON_H
+#ifndef TINYCONTAINER_METADATA_METADATA_COMMON_H
+#define TINYCONTAINER_METADATA_METADATA_COMMON_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -112,5 +112,5 @@ typedef struct metadata_security metadata_security_t;
 /* type for the endpoint element of endpoints */
 typedef struct metadata_endpoint metadata_endpoint_t;
 
-#endif /*METADATA_COMMON_H*/
+#endif /* TINYCONTAINER_METADATA_METADATA_COMMON_H */
 /** @} */

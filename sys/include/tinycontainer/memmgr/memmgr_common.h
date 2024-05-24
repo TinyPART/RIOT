@@ -37,11 +37,11 @@ typedef int file_descriptor_t;
 typedef int container_id_t;
 
 /**
-  * @brief Defines a memory block to the code or data of a container
-  */
+ * @brief Defines a memory block to the code or data of a container
+ */
 typedef struct {
-    uint8_t *ptr;    /**< Pointer to the memory block  */
-    size_t size;     /**< size of the memory block */
+    uint8_t *ptr;       /**< Pointer to the memory block  */
+    size_t size;        /**< size of the memory block */
 } memmgr_block_t;
 
 #ifdef __cplusplus

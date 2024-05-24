@@ -53,7 +53,7 @@ bool container_impl_init(void)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code)
+container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     DEBUG("[%d] -> container:create()\n", thread_getpid());
 
@@ -85,14 +85,14 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
 
     jerry_value_t data_json;
 
-    if (data -> size == 0) {
+    if (data->size == 0) {
 
         DEBUG("[%d] WW container data is empty\n", thread_getpid());
 
         data_json = jerry_create_object();
     }
     else {
-        data_json = jerry_json_parse((jerry_char_t *)data -> ptr, data -> size);
+        data_json = jerry_json_parse((jerry_char_t *)data->ptr, data->size);
     }
 
     if (jerry_value_is_error(data_json)) {
@@ -158,8 +158,8 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
     /* parse code */
 
     new_handler->looper = jerry_parse_function(NULL, 0, NULL, 0,
-                                               (jerry_char_t *)code -> ptr,
-                                               code -> size,
+                                               (jerry_char_t *)code->ptr,
+                                               code->size,
                                                JERRY_PARSE_NO_OPTS);
 
     if (jerry_value_is_error(new_handler->looper)) {

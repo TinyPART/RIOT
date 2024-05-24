@@ -42,6 +42,7 @@ void *container_handler(void *arg)
 
     memmgr_block_t data;
     memmgr_block_t code;
+
     if (memmgr_getcontainer(&data, &code) < 0) {
         DEBUG("container_handler: failed to retrieve container from memory manager\n");
         return NULL;

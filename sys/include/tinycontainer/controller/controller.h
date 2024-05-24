@@ -79,7 +79,6 @@ bool controller_load(
  */
 int controller_get_slot_id(uint8_t *uid, size_t size);
 
-
 #ifdef __cplusplus
 }
 #endif

@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef METADATA_MEMMGR_H
-#define METADATA_MEMMGR_H
+#ifndef TINYCONTAINER_METADATA_METADATA_MEMMGR_H
+#define TINYCONTAINER_METADATA_METADATA_MEMMGR_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -37,19 +37,22 @@ int metadata_parse(metadata_t *metadata, const uint8_t *buf, size_t len);
  *
  * return METADATA_OK on success
  */
-int metadata_container_parse(metadata_container_t *metadata_container, const uint8_t *buf, size_t len);
+int metadata_container_parse(metadata_container_t *metadata_container,
+                             const uint8_t *buf, size_t len);
 
 /* Parse a cbor buffer as an endpoints object.
  *
  * return METADATA_OK on success
  */
-//int metadata_endpoints_parse(metadata_endpoints_t *metadata, const uint8_t *buf, size_t len);
+//int metadata_endpoints_parse(metadata_endpoints_t *metadata,
+//                             const uint8_t *buf, size_t len);
 
 /* Parse a cbor buffer as a security object.
  *
  * return METADATA_OK on success
  */
-//int metadata_security_parse(metadata_security_t *metadata, const uint8_t *buf, size_t len);
+//int metadata_security_parse(metadata_security_t *metadata,
+//                            const uint8_t *buf, size_t len);
 
-#endif /*METADATA_MEMMGR_H*/
+#endif /* TINYCONTAINER_METADATA_METADATA_MEMMGR_H */
 /** @} */

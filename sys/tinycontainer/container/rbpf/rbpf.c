@@ -48,15 +48,15 @@ static bool runtime_init(void)
 }
 
 static void runtime_destroy(void)
-{
-}
+{}
 
 static container_handle_t handle_init(void)
 {
     struct RbpfHandle *new_handle = NULL;
+
     /* Loop through all allocated handles until one not in use is found */
     for (size_t i = 0; i < CONFIG_TINYCONTAINER_RBPF_MAX_HANDLES; i++) {
-        if (! tinycontainer_rbpf_is_used(&handles[i])) {
+        if (!tinycontainer_rbpf_is_used(&handles[i])) {
             new_handle = &handles[i];
             break;
         }
@@ -89,16 +89,18 @@ static bool handle_destroy(container_handle_t handle)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code)
+container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     (void)data;
 
     struct RbpfHandle *new_handle = handle_init();
+
     if (!new_handle) {
         return NULL;
     }
 
-    rbpf_application_setup(&new_handle->app, new_handle->stack, (const rbpf_application_t*)(void*)code->ptr, code->size);
+    rbpf_application_setup(&new_handle->app, new_handle->stack,
+                           (const rbpf_application_t *)(void *)code->ptr, code->size);
 
     return new_handle;
 }
@@ -106,6 +108,7 @@ container_handle_t container_create(memmgr_block_t * data, memmgr_block_t * code
 void container_on_start(container_handle_t interp_handle)
 {
     struct RbpfHandle *handle = (struct RbpfHandle *)interp_handle;
+
     (void)handle;
 }
 
@@ -116,6 +119,7 @@ int container_on_loop(container_handle_t interp_handle)
     int64_t return_value = -1;
 
     int res = rbpf_application_run_ctx(&handle->app, NULL, 0, &return_value);
+
     if (res < 0) {
         DEBUG_PID("Failed to call loop: %d\n", res);
     }
@@ -126,6 +130,7 @@ int container_on_loop(container_handle_t interp_handle)
 void container_on_stop(container_handle_t interp_handle)
 {
     struct RbpfHandle *handle = (struct RbpfHandle *)interp_handle;
+
     (void)handle;
 }
 
