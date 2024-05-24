@@ -304,7 +304,7 @@ static void *handler_controller(void *arg)
 
         /* set container code size */
         case msg_type_code_size:
-            /* here we are first checking metadata before contiuing loading code */
+            /* here we are first checking metadata before continuing loading code */
             if (memmgr_check_metadata(container_id) == false) {
                 goto loading_fail;
             }

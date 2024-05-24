@@ -61,10 +61,9 @@ a command line directive:
 TINYCONTAINER_NETWORK=1 make
 ```
 
-Whenever activated, the device annonces itself using the string
+Whenever activated, the device announces itself using the string
 _TinyContainerNetwork_ as BLE node id and can be remotely managed through CoAP
 commands.
 
 The supported CoAP commands are describes in the file
 ```TinyContainerNetwork.md```.
-

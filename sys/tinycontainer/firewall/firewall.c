@@ -108,7 +108,7 @@ msg_t rcv_synchrone(void)
 /**
  * @brief
  *
- * @param rcv_pid pid distination
+ * @param rcv_pid pid destination
  * @param msg_req msg to send
  * @return int
  */

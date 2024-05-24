@@ -56,7 +56,7 @@ int _parse_key_bstr(nanocbor_value_t *data,
  * ================
  */
 
-/* Parse a Metadata object 
+/* Parse a Metadata object
  *
  *     metadata-tag = #6.6082514239057121876(metadata)
  *     metadata = {
@@ -222,7 +222,7 @@ int metadata_container_parse(metadata_container_t *metadata_container,
 }
 
 /* Parse a Endpoints Metadata object
- * 
+ *
  *     endpoints = [ * endpoint ]
  *     endpoint = {
  *         endpoint-id => int
@@ -253,4 +253,3 @@ int metadata_security_parse(metadata_security_t *metadata,
     //TOTO: not yet implemented
     return METADATA_INVALID_CBOR_STRUCTURE;
 }
-

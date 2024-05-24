@@ -192,4 +192,3 @@ COSE_Encrypt_Tagged = #6.96(bstr)
 COSE_Encrypt0_Tagged = #6.16(bstr)
 COSE_Mac_Tagged = #6.97(bstr)
 COSE_Mac0_Tagged = #6.17(bstr)
-

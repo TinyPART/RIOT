@@ -1,5 +1,5 @@
 
-CoAP specificiation for TinyContainerNetwork
+CoAP specification for TinyContainerNetwork
 ============================================
 
 TinyContainer IoT devices that advertising the ble name _TinyContainerNetwork_ can be managed using CoAP.
@@ -50,7 +50,7 @@ This paragraph defines the set of CoAP Option that is used for TinyContainerNetw
 
     COAP_OPT_SIZE1 = 60, as stated in RFC 7252
 
-We have defined some new CoAP Option. To conform with RFC7254 their number have been choosen in the reserved range for experiments.
+We have defined some new CoAP Option. To conform with RFC7254 their number have been chosen in the reserved range for experiments.
 
     OPTION_ACTION   = 65001, with a value of uint type
     OPTION_METADATA = 65002, with a value of opaque type
@@ -130,7 +130,7 @@ _none_
 
 #### CoAP Response:
 
-* ```COAP_CODE_CHANGED```, if identifer has been updated
+* ```COAP_CODE_CHANGED```, if identifier has been updated
 * ```COAP_CODE_BAD_REQUEST```, if payload is empty
 * ```COAP_CODE_REQUEST_ENTITY_TOO_LARGE```, the provided identifier is too long and the CoAP Option ```COAP_OPT_SIZE1``` is set in response
 
