@@ -46,7 +46,7 @@ static const int data_size = 0;
 static const uint8_t *code = example_app_bin;
 static const int code_size = example_app_bin_len;
 #else
-#error "WARM or JERRYSCRIPT or RBPF module is required"
+#error "WAMR or JERRYSCRIPT or RBPF module is required"
 #endif
 
 #define SERVICE_PRIO     10
