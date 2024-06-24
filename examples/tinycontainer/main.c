@@ -238,7 +238,7 @@ int main(void)
 {
     /* Start TinyContainer */
 
-    tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO);
+    tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO, NULL);
 
 #if IS_USED(MODULE_GCOAP)
     /* setup coap server */

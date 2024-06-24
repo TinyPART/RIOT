@@ -44,8 +44,10 @@ static int get_container_slot_id(uint8_t *uid, size_t len)
  * ================
  */
 
-kernel_pid_t tinycontainer_init(uint8_t controller_prio, uint8_t service_prio,
-                                uint8_t containers_prio)
+kernel_pid_t tinycontainer_init(uint8_t controller_prio,
+                                uint8_t service_prio,
+                                uint8_t containers_prio,
+                                tinycontainer_io_driver_t * driver)
 {
     kernel_pid_t pid;
 
@@ -68,7 +70,7 @@ kernel_pid_t tinycontainer_init(uint8_t controller_prio, uint8_t service_prio,
 
     /* Start the controller thread */
 
-    pid = tinycontainer_controller_init(controller_prio);
+    pid = tinycontainer_controller_init(controller_prio, (io_driver_t*)driver);
 
     if (pid <= 0) {
         DEBUG("fail to start tinycontainer controller thread!\n");

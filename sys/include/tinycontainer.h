@@ -32,6 +32,14 @@
 extern "C" {
 #endif
 
+typedef struct {
+  int (*open)(uint8_t* uri, uint32_t uri_size);
+  int (*close)(int fd);
+  int (*read)(int fd, uint8_t* buffer, size_t buffer_size);
+  int (*write)(int fd, uint8_t* buffer, size_t buffer_size);
+} tinycontainer_io_driver_t;
+
+
 /**
  * @brief  setup and start TinyContainer
  *
@@ -48,8 +56,10 @@ extern "C" {
  *
  * @return a the PID of the controller thread
  */
-kernel_pid_t tinycontainer_init(uint8_t controller_prio, uint8_t service_prio,
-                                uint8_t containers_prio);
+kernel_pid_t tinycontainer_init(uint8_t controller_prio,
+                                uint8_t service_prio,
+                                uint8_t containers_prio,
+                                tinycontainer_io_driver_t * io_driver);
 
 /**
  * @brief load a new container

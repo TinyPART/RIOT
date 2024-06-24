@@ -94,6 +94,8 @@ enum controller_uid_state {
     uid_get_slot_id = 2,
 };
 
+static io_driver_t * io_driver;
+
 static kernel_pid_t controller_pid = -1;
 static enum controller_loading_state loading_state = loading_none;
 static uint32_t container_id = 0;
@@ -426,13 +428,21 @@ reply:
     return NULL;
 }
 
-int tinycontainer_controller_init(int prio)
+int tinycontainer_controller_init(int prio, io_driver_t * driver)
 {
     LOG_ENTER();
 
     /* only one instance of the controller */
     if (controller_pid != -1) {
         return controller_pid;
+    }
+
+    /* endpoint driver */
+    if(driver == NULL) {
+      DEBUG_PID("-- initialized without endpoint IO driver\n");
+    } else {
+      DEBUG_PID("-- endpoint IO driver registered\n");
+      io_driver = driver;
     }
 
     static char controller_stack[THREAD_STACKSIZE_DEFAULT];
