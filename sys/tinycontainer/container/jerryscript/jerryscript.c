@@ -33,7 +33,6 @@
 struct handler {
     bool is_used;
     jerry_value_t looper;
-    bool is_finished;
 };
 
 #define MAX_HANDLERS 3
@@ -74,7 +73,6 @@ container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
     }
 
     new_handler->is_used = true;
-    new_handler->is_finished = false;
 
     /* initialize the container */
     if (handlers_in_use == 1) {
@@ -227,7 +225,6 @@ int container_on_loop(container_handle_t handler)
         DEBUG("[%d] EE container execution error (%d)\n",
               thread_getpid(), (int)jerry_get_error_type(ret_val));
 
-        my_handler->is_finished = true;
         return_value = (int)jerry_get_error_type(ret_val);
     }
     else if (!jerry_value_is_boolean(ret_val)) {
@@ -235,7 +232,6 @@ int container_on_loop(container_handle_t handler)
         DEBUG("[%d] EE container doesn't return a boolean value (%d)\n",
               thread_getpid(), jerry_value_get_type(ret_val));
 
-        my_handler->is_finished = true;
     }
     else if (!jerry_get_boolean_value(ret_val)) {
 
@@ -243,7 +239,6 @@ int container_on_loop(container_handle_t handler)
 
         DEBUG("[%d]    going to stop\n", thread_getpid());
 
-        my_handler->is_finished = true;
         return_value = 0;
     }
     else {
@@ -254,17 +249,6 @@ int container_on_loop(container_handle_t handler)
 
     DEBUG("[%d] <- container:onloop()\n", thread_getpid());
     return return_value;
-}
-
-bool container_has_finished(container_handle_t handler)
-{
-    DEBUG("[%d] -> container:hasfinished()\n", thread_getpid());
-
-    struct handler *my_handler = (struct handler *)handler;
-
-    DEBUG("[%d] <- container:hasfinished()\n", thread_getpid());
-
-    return my_handler->is_finished;
 }
 
 void container_on_stop(container_handle_t handler)

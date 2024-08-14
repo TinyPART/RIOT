@@ -100,7 +100,8 @@ static enum section_type _fd_get_section_type(file_descriptor_t fd)
 static struct descriptor *_fd_get_descriptor(file_descriptor_t fd)
 {
     /* containers ids are assigned to 0 - 9
-     * each id has three file descriptors, one for the data section, one for the code section and
+     * each id has three file descriptors, one for the data section, one for the
+     * code section and
      * one for the metadata section
      *
      * id=0 -> data_fd=10, code_fd=11, code fd=12
@@ -132,7 +133,8 @@ static struct container *_fd_get_container(file_descriptor_t fd)
     return &containers[id];
 }
 
-static int _fd_get_section_info(file_descriptor_t fd, struct section_info *section_info)
+static int _fd_get_section_info(file_descriptor_t fd,
+                                struct section_info *section_info)
 {
     struct descriptor *descriptor = _fd_get_descriptor(fd);
 
@@ -187,7 +189,8 @@ static bool _is_meta_writable(struct descriptor *descriptor)
     return descriptor->meta_open;
 }
 
-static bool _is_section_writable(struct descriptor *descriptor, enum section_type type)
+static bool _is_section_writable(struct descriptor *descriptor,
+                                 enum section_type type)
 {
     return (type == data && _is_data_writable(descriptor)) ||
            (type == code && _is_code_writable(descriptor)) ||
@@ -209,7 +212,8 @@ static bool _is_meta_readable(struct descriptor *descriptor)
     return descriptor->meta_open;
 }
 
-static bool _is_section_readable(struct descriptor *descriptor, enum section_type type)
+static bool _is_section_readable(struct descriptor *descriptor,
+                                 enum section_type type)
 {
     return (type == data && _is_data_readable(descriptor)) ||
            (type == code && _is_code_readable(descriptor)) ||
@@ -249,7 +253,7 @@ int memmgr_openmetadatafileforcontainer(container_id_t id)
 
 int memmgr_openmetadatafile(void)
 {
-    int container_id = service_getcontaineridfrompid(firewall_getpid());
+    int container_id = service_getcontainerslotid();
 
     return memmgr_openmetadatafileforcontainer(container_id);
 }
@@ -343,7 +347,9 @@ void memmgr_close(file_descriptor_t fd)
         descriptor->data_open = 0;
         return;
     case code:
-        /* set the code_sealed flag to 1 only if the code has already been opened */
+        /* set the code_sealed flag to 1 only if the code has already been
+         * opened
+         */
         if (descriptor->code_open) {
             descriptor->code_sealed = 1;
         }
@@ -441,7 +447,9 @@ int memmgr_read(file_descriptor_t fd, char *buf, uint32_t count)
     /* update the position offset in the descriptor */
     *section.pos_offset_ptr += count;
 
-    /* return the number of bytes actually read (may be less than original count) */
+    /* return the number of bytes actually read (may be less than original
+     * count)
+     */
     return count;
 }
 
@@ -452,13 +460,14 @@ int tinycontainer_memmgr_init(void)
     return 0;
 }
 
-int memmgr_getcontainer(memmgr_block_t *container_data, memmgr_block_t *container_code)
+int memmgr_getcontainer(memmgr_block_t *container_data,
+                        memmgr_block_t *container_code)
 {
     if (container_data == NULL || container_code == NULL) {
         return -1;
     }
 
-    int container_id = service_getcontaineridfrompid(firewall_getpid());
+    int container_id = service_getcontainerslotid();
 
     if (container_id == -1) {
         return -1;
@@ -492,7 +501,13 @@ bool memmgr_check_metadata(container_id_t slot_id)
         goto on_error;
     }
 
-    //TODO: parse endpoints
+    metadata_endpoints_t endpoints;
+
+    if (metadata_endpoints_parse(&endpoints, metadata.endpoints,
+                                 metadata.endpoints_len) != METADATA_OK) {
+        goto on_error;
+    }
+
     //TODO: parse security
     //TODO: control checksum
 
@@ -525,10 +540,27 @@ int memmgr_get_slot_id(uint8_t *uid, size_t size)
             continue;
         }
 
-        if (container.uid_len == size && memcmp(container.uid, uid, size) == 0) {
+        if (container.uid_len == size &&
+            memcmp(container.uid, uid, size) == 0) {
             return slot_id;
         }
     }
 
     return -1;
+}
+
+int memmgr_getendpoint(int slot_id, uint32_t endpoint_id,
+                       metadata_endpoint_t *endpoint)
+{
+    metadata_t metadata;
+
+    if (metadata_parse(&metadata, containers[slot_id].meta,
+                       containers[slot_id].meta_len) != METADATA_OK) {
+        //FIXME: should not occur.
+        return METADATA_NOT_FOUND;
+    }
+
+    return metadata_endpoints_search(endpoint,
+                                     metadata.endpoints, metadata.endpoints_len,
+                                     endpoint_id);
 }

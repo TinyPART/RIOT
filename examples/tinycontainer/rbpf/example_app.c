@@ -6,8 +6,8 @@ const char input[] = "test input string";
 uint32_t fletcher32(void *ctx)
 {
     (void)ctx;
-    uint32_t words = sizeof(input)/2;
-    const uint16_t *data = (const uint16_t*)(void*)input;
+    uint32_t words = sizeof(input) / 2;
+    const uint16_t *data = (const uint16_t *)(void *)input;
 
     uint32_t sum1 = 0xffff, sum2 = 0xffff;
 
@@ -25,4 +25,3 @@ uint32_t fletcher32(void *ctx)
     sum2 = (sum2 & 0xffff) + (sum2 >> 16);
     return (sum2 << 16) | sum1;
 }
-

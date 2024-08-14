@@ -1,27 +1,24 @@
 /*
- * Copyright (C) 2023-2024 Orange
+ * Copyright (C) 2024 Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
  * directory of the TinyContainer module for more details.
  */
 
-#ifndef COAP_SERVER_H
-#define COAP_SERVER_H
+#ifndef IO_DRIVER_H
+#define IO_DRIVER_H
 
-#include <stdbool.h>
+#include "tinycontainer.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void coap_server_init(void);
-void coap_server_start(void);
-void coap_server_stop(void);
-bool coap_server_isrunning(void);
+extern tinycontainer_io_driver_t io_driver;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* COAP_SERVER_H */
+#endif /* IO_DRIVER_H */

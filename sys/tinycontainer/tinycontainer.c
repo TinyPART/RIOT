@@ -47,7 +47,7 @@ static int get_container_slot_id(uint8_t *uid, size_t len)
 kernel_pid_t tinycontainer_init(uint8_t controller_prio,
                                 uint8_t service_prio,
                                 uint8_t containers_prio,
-                                tinycontainer_io_driver_t * driver)
+                                tinycontainer_io_driver_t *driver)
 {
     kernel_pid_t pid;
 
@@ -70,7 +70,8 @@ kernel_pid_t tinycontainer_init(uint8_t controller_prio,
 
     /* Start the controller thread */
 
-    pid = tinycontainer_controller_init(controller_prio, (io_driver_t*)driver);
+    pid = tinycontainer_controller_init(controller_prio,
+                                        (controller_io_driver_t *)driver);
 
     if (pid <= 0) {
         DEBUG("fail to start tinycontainer controller thread!\n");
@@ -91,7 +92,8 @@ bool tinycontainer_loadcontainer(uint8_t *metadata, int metadata_size,
                            code, code_size);
 }
 
-bool tinycontainer_startcontainer(uint8_t *container_uid, size_t container_uid_len)
+bool tinycontainer_startcontainer(uint8_t *container_uid,
+                                  size_t container_uid_len)
 {
     int slot_id = get_container_slot_id(container_uid, container_uid_len);
 
@@ -102,7 +104,8 @@ bool tinycontainer_startcontainer(uint8_t *container_uid, size_t container_uid_l
     return controller_start(slot_id);
 }
 
-bool tinycontainer_stopcontainer(uint8_t *container_uid, size_t container_uid_len)
+bool tinycontainer_stopcontainer(uint8_t *container_uid,
+                                 size_t container_uid_len)
 {
     int slot_id = get_container_slot_id(container_uid, container_uid_len);
 
@@ -113,7 +116,8 @@ bool tinycontainer_stopcontainer(uint8_t *container_uid, size_t container_uid_le
     return controller_stop(slot_id);
 }
 
-bool tinycontainer_iscontainerrunning(uint8_t *container_uid, size_t container_uid_len)
+bool tinycontainer_iscontainerrunning(uint8_t *container_uid,
+                                      size_t container_uid_len)
 {
     int slot_id = get_container_slot_id(container_uid, container_uid_len);
 

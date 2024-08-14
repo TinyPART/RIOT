@@ -14,6 +14,7 @@
  * @brief       TinyContainer WAMR runtime
  *
  * @author      Gregory Holder <gregory.holder76@gmail.com>
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
  *
  * @}
  */
@@ -31,8 +32,6 @@ extern "C" {
 
 struct InterpHandle {
     bool is_used;
-    bool is_finished;
-    uint8_t *wasm_buf;
     wasm_module_t module;
     wasm_module_inst_t module_instance;
     wasm_exec_env_t exec_env;

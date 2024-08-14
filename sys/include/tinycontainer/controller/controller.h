@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "tinycontainer/io_driver.h"
+#include "tinycontainer/controller/controller_io_driver.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,7 +37,7 @@ extern "C" {
  *
  * @return int (pid of thread controller)
  */
-int tinycontainer_controller_init(int prio, io_driver_t * io_driver);
+int tinycontainer_controller_init(int prio, controller_io_driver_t *io_driver);
 
 /**
  * @brief start a container

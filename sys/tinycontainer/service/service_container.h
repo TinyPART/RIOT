@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023, Orange.
+ * Copyright (C) 2024, Orange.
  *
  * Please, refer to the README.md and LICENSE files of TinyContainer
  *
@@ -23,6 +23,8 @@
 #include <thread.h>
 #include <stdint.h>
 
+#include "tinycontainer/service/service_container.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,12 +39,13 @@ extern "C" {
 #define CONTAINER_FLAGS_DELETING       BIT(4)
 
 typedef struct {
-    uint8_t id;                                 /* internal slot id of the container */
-    uint8_t uid[UID_MAXSIZE];                   /* container uid retrieving from metadata */
-    uint8_t stack[4 * THREAD_STACKSIZE_SMALL];  /* thread stack size */
-    kernel_pid_t pid;                           /* pid of the thread that run this container */
-    uint32_t flags;                             /* bit array to manage the container state */
-    uint32_t natives_mask;                      /* bitmask for native calls which is retrieving from metadata */
+    uint8_t id; /* internal slot id of the container */
+    uint8_t uid[UID_MAXSIZE]; /* container uid retrieving from metadata */
+    uint8_t stack[4 * THREAD_STACKSIZE_SMALL]; /* thread stack size */
+    kernel_pid_t pid; /* pid of the thread that run this container */
+    uint32_t flags; /* bit array to manage the container state */
+    uint32_t natives_mask; /* bitmask for native calls (from metadata) */
+    service_shared_mem_t shared_memory; /* shared memory with the container */
 } container_t;
 
 inline bool container_isprovisionning(container_t *container)
@@ -73,6 +76,24 @@ inline bool container_isdeleting(container_t *container)
 inline kernel_pid_t container_getpid(container_t *container)
 {
     return container->pid;
+}
+
+inline void container_setrunning(container_t *container)
+{
+    container->flags |= CONTAINER_FLAGS_RUNNING;
+    container->flags &= ~CONTAINER_FLAGS_READY;
+}
+
+inline void container_setstopping(container_t *container)
+{
+    container->flags |= CONTAINER_FLAGS_STOPPING;
+    container->flags &= ~CONTAINER_FLAGS_STOPPING;
+}
+
+inline void container_setdeleting(container_t *container)
+{
+    container->flags |= CONTAINER_FLAGS_STOPPING;
+    container->flags &= ~CONTAINER_FLAGS_DELETING;
 }
 
 #ifdef __cplusplus

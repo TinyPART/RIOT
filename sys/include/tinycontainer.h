@@ -32,13 +32,31 @@
 extern "C" {
 #endif
 
+/**
+ * @brief function pointers for io driver
+ *
+ * An io driver should implement bsd style functions to manage container
+ * input/output.
+ *
+ * This driver structure is used to record these functions in TinyContainer.
+ *
+ * Note:
+ *     - only one driver can be recorded. If multiple driver is required a
+ *       generic router driver shall be recorded.
+ *     - the calls to these functions are blocking: if data acquisition takes
+ *       some time, the driver should return an error and let the container
+ *       handle a retry.
+ */
 typedef struct {
-  int (*open)(uint8_t* uri, uint32_t uri_size);
-  int (*close)(int fd);
-  int (*read)(int fd, uint8_t* buffer, size_t buffer_size);
-  int (*write)(int fd, uint8_t* buffer, size_t buffer_size);
+    /**@brief bsd style open function recorded in the io driver */
+    int (*open)(uint32_t endpoint_id);
+    /**@brief bsd style close function recorded in the io driver */
+    int (*close)(int fd);
+    /**@brief bsd style read function recorded in the io driver */
+    int (*read)(int fd, uint8_t *buffer, size_t buffer_size);
+    /**@brief bsd style write function recorded in the io driver */
+    int (*write)(int fd, uint8_t *buffer, size_t buffer_size);
 } tinycontainer_io_driver_t;
-
 
 /**
  * @brief  setup and start TinyContainer
@@ -59,7 +77,7 @@ typedef struct {
 kernel_pid_t tinycontainer_init(uint8_t controller_prio,
                                 uint8_t service_prio,
                                 uint8_t containers_prio,
-                                tinycontainer_io_driver_t * io_driver);
+                                tinycontainer_io_driver_t *io_driver);
 
 /**
  * @brief load a new container

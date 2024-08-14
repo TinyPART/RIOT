@@ -30,6 +30,8 @@
 #include "coap_server.h"
 #endif
 
+#include "io_driver.h"
+
 #if defined(MODULE_TINYCONTAINER_CONTAINER_WAMR)
 #include "container_wamr.h"
 #elif defined(MODULE_TINYCONTAINER_CONTAINER_JERRYSCRIPT)
@@ -56,7 +58,7 @@ static const int code_size = example_app_bin_len;
 /* Following constants shall be set according with container metadata */
 #define CONTAINER_UID_SIZE 17
 #define CONTAINER_UID_PREFIX "container--id--"
-#define CONTAINER_UID_POS 15
+#define CONTAINER_UID_POS 16
 
 static uint8_t next_uid = 1;
 static uint8_t container_id[CONTAINER_UID_SIZE + 1];
@@ -238,7 +240,8 @@ int main(void)
 {
     /* Start TinyContainer */
 
-    tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO, NULL);
+    tinycontainer_init(CONTROLLER_PRIO, SERVICE_PRIO, CONTAINERS_PRIO,
+                       &io_driver);
 
 #if IS_USED(MODULE_GCOAP)
     /* setup coap server */

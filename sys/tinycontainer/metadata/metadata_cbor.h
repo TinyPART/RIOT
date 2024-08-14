@@ -20,6 +20,10 @@
 #ifndef METADATA_CBOR_H
 #define METADATA_CBOR_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define METADATA_TAG 6082514239057121876
 
 /* keys for metadata  */
@@ -42,6 +46,27 @@
 #define METADATA_CONTAINER_TYPE_JAVACARD   5
 #define METADATA_CONTAINER_TYPE_JAVASCRIPT 6
 #define METADATA_CONTAINER_TYPE_PYTHON     7
+
+/* keys for metadata endpoint  */
+
+#define METADATA_ENDPOINT_ID                1
+#define METADATA_ENDPOINT_TYPE              2
+#define METADATA_ENDPOINT_PEER_UID          3
+#define METADATA_ENDPOINT_PEER_ENDPOINT_ID  4
+#define METADATA_ENDPOINT_DIRECTION         5
+#define METADATA_ENDPOINT_TOKEN             6
+
+#define METADATA_PEER_CONTAINER 0
+#define METADATA_PEER_LOCAL     1
+#define METADATA_PEER_REMOTE    2
+
+#define METADATA_DIRECTION_IN   0
+#define METADATA_DIRECTION_OUT  1
+#define METADATA_DIRECTION_BOTH 2
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* METADATA_CBOR_H */
 /** @} */

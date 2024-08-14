@@ -27,6 +27,10 @@
 
 #include "metadata_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Parse a cbor buffer as metadata object.
  *
  * return METADATA_OK on success
@@ -44,15 +48,28 @@ int metadata_container_parse(metadata_container_t *metadata_container,
  *
  * return METADATA_OK on success
  */
-//int metadata_endpoints_parse(metadata_endpoints_t *metadata,
-//                             const uint8_t *buf, size_t len);
+int metadata_endpoints_parse(metadata_endpoints_t *metadata,
+                             const uint8_t *buf, size_t len);
+
+/* Search a endpoint from its id in a cbor buffer parsed as an endpoints object.
+ *
+ * return METADATA_OK on success or METADATA_NOT_FOUND otherwise
+ */
+int metadata_endpoints_search(metadata_endpoint_t *endpoint,
+                              const uint8_t *buf, size_t len,
+                              uint32_t endpoint_id);
 
 /* Parse a cbor buffer as a security object.
  *
  * return METADATA_OK on success
  */
+//TODO: not yet implemented
 //int metadata_security_parse(metadata_security_t *metadata,
 //                            const uint8_t *buf, size_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TINYCONTAINER_METADATA_METADATA_MEMMGR_H */
 /** @} */

@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef TINYCONTAINER_METADATA_METADATA_COMMON_H
 #define TINYCONTAINER_METADATA_METADATA_COMMON_H
 
@@ -28,12 +32,14 @@
 #define METADATA_OK 0
 #define METADATA_INVALID_CBOR_STRUCTURE 1
 #define METADATA_SECURITY_ERR 2
+#define METADATA_NOT_FOUND 3
 
 /* structures definitions
  * ======================
  */
 
 /* structure for the container object of metadata */
+
 struct metadata_container {
     const uint8_t *raw_cbor;
     size_t raw_cbor_len;
@@ -44,43 +50,32 @@ struct metadata_container {
     size_t syscall_len;
 };
 
-/* peer object of container  */
-struct metadata_container_peer {
-    uint8_t *uid;
-    int uid_size;
-    uint8_t endpoint_id;
-};
-struct metadata_local_peer {
-    uint8_t local_type; /* spi, i2c, gpio */
-    /*TBC*/
-};
-struct metadata_remote_peer {
-    uint8_t remote_type; /* dtsl, mqtt, lwm2m */
-    /*TBC*/
-};
+/* structures for the endpoints object of metadata */
 
 struct metadata_endpoint {
     uint32_t id;
     uint8_t peer_type;
-    union metadata_peer {
-        struct metadata_container_peer container;
-        struct metadata_local_peer local;
-        struct metadata_remote_peer remote;
-    } peer;
-    /*TBC: token*/
+    const uint8_t *peer_uid;
+    uint32_t peer_endpoint_id;
+    uint8_t direction;
+    //TODO: token is not yet implemented
 };
 
 struct metadata_endpoints {
-    uint8_t *raw_cbor;
+    const uint8_t *raw_cbor;
     size_t raw_cbor_len;
     uint8_t *next_endpoint;
 };
 
+/* structures for the security object of metadata */
+
 struct metadata_security {
-    uint8_t *raw_cbor;
+    const uint8_t *raw_cbor;
     size_t raw_cbor_len;
-    //TBC
+    //TODO: not yet implemented
 };
+
+/* structures for the metadata object */
 
 struct metadata {
     const uint8_t *raw_cbor;
@@ -104,13 +99,17 @@ typedef struct metadata metadata_t;
 typedef struct metadata_container metadata_container_t;
 
 /* type for the endpoints object of metadata */
-typedef struct metadata_enpoints metadata_endpoints_t;
+typedef struct metadata_endpoints metadata_endpoints_t;
 
 /* type for the security object of metadata */
 typedef struct metadata_security metadata_security_t;
 
 /* type for the endpoint element of endpoints */
 typedef struct metadata_endpoint metadata_endpoint_t;
+/** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TINYCONTAINER_METADATA_METADATA_COMMON_H */
-/** @} */

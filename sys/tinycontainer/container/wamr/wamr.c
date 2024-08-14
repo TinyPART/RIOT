@@ -36,9 +36,9 @@
 static struct InterpHandle handles[MAX_HANDLES];
 static uint8_t handles_in_use = 0;
 
-/* FIXME: how to have a per container allocation?
- */
-static char global_heap_buf[8760] = { 0 };
+// TODO: shall be globally configurable
+/* minimal size to run the container provided as example */
+static char global_heap_buf[250 + 4700 * MAX_HANDLES] = { 0 };
 
 static bool is_initialised = false;
 static bool runtime_init(void)
@@ -48,7 +48,12 @@ static bool runtime_init(void)
         return true;
     }
 
+    /* clear our handles */
+    memset(handles, 0, sizeof(handles));
+
+    /* initialize wamr */
     static RuntimeInitArgs init_args = {
+// HACK: may be useful for some dev test
 //        .mem_alloc_type = Alloc_With_System_Allocator
         .mem_alloc_type = Alloc_With_Pool,
         .mem_alloc_option.pool.heap_buf = global_heap_buf,
@@ -58,10 +63,13 @@ static bool runtime_init(void)
     if (!wasm_runtime_full_init(&init_args)) {
         goto runtime_init_fail;
     }
+
+    /* register the native functions */
     if (!register_natives()) {
         goto runtime_init_fail;
     }
 
+    /* we are now initialized */
     is_initialised = true;
     return true;
 
@@ -84,6 +92,8 @@ static void runtime_destroy(void)
             handle_destroy(handle);
         }
     }
+    handles_in_use = 0;
+
     /* destroy the runtime */
     wasm_runtime_destroy();
 
@@ -114,7 +124,6 @@ static container_handle_t handle_init(void)
 
     handles_in_use++;
     new_handle->is_used = true;
-    new_handle->is_finished = false;
 
     return new_handle;
 
@@ -128,8 +137,12 @@ static bool handle_destroy(container_handle_t handle)
         return false;
     }
 
-    if (h->wasm_buf != NULL) {
-        free(h->wasm_buf);
+    /* the deinialization procedure is described here:
+     *     - wamr/doc/embed_wamr.md#the-deinitialization-procedure
+     */
+
+    if (h->exec_env != NULL) {
+        wasm_runtime_destroy_exec_env(h->exec_env);
     }
     if (h->module_instance != NULL) {
         wasm_runtime_deinstantiate(h->module_instance);
@@ -151,7 +164,7 @@ static bool handle_destroy(container_handle_t handle)
 
 container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
 {
-    (void)data;
+    (void)data; //TODO: data usage is not yet implemented
 
     LOG_ENTER();
 
@@ -179,10 +192,8 @@ container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
     /* Instantiate the module */
     new_handle->module_instance = wasm_runtime_instantiate(
         new_handle->module,
-//        STACK_SIZE, //default
-        0,  // no default stack size
-//        HEAP_SIZE,
-        0,  // no host managed heap size
+        0,  /* default stack size is not used with w_r_create_exec_env() */
+        0,  /* no further use of host managed heap size */
         error_buf,
         sizeof(error_buf)
         );
@@ -238,10 +249,10 @@ void container_on_start(container_handle_t interp_handle)
     struct InterpHandle *handle = (struct InterpHandle *)interp_handle;
 
     bool call_success = wasm_runtime_call_wasm(
-        handle->exec_env,
-        handle->start_func,
-        0,
-        NULL
+        handle->exec_env,       /* exec_env */
+        handle->start_func,     /* function */
+        0,                      /* argc     */
+        NULL                    /* argv     */
         );
 
     if (!call_success) {
@@ -256,10 +267,10 @@ int container_on_loop(container_handle_t interp_handle)
     int32_t return_value = -1;
 
     bool call_success = wasm_runtime_call_wasm(
-        handle->exec_env,
-        handle->loop_func,
-        1,
-        (uint32_t *)&return_value
+        handle->exec_env,           /* exec env */
+        handle->loop_func,          /* function */
+        1,                          /* argc     */
+        (uint32_t *)&return_value   /* argv     */
         );
 
     if (!call_success) {
@@ -274,10 +285,10 @@ void container_on_stop(container_handle_t interp_handle)
     struct InterpHandle *handle = (struct InterpHandle *)interp_handle;
 
     bool call_success = wasm_runtime_call_wasm(
-        handle->exec_env,
-        handle->stop_func,
-        0,
-        NULL
+        handle->exec_env,   /* exec_env */
+        handle->stop_func,  /* function */
+        0,                  /* argc     */
+        NULL                /* argv     */
         );
 
     if (!call_success) {
@@ -292,14 +303,4 @@ void container_on_finalize(container_handle_t interp_handle)
     handle_destroy(interp_handle);
 
     LOG_EXIT();
-}
-
-bool container_has_finished(container_handle_t interp_handle)
-{
-    (void)interp_handle;
-
-    LOG_ENTER();
-    DEBUG_PID("WW hasfinished() is not yet implemented\n");
-    LOG_EXIT();
-    return 0;
 }

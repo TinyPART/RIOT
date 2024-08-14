@@ -138,13 +138,3 @@ void container_on_finalize(container_handle_t interp_handle)
 {
     handle_destroy(interp_handle);
 }
-
-bool container_has_finished(container_handle_t interp_handle)
-{
-    (void)interp_handle;
-
-    LOG_ENTER();
-    DEBUG_PID("WW hasfinished() is not yet implemented\n");
-    LOG_EXIT();
-    return 0;
-}

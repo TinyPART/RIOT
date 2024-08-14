@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023, Orange.
+ * Copyright (C) 2022-2024, Orange.
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -14,6 +14,7 @@
  * @brief       TinyContainer Service sub-module definitions
  *
  * @author      Gregory Holder <gregory.holder76@gmail.com>
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
  *
  * @}
  */
@@ -29,14 +30,16 @@ extern "C" {
 #endif
 
 enum {
-    ok              = 1,
-    ko              = 2,
-    run             = 3,
-    stop            = 4,
-    is_running      = 5,
-    delete          = 6,
-    update          = 7,
-    container_id    = 9,
+    none                = 0,
+    ok                  = 1,
+    ko                  = 2,
+    run                 = 3,
+    stop                = 4,
+    is_running          = 5,
+    delete              = 6,
+    update              = 7,
+    container_slot_id   = 9,
+    msg_syscall         = 10,
 };
 
 typedef uint16_t service_msg_type;

@@ -24,6 +24,7 @@
 #include "tinycontainer/debugging.h"
 #include "thread.h"
 
+#include "tinycontainer/controller/controller_io_driver.h"
 #include "tinycontainer/controller/controller.h"
 #include "tinycontainer/service/service_controller.h"
 #include "tinycontainer/memmgr/memmgr_controller.h"
@@ -48,6 +49,14 @@ enum controller_msg_type {
     msg_type_uid_len        = 13,
     msg_type_uid            = 14,
     msg_type_get_slot_id    = 15,
+    msg_type_io_open        = 16,
+    msg_type_io_close       = 17,
+    msg_type_io_read        = 18,
+    msg_type_io_write       = 19,
+    msg_type_io_fd          = 20,
+    msg_type_io_buffer      = 21,
+    msg_type_io_size        = 22,
+    msg_type_retry          = 23,
 };
 
 /* Message type */
@@ -94,7 +103,19 @@ enum controller_uid_state {
     uid_get_slot_id = 2,
 };
 
-static io_driver_t * io_driver;
+#define IO_BUFFER_SIZE 255
+static struct {
+    bool locked;
+    //FIXME: using the caller pid is nonsense because the caller is always the
+    //       service pid! Moreover, input/output calls are synchrone and
+    //       blocking the service thread processing!
+    //       Should be upgrade to a real asynchronous call.
+    kernel_pid_t locked_by;
+    controller_io_driver_t *driver;
+    uint8_t buffer[IO_BUFFER_SIZE];
+    int size;
+    int fd;
+} io;
 
 static kernel_pid_t controller_pid = -1;
 static enum controller_loading_state loading_state = loading_none;
@@ -205,6 +226,46 @@ static bool _write_byte_to_section(enum controller_loading_state expected_state,
     return true;
 }
 
+static inline bool io_islocked(void)
+{
+    return io.locked;
+}
+
+static inline bool io_islockedby(kernel_pid_t pid)
+{
+    return io.locked && io.locked_by == pid;
+}
+
+static inline bool io_trylockfor(kernel_pid_t pid)
+{
+    if (io.locked == true && io.locked_by != pid) {
+        return false;
+    }
+
+    io.locked = true;
+    io.locked_by = pid;
+
+    //TODO: add an security guard alarm to unlock the io structure
+
+    return true;
+}
+
+static inline void io_clear(void)
+{
+    io.locked_by = -1;
+    io.size = -1;
+    io.fd = -1;
+    memset(&io.buffer, 0, IO_BUFFER_SIZE);
+    io.locked = false;
+}
+
+static inline void io_unlockfor(kernel_pid_t pid)
+{
+    if (io.locked_by == pid) {
+        io_clear();
+    }
+}
+
 /**
  * @brief function du thrtead controller
  *
@@ -214,6 +275,9 @@ static void *handler_controller(void *arg)
 {
     (void)arg;
     LOG_ENTER();
+
+    /* init the io structure */
+    io_clear();
 
     /* recommended to be static */
     static msg_t msg_queue[1];
@@ -389,6 +453,151 @@ static void *handler_controller(void *arg)
 
             goto reply;
 
+        /* open a local or remote endpoint */
+        case msg_type_io_open:
+            if (!io_islockedby(sender_pid) || io.fd < 0) {
+                goto io_fail;
+            }
+
+            if (io.driver == NULL) {
+                value = 0;
+            }
+            else {
+                value = io.driver->open(io.fd);
+            }
+
+            /* io can be used for another operation*/
+            io_unlockfor(sender_pid);
+
+            goto reply;
+
+        /* close a local or remote endpoint */
+        case msg_type_io_close:
+            if (!io_islockedby(sender_pid) || io.fd < 0) {
+                goto io_fail;
+            }
+
+            if (io.driver != NULL) {
+                io.driver->close(io.fd);
+            }
+
+            /* io can be used for another operation*/
+            io_unlockfor(sender_pid);
+
+            /* no reply is expected */
+            continue;
+
+        /* read from a local or remote endpoint */
+        case msg_type_io_read:
+            if (!io_islockedby(sender_pid) || io.fd < 0) {
+                goto io_fail;
+            }
+
+            int index = value;
+
+            if (index == -1) {
+
+                /* first stage: perform the read to fill io.buffer */
+
+                if (io.driver == NULL) {
+                    io.size = 0;
+                }
+                else {
+                    io.size = io.driver->read(io.fd, &io.buffer[0], io.size);
+                }
+
+                value = io.size;
+
+                if (io.size == 0) {
+                    /* no more read is expected */
+                    /* io can be used for another operation */
+                    io_unlockfor(sender_pid);
+                }
+                else {
+                    /* additional read is expected */
+                }
+
+            }
+            else {
+
+                /* second stage: send bytes of io.buffer one by one */
+
+                if (index >= 0 && index < io.size) {
+                    value = io.buffer[index];
+                }
+                else {
+                    /* index is out of range  */
+                    io_unlockfor(sender_pid);
+                    goto io_fail;
+                }
+
+                if (index == io.size - 1) {
+                    /* no more bytes will be read */
+
+                    /* io can be used for another operation */
+                    io_unlockfor(sender_pid);
+                }
+            }
+
+            goto reply;
+
+        /* write to a local or remote endpoint */
+        case msg_type_io_write:
+            if (!io_islockedby(sender_pid) || io.fd < 0 || io.size < 0) {
+                goto io_fail;
+            }
+
+            if (io.driver == NULL || io.size == 0) {
+                value = 0;
+            }
+            else {
+                value = io.driver->write(io.fd, &io.buffer[0], io.size);
+            }
+
+            /* io can be used for another operation */
+            io_unlockfor(sender_pid);
+
+            goto reply;
+
+        /* retrieve the file descritor of an endpoint */
+        case msg_type_io_fd:
+
+            /* the structure need to be locked */
+            if (!io_trylockfor(sender_pid)) {
+                /* the io structure is already in used */
+                goto io_retry;
+            }
+
+            io.fd = value;
+
+            goto reply;
+
+        /* retrieve the buffer size for io operations */
+        case msg_type_io_size:
+
+            if (!io_islockedby(sender_pid)) {
+                goto io_fail;
+            }
+
+            io.size = value;
+
+            goto reply;
+
+        /* write one byte to the io buffer */
+        case msg_type_io_buffer:
+
+            if (!io_islockedby(sender_pid) ||
+                io.size >= IO_BUFFER_SIZE) {
+                goto io_fail;
+            }
+
+            if (io.size < 0) {
+                io.size = 0;
+            }
+            io.buffer[io.size++] = value;
+
+            goto reply;
+
         default:
             DEBUG("[%d] EE invalid message type: %d\n", controller_pid, type);
             goto loading_fail;
@@ -409,11 +618,24 @@ loading_fail:
 
         goto reply;
 
+io_retry:
+        reply_type = msg_type_retry;
+
+        goto reply;
+
 uid_fail:
         uid_state = uid_ready;
         memset(uid, 0, sizeof(uid));
 
         /* send the reply */
+        reply_type = msg_type_ko;
+
+        goto reply;
+
+io_fail:
+        /* we do not reset io.fd and io.size because the failure may be related a
+         * concurrent access from two containers
+         */
         reply_type = msg_type_ko;
 
 reply:
@@ -428,7 +650,7 @@ reply:
     return NULL;
 }
 
-int tinycontainer_controller_init(int prio, io_driver_t * driver)
+int tinycontainer_controller_init(int prio, controller_io_driver_t *driver)
 {
     LOG_ENTER();
 
@@ -437,12 +659,16 @@ int tinycontainer_controller_init(int prio, io_driver_t * driver)
         return controller_pid;
     }
 
-    /* endpoint driver */
-    if(driver == NULL) {
-      DEBUG_PID("-- initialized without endpoint IO driver\n");
-    } else {
-      DEBUG_PID("-- endpoint IO driver registered\n");
-      io_driver = driver;
+    /* reset the io structure */
+    io_clear();
+
+    /* and set the endpoint driver */
+    if (driver == NULL) {
+        DEBUG_PID("-- initialized without endpoint IO driver\n");
+    }
+    else {
+        DEBUG_PID("-- endpoint IO driver registered\n");
+        io.driver = driver;
     }
 
     static char controller_stack[THREAD_STACKSIZE_DEFAULT];
@@ -450,13 +676,14 @@ int tinycontainer_controller_init(int prio, io_driver_t * driver)
     DEBUG_PID("-- calling secure_thread()\n");
 
     controller_pid = secure_thread(
-        NULL,                       // context to create thread man
+        NULL,                       // caller context
+        NULL,                       // callee context
+        NULL,                       // callback
         controller_stack,           // thread stack
         sizeof(controller_stack),   // stack size
         prio,                       // thread priority
         THREAD_CREATE_STACKTEST,    // stack size flag
         handler_controller,         // thread handler function
-        NULL,                       // empty argument
         "controller"                // thread name
         );
 
@@ -614,6 +841,181 @@ int controller_get_slot_id(uint8_t *uid, size_t size)
     }
 
     m.type = msg_type_get_slot_id;
+    m.content.value = -1;
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type == msg_type_ok) {
+        return reply.content.value;
+    }
+    else {
+        return -1;
+    }
+}
+
+int tinycontainer_controller_open(uint32_t peer_endpoint_id)
+{
+    msg_t reply = { .type = msg_type_ko };
+    msg_t m = { .type = msg_type_io_fd, .content.value = peer_endpoint_id };
+
+    msg_send_receive(&m, &reply, controller_pid);
+    while (reply.type == msg_type_retry) {
+        /* Another container is already performing an io operation.
+         * Let's wait until it's finished
+         */
+        thread_yield();
+        msg_send_receive(&m, &reply, controller_pid);
+    }
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    m.type = msg_type_io_open;
+    m.content.value = -1;
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type == msg_type_ok) {
+        return reply.content.value;
+    }
+    else {
+        return -1;
+    }
+}
+
+void tinycontainer_controller_close(int fd)
+{
+    msg_t reply = { .type = msg_type_ko };
+    msg_t m = { .type = msg_type_io_fd, .content.value = fd };
+
+    msg_send_receive(&m, &reply, controller_pid);
+    while (reply.type == msg_type_retry) {
+        /* Another container is already performing an io operation.
+         * Let's wait until it's finished
+         */
+        thread_yield();
+        msg_send_receive(&m, &reply, controller_pid);
+    }
+
+    if (reply.type == msg_type_ok) {
+        m.type = msg_type_io_close;
+        m.content.value = -1;
+
+        /* doesn't care about the response */
+        msg_send(&m, controller_pid);
+    }
+
+}
+
+int tinycontainer_controller_read(int fd, uint8_t *buffer, uint32_t buffer_size)
+{
+
+    /* sent the fd to read from */
+
+    msg_t reply = { .type = msg_type_ko };
+    msg_t m = { .type = msg_type_io_fd, .content.value = fd };
+
+    msg_send_receive(&m, &reply, controller_pid);
+    while (reply.type == msg_type_retry) {
+        /* Another container is already performing an io operation.
+         * Let's wait until it's finished
+         */
+        thread_yield();
+        msg_send_receive(&m, &reply, controller_pid);
+    }
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    /* sent our buffer size*/
+
+    m.type = msg_type_io_size;
+    m.content.value = buffer_size;
+    reply.type = msg_type_ko;
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    /* retrieves the number of bytes read */
+
+    m.type = msg_type_io_read;
+    m.content.value = -1;
+    reply.type = msg_type_ko;
+
+    msg_send_receive(&m, &reply, controller_pid);
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    int size = reply.content.value;
+
+    if (size > (int)buffer_size) {
+        //FIXME: seems to break internal state machine for endpoint io
+        return -1;
+    }
+
+    /* retrieves the read data */
+
+    for (int i = 0; i < size; i++) {
+        m.type = msg_type_io_read;
+        m.content.value = i;
+        reply.type = msg_type_ko;
+
+        msg_send_receive(&m, &reply, controller_pid);
+
+        if (reply.type != msg_type_ok) {
+            return -1;
+        }
+        buffer[i] = reply.content.value;
+    }
+
+    return size;
+}
+
+int tinycontainer_controller_write(int fd,
+                                   const uint8_t *buffer, uint32_t buffer_size)
+{
+
+    /* sends the fd to write into */
+
+    msg_t reply = { .type = msg_type_ko };
+    msg_t m = { .type = msg_type_io_fd, .content.value = fd };
+
+    msg_send_receive(&m, &reply, controller_pid);
+    while (reply.type == msg_type_retry) {
+        /* Another container is already performing an io operation.
+         * Let's wait until it's finished
+         */
+        thread_yield();
+        msg_send_receive(&m, &reply, controller_pid);
+    }
+
+    if (reply.type != msg_type_ok) {
+        return -1;
+    }
+
+    /* sends the bytes to write one by one */
+    m.type = msg_type_io_buffer;
+    for (uint32_t i = 0; i < buffer_size; i++) {
+        m.content.value = buffer[i];
+        reply.type = msg_type_ko;
+
+        msg_send_receive(&m, &reply, controller_pid);
+
+        if (reply.type != msg_type_ok) {
+            return -1;
+        }
+    }
+
+    /* performs the write operation */
+
+    m.type = msg_type_io_write;
     m.content.value = -1;
 
     msg_send_receive(&m, &reply, controller_pid);
