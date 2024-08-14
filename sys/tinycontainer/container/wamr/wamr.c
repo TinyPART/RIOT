@@ -210,9 +210,9 @@ container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
     wasm_module_inst_t inst = new_handle->module_instance;
 
     /* Lookup the associated start, loop and stop functions */
-    new_handle->start_func = wasm_runtime_lookup_function(inst, "start", "()");
-    new_handle->loop_func = wasm_runtime_lookup_function(inst, "loop", "()i");
-    new_handle->stop_func = wasm_runtime_lookup_function(inst, "stop", "()");
+    new_handle->start_func = wasm_runtime_lookup_function(inst, "start");
+    new_handle->loop_func = wasm_runtime_lookup_function(inst, "loop");
+    new_handle->stop_func = wasm_runtime_lookup_function(inst, "stop");
 
     LOG_EXIT();
 
