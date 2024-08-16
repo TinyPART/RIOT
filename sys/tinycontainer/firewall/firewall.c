@@ -193,7 +193,7 @@ kernel_pid_t secure_thread( void *caller_context,
 #ifndef BOARD_NATIVE
                            task_func,       /*arg*/
 #else /*BOARD_NATIVE*/
-                           /* HACK: the folowing ugly cast is required for.
+                           /* HACK: the following ugly cast is required for.
                             *       native. See secure_wrapper() above.
                             */
                            (void *)*(uint32_t *)&task_func,

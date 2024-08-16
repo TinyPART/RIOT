@@ -559,7 +559,7 @@ static void *handler_controller(void *arg)
 
             goto reply;
 
-        /* retrieve the file descritor of an endpoint */
+        /* retrieve the file descriptor of an endpoint */
         case msg_type_io_fd:
 
             /* the structure need to be locked */
