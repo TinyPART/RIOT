@@ -37,8 +37,6 @@ bool container_init(void)
 
 void *container_handler(void *arg)
 {
-    /* TODO: retrieve metadata from arg */
-
     /* retrieve the data and code part of the container */
 
     memmgr_block_t data;
