@@ -83,6 +83,20 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
+
+pkg-prepare: rbpf/$(RBPF_BINS)
+
+RBPF_SOURCES ?= $(wildcard rbpf/*.c)
+RBPF_BINS = $(RBPF_SOURCES:.c=.bin)
+
+$(RBPF_BINS): %.bin:%.c
+	$(MAKE) -C $(CURDIR)/rbpf
+
+all: $(RBPF_BINS)
+
+endif
+
 include $(RIOTBASE)/Makefile.include
 
 # For now this goes after the inclusion of Makefile.include so Kconfig symbols
