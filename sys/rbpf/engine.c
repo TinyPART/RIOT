@@ -363,4 +363,3 @@ int rbpf_engine_run(rbpf_application_t *rbpf, const void *ctx, int64_t *result)
     *result = regmap[0];
     return res;
 }
-
