@@ -74,3 +74,4 @@ int tinycontainer_controller_write(int fd,
 #endif
 
 #endif /* TINYCONTAINER_CONTROLLER_CONTROLLER_SERVICE_H */
+/** @} */
