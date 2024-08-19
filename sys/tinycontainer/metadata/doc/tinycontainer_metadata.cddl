@@ -69,10 +69,10 @@ interpreter-python = 7            ; interpreter is Python
 
 endpoints = [ * endpoint ]
 endpoint = {
-    endpoint-id => int
+    endpoint-id => uint
     peer-type => &peer-types
     ?peer-uid => bstr ; the peer-uid shall be set only for a container peer
-    peer-endpoint-id => int
+    peer-endpoint-id => uint
     direction => &directions
     ? endpoint-token => bstr .cbor cwt
 }
