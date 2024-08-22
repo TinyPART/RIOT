@@ -27,7 +27,7 @@
 
 #include "ztimer.h"
 
-#include "tinycontainer/container/container_runtime.h"
+#include "tinycontainer/runtime/runtime_impl.h"
 #include "wamr.h"
 #include "wamr_natives.h"
 
@@ -87,7 +87,7 @@ static void runtime_destroy(void)
         struct InterpHandle *handle = &handles[i];
         /* if the handle is in use */
         if (handle->is_used) {
-            DEBUG("container_wamr: handle %d still in use\n", i);
+            DEBUG("runtime_wamr: handle %d still in use\n", i);
             /* free the handle */
             handle_destroy(handle);
         }
@@ -100,7 +100,7 @@ static void runtime_destroy(void)
     is_initialised = false;
 }
 
-static container_handle_t handle_init(void)
+static runtime_handle_t handle_init(void)
 {
     struct InterpHandle *new_handle = NULL;
 
@@ -129,7 +129,7 @@ static container_handle_t handle_init(void)
 
 }
 
-static bool handle_destroy(container_handle_t handle)
+static bool handle_destroy(runtime_handle_t handle)
 {
     struct InterpHandle *h = (struct InterpHandle *)handle;
 
@@ -162,7 +162,7 @@ static bool handle_destroy(container_handle_t handle)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
+runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     (void)data; //TODO: data usage is not yet implemented
 
@@ -244,7 +244,7 @@ container_create_fail:
     return NULL;
 }
 
-void container_on_start(container_handle_t interp_handle)
+void runtime_on_start(runtime_handle_t interp_handle)
 {
     struct InterpHandle *handle = (struct InterpHandle *)interp_handle;
 
@@ -260,7 +260,7 @@ void container_on_start(container_handle_t interp_handle)
     }
 }
 
-int container_on_loop(container_handle_t interp_handle)
+int runtime_on_loop(runtime_handle_t interp_handle)
 {
     struct InterpHandle *handle = (struct InterpHandle *)interp_handle;
 
@@ -280,7 +280,7 @@ int container_on_loop(container_handle_t interp_handle)
     return return_value;
 }
 
-void container_on_stop(container_handle_t interp_handle)
+void runtime_on_stop(runtime_handle_t interp_handle)
 {
     struct InterpHandle *handle = (struct InterpHandle *)interp_handle;
 
@@ -296,7 +296,7 @@ void container_on_stop(container_handle_t interp_handle)
     }
 }
 
-void container_on_finalize(container_handle_t interp_handle)
+void runtime_on_finalize(runtime_handle_t interp_handle)
 {
     LOG_ENTER();
 

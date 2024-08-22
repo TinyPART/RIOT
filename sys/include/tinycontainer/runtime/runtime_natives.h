@@ -9,7 +9,7 @@
 
 /**
  * @ingroup    sys_tinycontainer
- * @brief      Native functions exposed to container
+ * @brief      Native functions exposed to container runtime
  *
  * Native functions can be exposed by the container runtime to containers to
  * allow communications with external components, or to get some useful
@@ -39,7 +39,7 @@
  * practice. TinyContainer metadata provides a decicated syscall mask to control
  * which natives are allowed to each containers.
  *
- * Secondly, every call to a native function from a container implies some
+ * Secondly, every call to a native function from a container implies to 
  * dynamically check some access control rules. Indeed, a call to one of these
  * functions begins with a context switching between the container and the
  * service context. The Service module controls whether the call to
@@ -48,8 +48,8 @@
  *
  * Thirdly, each communication endpoint are managed by TinyContainer, and
  * a container has no direct information of its real peer. The mapping between
- * the endpoint id viewed by the container and the endpoint peer is defined the
- * container metadata and managed by TinyContainer.
+ * the endpoint id viewed by the container and the endpoint peer is defined in
+ * the container metadata and managed by TinyContainer.
  *
  * @{
  *
@@ -60,8 +60,8 @@
  *
  */
 
-#ifndef TINYCONTAINER_CONTAINER_CONTAINER_NATIVES_H
-#define TINYCONTAINER_CONTAINER_CONTAINER_NATIVES_H
+#ifndef TINYCONTAINER_RUNTIME_RUNTIME_NATIVES_H
+#define TINYCONTAINER_RUNTIME_RUNTIME_NATIVES_H
 
 #include <stdbool.h>
 
@@ -135,5 +135,5 @@ int32_t native_heartbeat(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_CONTAINER_CONTAINER_NATIVES_H */
+#endif /* TINYCONTAINER_RUNTIME_RUNTIME_NATIVES_H */
 /** @} */

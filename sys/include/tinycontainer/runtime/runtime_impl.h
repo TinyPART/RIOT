@@ -13,14 +13,14 @@
  * @{
  *
  * @file
- * @brief   API of Tinycontainer Container sub-module for runtimes sub-module
+ * @brief   API of Tinycontainer Runtime sub-module for implementation sub-module
  *
  * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 
-#ifndef TINYCONTAINER_CONTAINER_CONTAINER_RUNTIME_H
-#define TINYCONTAINER_CONTAINER_CONTAINER_RUNTIME_H
+#ifndef TINYCONTAINER_RUNTIME_RUNTIME_IMPL_H
+#define TINYCONTAINER_RUNTIME_RUNTIME_IMPL_H
 
 #include <stdbool.h>
 
@@ -31,9 +31,9 @@ extern "C" {
 #endif
 
 /**
- * @ brief opaque type for container
+ * @ brief opaque type for container runtime
  */
-typedef void *container_handle_t;
+typedef void *runtime_handle_t;
 
 /**
  * @brief   runtime function to called to create and initialize a container
@@ -41,45 +41,45 @@ typedef void *container_handle_t;
  * @param[in]   data    data part of the container
  * @param[in]   code    code part of the container
  *
- * @return container_handler_t (on success return a container handler, NULL otherwise)
+ * @return runtime_handler_t (on success return a runtime handler, NULL otherwise)
  */
-container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code);
+runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code);
 
 /**
  * @brief   runtime function called whenever the container is started
  *
- * @param[in]   container    handler of the container
+ * @param[in]   runtime handler of the container runtime
  */
-void container_on_start(container_handle_t container);
+void runtime_on_start(runtime_handle_t runtime);
 
 /**
  * @brief   runtime function called on each loop
  *
  * The container loop is called until the end of container lifetime
  *
- * @param[in]   container    handler of the container
+ * @param[in]   runtime    handler of the container runtime
  *
  * return int (0 to indicate end of container lifetime, non 0 otherwise)
  */
-int container_on_loop(container_handle_t container);
+int runtime_on_loop(runtime_handle_t runtime);
 
 /**
  * @brief   runtime function called when the container is stopped
  *
- * @param[in]   container   handler of the container
+ * @param[in]   runtime   handler of the container runtime
  */
-void container_on_stop(container_handle_t container);
+void runtime_on_stop(runtime_handle_t runtime);
 
 /**
  * @brief   runtime function called at end of container lifetime
  *
- * @param[in]   container   handler of the container
+ * @param[in]   runtime   handler of the runtime
  */
-void container_on_finalize(container_handle_t container);
+void runtime_on_finalize(runtime_handle_t runtime);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TINYCONTAINER_CONTAINER_CONTAINER_RUNTIME_H */
+#endif /* TINYCONTAINER_RUNTIME_RUNTIME_IMPL_H */
 /** @} */

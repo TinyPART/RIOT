@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "tinycontainer/container/container_runtime.h"
+#include "tinycontainer/runtime/runtime_impl.h"
 #include "tinycontainer/memmgr/memmgr_container.h"
 #include "container_rbpf.h"
 
@@ -50,7 +50,7 @@ static bool runtime_init(void)
 static void runtime_destroy(void)
 {}
 
-static container_handle_t handle_init(void)
+static runtime_handle_t handle_init(void)
 {
     struct RbpfHandle *new_handle = NULL;
 
@@ -71,7 +71,7 @@ static container_handle_t handle_init(void)
     return new_handle;
 }
 
-static bool handle_destroy(container_handle_t handle)
+static bool handle_destroy(runtime_handle_t handle)
 {
     struct RbpfHandle *old_handle = (struct RbpfHandle *)handle;
 
@@ -89,7 +89,7 @@ static bool handle_destroy(container_handle_t handle)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
+runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     (void)data;
 
@@ -105,14 +105,14 @@ container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
     return new_handle;
 }
 
-void container_on_start(container_handle_t interp_handle)
+void runtime_on_start(runtime_handle_t interp_handle)
 {
     struct RbpfHandle *handle = (struct RbpfHandle *)interp_handle;
 
     (void)handle;
 }
 
-int container_on_loop(container_handle_t interp_handle)
+int runtime_on_loop(runtime_handle_t interp_handle)
 {
     struct RbpfHandle *handle = (struct RbpfHandle *)interp_handle;
 
@@ -127,14 +127,14 @@ int container_on_loop(container_handle_t interp_handle)
     return return_value;
 }
 
-void container_on_stop(container_handle_t interp_handle)
+void runtime_on_stop(runtime_handle_t interp_handle)
 {
     struct RbpfHandle *handle = (struct RbpfHandle *)interp_handle;
 
     (void)handle;
 }
 
-void container_on_finalize(container_handle_t interp_handle)
+void runtime_on_finalize(runtime_handle_t interp_handle)
 {
     handle_destroy(interp_handle);
 }

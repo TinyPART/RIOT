@@ -23,7 +23,7 @@
 #include "wasm_export.h"
 #include "wamr_natives.h"
 
-#include "tinycontainer/container/container_natives.h"
+#include "tinycontainer/runtime/runtime_natives.h"
 
 #define ENABLE_DEBUG 0
 

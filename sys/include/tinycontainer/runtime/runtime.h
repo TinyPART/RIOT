@@ -19,32 +19,32 @@
  *
  */
 
-#ifndef TINYCONTAINER_CONTAINER_CONTAINER_H
-#define TINYCONTAINER_CONTAINER_CONTAINER_H
+#ifndef TINYCONTAINER_RUNTIME_RUNTIME_H
+#define TINYCONTAINER_RUNTIME_RUNTIME_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @brief   initialisation of container runtime
+ * @brief   initialisation of runtime
  *
- * This function should be call before any container creation.
+ * This function should be call before any container runtime creation.
  *
  * @ return bool (true on success)
  */
-bool container_init(void);
+bool runtime_init(void);
 
 /**
- * @brief   handler for the container thread
+ * @brief   handler for the container runtime thread
  *
  * @param[in]   arg         Not use yet
  */
-void *container_handler(void *arg);
+void *runtime_handler(void *arg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TINYCONTAINER_CONTAINER_CONTAINER_H */
+#endif /* TINYCONTAINER_RUNTIME_RUNTIME_H */
 /** @} */

@@ -24,7 +24,7 @@
 
 #include "jerryscript.h"
 
-#include "tinycontainer/container/container_runtime.h"
+#include "tinycontainer/runtime/runtime_impl.h"
 #include "tinycontainer/memmgr/memmgr_container.h"
 #include "jerryscript_natives.h"
 
@@ -39,7 +39,7 @@ struct handler {
 struct handler handlers[MAX_HANDLERS];
 int handlers_in_use;
 
-bool container_impl_init(void)
+bool runtime_impl_init(void)
 {
     DEBUG("[%d] -> container:init()\n", thread_getpid());
 
@@ -52,7 +52,7 @@ bool container_impl_init(void)
     return true;
 }
 
-container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
+runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 {
     DEBUG("[%d] -> container:create()\n", thread_getpid());
 
@@ -197,7 +197,7 @@ container_handle_t container_create(memmgr_block_t *data, memmgr_block_t *code)
     return new_handler;
 }
 
-void container_on_start(container_handle_t handler)
+void runtime_on_start(runtime_handle_t handler)
 {
     (void)handler;
 
@@ -208,7 +208,7 @@ void container_on_start(container_handle_t handler)
     DEBUG("[%d] <- container:onstart()\n", thread_getpid());
 }
 
-int container_on_loop(container_handle_t handler)
+int runtime_on_loop(runtime_handle_t handler)
 {
     DEBUG("[%d] -> container:onloop()\n", thread_getpid());
 
@@ -251,7 +251,7 @@ int container_on_loop(container_handle_t handler)
     return return_value;
 }
 
-void container_on_stop(container_handle_t handler)
+void runtime_on_stop(runtime_handle_t handler)
 {
     (void)handler;
 
@@ -262,7 +262,7 @@ void container_on_stop(container_handle_t handler)
     DEBUG("[%d] <- container:onstop()\n", thread_getpid());
 }
 
-void container_on_finalize(container_handle_t handler)
+void runtime_on_finalize(runtime_handle_t handler)
 {
     DEBUG("[%d] -> container:onfinalize()\n", thread_getpid());
 

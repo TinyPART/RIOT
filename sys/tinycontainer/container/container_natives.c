@@ -27,7 +27,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "tinycontainer/container/container_natives.h"
+#include "tinycontainer/runtime/runtime_natives.h"
 #include "tinycontainer/service/service_container.h"
 #include "tinycontainer/firewall/firewall_all.h"
 

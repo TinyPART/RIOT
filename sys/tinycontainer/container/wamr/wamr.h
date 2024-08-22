@@ -48,7 +48,7 @@ struct InterpHandle {
  *
  * @return A pointer to the handle, or NULL if no free handle was found.
  */
-static container_handle_t handle_init(void);
+static runtime_handle_t handle_init(void);
 
 /**
  * @brief Free a handle, which includes freeing the WASM module, instance and code.
@@ -58,7 +58,7 @@ static container_handle_t handle_init(void);
  * @param[in] handle The handle to free.
  * @return true on success, false on error.
  */
-static bool handle_destroy(container_handle_t handle);
+static bool handle_destroy(runtime_handle_t handle);
 
 #ifndef TINYCONTAINER_NUMBER_OF_CONTAINERS
 #define MAX_HANDLES 3

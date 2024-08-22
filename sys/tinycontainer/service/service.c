@@ -34,7 +34,7 @@
 #include "tinycontainer/service/service_container.h"
 
 #include "tinycontainer/firewall/firewall_all.h"
-#include "tinycontainer/container/container.h"
+#include "tinycontainer/runtime/runtime.h"
 
 static kernel_pid_t service_pid = -1;
 static int container_priority;
@@ -109,7 +109,7 @@ kernel_pid_t create_container_runtime(int slot_id)
         size,                       // stack size
         container_priority,         // thread priority
         THREAD_CREATE_STACKTEST,    // thread configuration flag
-        container_handler,          // thread handler function
+        runtime_handler,            // thread handler function
         "container"                 // Name of thread
         );
 
