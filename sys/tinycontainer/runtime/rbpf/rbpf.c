@@ -26,7 +26,7 @@
 
 #include "tinycontainer/runtime/runtime_impl.h"
 #include "tinycontainer/memmgr/memmgr_container.h"
-#include "container_rbpf.h"
+#include "runtime_rbpf.h"
 
 
 #define ENABLE_DEBUG 0
