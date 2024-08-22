@@ -22,14 +22,14 @@ RIOTBASE ?= $(CURDIR)/../..
 USEMODULE += tinycontainer
 
 # TinyContainer supports following container backend
-TINYCONTAINER_CONTAINER ?= wamr
-#TINYCONTAINER_CONTAINER ?= rbpf
-#TINYCONTAINER_CONTAINER ?= jerryscript
+TINYCONTAINER_RUNTIME ?= wamr
+#TINYCONTAINER_RUNTIME ?= rbpf
+#TINYCONTAINER_RUNTIME ?= jerryscript
 
 # TinyContainer supports following memory manager
 TINYCONTAINER_MEMMGR ?= ram
 
-ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
+ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
   BLOBS += rbpf/example_app.bin
 endif
 
@@ -83,7 +83,7 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
-ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
+ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
 
 pkg-prepare: rbpf/$(RBPF_BINS)
 

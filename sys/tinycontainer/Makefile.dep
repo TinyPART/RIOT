@@ -10,15 +10,15 @@
 #tinycontainer modules includes all required submodules
 ifneq (,$(filter tinycontainer,$(USEMODULE)))
   USEMODULE += tinycontainer_service
-  USEMODULE += tinycontainer_container
-  ifneq (,$(filter jerryscript,$(TINYCONTAINER_CONTAINER)))
-    USEMODULE += tinycontainer_container_jerryscript
+  USEMODULE += tinycontainer_runtime
+  ifneq (,$(filter jerryscript,$(TINYCONTAINER_RUNTIME)))
+    USEMODULE += tinycontainer_runtime_jerryscript
   endif
-  ifneq (,$(filter wamr,$(TINYCONTAINER_CONTAINER)))
-    USEMODULE += tinycontainer_container_wamr
+  ifneq (,$(filter wamr,$(TINYCONTAINER_RUNTIME)))
+    USEMODULE += tinycontainer_runtime_wamr
   endif
-  ifneq (,$(filter rbpf,$(TINYCONTAINER_CONTAINER)))
-    USEMODULE += tinycontainer_container_rbpf
+  ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
+    USEMODULE += tinycontainer_runtime_rbpf
   endif
   USEMODULE += tinycontainer_controller
   USEMODULE += tinycontainer_firewall
@@ -33,11 +33,11 @@ endif
 ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
   USEMODULE += tinycontainer
   USEMODULE += tinycontainer_firewall
-  USEMODULE += tinycontainer_container
+  USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_metadata
 endif
 
-ifneq (,$(filter tinycontainer_container,$(USEMODULE)))
+ifneq (,$(filter tinycontainer_runtime,$(USEMODULE)))
   USEMODULE += ztimer
   USEMODULE += ztimer_msec
 endif
@@ -50,19 +50,19 @@ ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
   USEPKG += nanocbor
 endif
 
-ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
+ifneq (,$(filter tinycontainer_runtime_wamr,$(USEMODULE)))
   USEMODULE += tinycontainer
-  USEMODULE += tinycontainer_container
+  USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_memmgr
   USEPKG += wamr
 endif
-ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
-  USEMODULE += tinycontainer_container
+ifneq (,$(filter tinycontainer_runtime_jerryscript,$(USEMODULE)))
+  USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_memmgr
   USEPKG += jerryscript
 endif
-ifneq (,$(filter tinycontainer_container_rbpf,$(USEMODULE)))
-  USEMODULE += tinycontainer_container
+ifneq (,$(filter tinycontainer_runtime_rbpf,$(USEMODULE)))
+  USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_memmgr
   USEMODULE += rbpf
 endif

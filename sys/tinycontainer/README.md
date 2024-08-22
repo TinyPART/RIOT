@@ -17,7 +17,7 @@ To use this module, add
 
 ```
 USEMODULE += tinycontainer
-TINYCONTAINER_CONTAINER ?= wamr
+TINYCONTAINER_ENGINE ?= wamr
 ```
 
 to your makefile to use WAMR containers. All requires sub-modules will be included.
@@ -25,7 +25,7 @@ If you prefer using JerryScript containers add
 
 ```
 USEMODULE += tinycontainer
-TINYCONTAINER_CONTAINER ?= jerryscript
+TINYCONTAINER_ENGINE ?= jerryscript
 ```
 
 to your makefile.

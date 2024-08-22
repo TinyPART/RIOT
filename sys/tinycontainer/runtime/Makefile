@@ -9,11 +9,11 @@
 
 MODULE := tinycontainer_runtime
 
-# check for tinycontainer_container_wamr and tinycontainer_container_jerryscript
+# check for tinycontainer_engine_wamr and tinycontainer_engine_jerryscript
 
 RUNTIME_PSEUDOMODULES :=
 
-ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
+ifneq (,$(filter tinycontainer_runtime_wamr,$(USEMODULE)))
   RUNTIME_PSEUDOMODULES += tinycontainer_runtime_wamr
 endif
 
@@ -31,8 +31,7 @@ RUNTIME_COUNT := $(words $(RUNTIME_PSEUDOMODULES))
 ifeq ($(RUNTIME_COUNT),1)
   RUNTIME := $(firstword $(RUNTIME_PSEUDOMODULES))
 else
-  $(error "tinycontainer_runtime: exactly one container runtime type must "
-          "be selected")
+  $(error "tinycontainer_runtime: exactly one container runtime type must be selected")
 endif
 
 

@@ -18,8 +18,8 @@
  * @}
  */
 
-#ifndef TINYCONTAINER_CONTAINER_RBPF_H
-#define TINYCONTAINER_CONTAINER_RBPF_H
+#ifndef TINYCONTAINER_RUNTIME_RBPF_H
+#define TINYCONTAINER_RUNTIME_RBPF_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -54,7 +54,7 @@ static bool tinycontainer_rbpf_is_used(struct RbpfHandle *handle)
  *
  * @return A pointer to the handle, or NULL if no free handle was found.
  */
-static runtime_handle_init(void);
+static runtime_handle_t handle_init(void);
 
 /**
  * @brief Free a handle, which includes freeing the WASM module, instance and code.
@@ -64,7 +64,7 @@ static runtime_handle_init(void);
  * @param[in] handle The handle to free.
  * @return true on success, false on error.
  */
-static bool handle_destroy(runtime_handle);
+static bool handle_destroy(runtime_handle_t);
 
 static bool runtime_init(void);
 static void runtime_destroy(void);
@@ -73,4 +73,4 @@ static void runtime_destroy(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_CONTAINER_RBPF_H */
+#endif /* TINYCONTAINER_RUNTIME_RBPF_H */
