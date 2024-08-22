@@ -41,9 +41,9 @@ struct InterpHandle {
 };
 
 /**
- * @brief Attempt to find a free container handle, assign it and return it.
+ * @brief Attempt to find a free runtime handle, assign it and return it.
  *
- * @details If this is the first handle to be used, it will also try to initialise the container.
+ * @details If this is the first handle to be used, it will also try to initialise the runtime.
  *
  *
  * @return A pointer to the handle, or NULL if no free handle was found.
@@ -53,7 +53,7 @@ static runtime_handle_t handle_init(void);
 /**
  * @brief Free a handle, which includes freeing the WASM module, instance and code.
  *
- * @details This will also free the memory used by the container if this is the last handle.
+ * @details This will also free the memory used by the runtime if this is the last handle.
  *
  * @param[in] handle The handle to free.
  * @return true on success, false on error.

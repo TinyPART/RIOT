@@ -7,43 +7,44 @@
 # directory for more details.
 
 
-MODULE := tinycontainer_container
+MODULE := tinycontainer_runtime
 
 # check for tinycontainer_container_wamr and tinycontainer_container_jerryscript
 
-CONTAINER_PSEUDOMODULES :=
+RUNTIME_PSEUDOMODULES :=
 
 ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
-  CONTAINER_PSEUDOMODULES += tinycontainer_container_wamr
+  RUNTIME_PSEUDOMODULES += tinycontainer_runtime_wamr
 endif
 
-ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
-  CONTAINER_PSEUDOMODULES += tinycontainer_container_jerryscript
+ifneq (,$(filter tinycontainer_runtime_jerryscript,$(USEMODULE)))
+  RUNTIME_PSEUDOMODULES += tinycontainer_runtime_jerryscript
 endif
 
-ifneq (,$(filter tinycontainer_container_rbpf,$(USEMODULE)))
-  CONTAINER_PSEUDOMODULES += tinycontainer_container_rbpf
+ifneq (,$(filter tinycontainer_runtime_rbpf,$(USEMODULE)))
+  RUNTIME_PSEUDOMODULES += tinycontainer_runtime_rbpf
 endif
 
-CONTAINER_COUNT := $(words $(CONTAINER_PSEUDOMODULES))
+RUNTIME_COUNT := $(words $(RUNTIME_PSEUDOMODULES))
 
 # if count is not 1, then there is a problem
-ifeq ($(CONTAINER_COUNT),1)
-  CONTAINER := $(firstword $(CONTAINER_PSEUDOMODULES))
+ifeq ($(RUNTIME_COUNT),1)
+  RUNTIME := $(firstword $(RUNTIME_PSEUDOMODULES))
 else
-  $(error "tinycontainer_container yyy: exactly one container type must be selected")
+  $(error "tinycontainer_runtime: exactly one container runtime type must "
+          "be selected")
 endif
 
 
-ifneq (,$(filter tinycontainer_container_wamr,$(CONTAINER)))
+ifneq (,$(filter tinycontainer_runtime_wamr,$(RUNTIME)))
   DIRS += wamr
 endif
 
-ifneq (,$(filter tinycontainer_service_jerryscript,$(CONTAINER)))
+ifneq (,$(filter tinycontainer_runtime_jerryscript,$(RUNTIME)))
   DIRS += jerryscript
 endif
 
-ifneq (,$(filter tinycontainer_container_rbpf,$(CONTAINER)))
+ifneq (,$(filter tinycontainer_runtime_rbpf,$(RUNTIME)))
   DIRS += rbpf
 endif
 

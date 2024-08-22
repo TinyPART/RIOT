@@ -11,8 +11,8 @@ ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
   DIRS += service
 endif
 
-ifneq (,$(filter tinycontainer_container,$(USEMODULE)))
-  DIRS += container
+ifneq (,$(filter tinycontainer_runtime,$(USEMODULE)))
+  DIRS += runtime
 endif
 
 ifneq (,$(filter tinycontainer_controller,$(USEMODULE)))
@@ -35,12 +35,12 @@ ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
   DIRS += metadata
 endif
 
-ifneq (,$(filter tinycontainer_container_wamr,$(USEMODULE)))
-  DIRS += container/wamr
+ifneq (,$(filter tinycontainer_runtime_wamr,$(USEMODULE)))
+  DIRS += runtime/wamr
 endif
 
-ifneq (,$(filter tinycontainer_container_jerryscript,$(USEMODULE)))
-  DIRS += container/jerryscript
+ifneq (,$(filter tinycontainer_runtime_jerryscript,$(USEMODULE)))
+  DIRS += runtime/jerryscript
 endif
 
 #INCLUDES += -I$(RIOTBASE)/sys/tinycontainer/include

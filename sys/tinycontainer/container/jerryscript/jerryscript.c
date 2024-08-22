@@ -41,20 +41,20 @@ int handlers_in_use;
 
 bool runtime_impl_init(void)
 {
-    DEBUG("[%d] -> container:init()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:init()\n", thread_getpid());
 
     /* nothing to do yet */
 
-    DEBUG("[%d] -- container initialized\n", thread_getpid());
+    DEBUG("[%d] -- container runtime initialized\n", thread_getpid());
 
-    DEBUG("[%d] -> container:init()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:init()\n", thread_getpid());
 
     return true;
 }
 
 runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 {
-    DEBUG("[%d] -> container:create()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:create()\n", thread_getpid());
 
     /* new handler */
     struct handler *new_handler = NULL;
@@ -67,14 +67,14 @@ runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
     }
     if (new_handler == NULL) {
 
-        DEBUG("[%d] EE unable to get container handler\n", thread_getpid());
+        DEBUG("[%d] EE unable to get runtime handler\n", thread_getpid());
 
         return NULL;
     }
 
     new_handler->is_used = true;
 
-    /* initialize the container */
+    /* initialize the container runtime */
     if (handlers_in_use == 1) {
         jerry_init(JERRY_INIT_EMPTY);
     }
@@ -141,7 +141,7 @@ runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
     /* parse and load low level api */
 
     if (register_natives() != 0) {
-        DEBUG("[%d] EE container can't intialiaze low level API\n",
+        DEBUG("[%d] EE container runtime can't intialiaze low level API\n",
               thread_getpid());
 
         new_handler->is_used = false;
@@ -162,7 +162,7 @@ runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 
     if (jerry_value_is_error(new_handler->looper)) {
 
-        DEBUG("[%d] EE container can't parse code function [%d]\n",
+        DEBUG("[%d] EE container runtime can't parse code function [%d]\n",
               thread_getpid(), jerry_get_error_type(new_handler->looper));
 
         jerry_value_t value = jerry_get_value_from_error(new_handler->looper, false);
@@ -192,7 +192,7 @@ runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
         return NULL;
     }
 
-    DEBUG("[%d] <- container:create()\n", thread_getpid());
+    DEBUG("[%d] <- runtime:create()\n", thread_getpid());
 
     return new_handler;
 }
@@ -201,16 +201,16 @@ void runtime_on_start(runtime_handle_t handler)
 {
     (void)handler;
 
-    DEBUG("[%d] -> container:onstart()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:onstart()\n", thread_getpid());
 
     DEBUG("[%d] WW onstart() is not yet implemented\n", thread_getpid());
 
-    DEBUG("[%d] <- container:onstart()\n", thread_getpid());
+    DEBUG("[%d] <- runtime:onstart()\n", thread_getpid());
 }
 
 int runtime_on_loop(runtime_handle_t handler)
 {
-    DEBUG("[%d] -> container:onloop()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:onloop()\n", thread_getpid());
 
     int32_t return_value = -1;
 
@@ -247,7 +247,7 @@ int runtime_on_loop(runtime_handle_t handler)
 
     jerry_release_value(ret_val);
 
-    DEBUG("[%d] <- container:onloop()\n", thread_getpid());
+    DEBUG("[%d] <- runtime:onloop()\n", thread_getpid());
     return return_value;
 }
 
@@ -255,16 +255,16 @@ void runtime_on_stop(runtime_handle_t handler)
 {
     (void)handler;
 
-    DEBUG("[%d] -> container:onstop()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:onstop()\n", thread_getpid());
 
     DEBUG("[%d] WW onstop() is not yet implemented\n", thread_getpid());
 
-    DEBUG("[%d] <- container:onstop()\n", thread_getpid());
+    DEBUG("[%d] <- runtime:onstop()\n", thread_getpid());
 }
 
 void runtime_on_finalize(runtime_handle_t handler)
 {
-    DEBUG("[%d] -> container:onfinalize()\n", thread_getpid());
+    DEBUG("[%d] -> runtime:onfinalize()\n", thread_getpid());
 
     struct handler *my_handler = (struct handler *)handler;
 
@@ -275,5 +275,5 @@ void runtime_on_finalize(runtime_handle_t handler)
         jerry_cleanup();
     }
 
-    DEBUG("[%d] <- container:onfinalize()\n", thread_getpid());
+    DEBUG("[%d] <- runtime:onfinalize()\n", thread_getpid());
 }

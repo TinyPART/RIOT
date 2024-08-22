@@ -1,3 +1,3 @@
-MODULE := tinycontainer_container_rbpf
+MODULE := tinycontainer_runtime_rbpf
 
 include $(RIOTBASE)/Makefile.base

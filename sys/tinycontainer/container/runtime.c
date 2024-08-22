@@ -12,7 +12,7 @@
  * @{
  *
  * @file
- * @brief       TinyContainer Container sub-module implementation
+ * @brief       TinyContainer Runtime sub-module implementation
  *
  * @author      Samuel legouix <samuel.legouix@orange.com>
  *
@@ -47,12 +47,12 @@ void *runtime_handler(void *arg)
         return NULL;
     }
 
-    /* create the container */
+    /* create the container runtime */
 
     runtime_handle_t handle = runtime_create(&data, &code);
 
     if (!handle) {
-        DEBUG("runtime_handler: failed to create container\n");
+        DEBUG("runtime_handler: failed to create container runtime\n");
         return NULL;
     }
 

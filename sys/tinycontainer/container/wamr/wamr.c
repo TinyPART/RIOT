@@ -113,12 +113,12 @@ static runtime_handle_t handle_init(void)
     }
 
     if (new_handle == NULL) {
-        DEBUG_PID("EE unable to get container handle\n");
+        DEBUG_PID("EE unable to get runtime handle\n");
         return NULL;
     }
 
     if (handles_in_use == 0 && !runtime_init()) {
-        DEBUG_PID("EE unable to init container\n");
+        DEBUG_PID("EE unable to init container runtime\n");
         return NULL;
     }
 
@@ -221,7 +221,7 @@ runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 container_create_fail:
     /* determine what went wrong and log it */
     if (!new_handle) {
-        DEBUG_PID("EE unable to get container handle\n");
+        DEBUG_PID("EE unable to get runtime handle\n");
     }
     else if (code->ptr == NULL) {
         DEBUG_PID("EE unable to read wasm code\n");

@@ -47,24 +47,24 @@ static bool tinycontainer_rbpf_is_used(struct RbpfHandle *handle)
 }
 
 /**
- * @brief Attempt to find a free container handle, assign it and return it.
+ * @brief Attempt to find a free container runtime handle, assign it and return it.
  *
- * @details If this is the first handle to be used, it will also try to initialise the container.
+ * @details If this is the first handle to be used, it will also try to initialise the container runtime.
  *
  *
  * @return A pointer to the handle, or NULL if no free handle was found.
  */
-static container_handle_t handle_init(void);
+static runtime_handle_init(void);
 
 /**
  * @brief Free a handle, which includes freeing the WASM module, instance and code.
  *
- * @details This will also free the memory used by the container if this is the last handle.
+ * @details This will also free the memory used by the container runtime if this is the last handle.
  *
  * @param[in] handle The handle to free.
  * @return true on success, false on error.
  */
-static bool handle_destroy(container_handle_t handle);
+static bool handle_destroy(runtime_handle);
 
 static bool runtime_init(void);
 static void runtime_destroy(void);

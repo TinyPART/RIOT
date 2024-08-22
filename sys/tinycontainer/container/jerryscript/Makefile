@@ -6,6 +6,6 @@
 # General Public License v2.1. See the file LICENSE in the top level
 # directory for more details.
 
-MODULE := tinycontainer_container_jerryscript
+MODULE := tinycontainer_runtime_jerryscript
 
 include $(RIOTBASE)/Makefile.base

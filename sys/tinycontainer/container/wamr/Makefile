@@ -6,6 +6,6 @@
 # General Public License v2.1. See the file LICENSE in the top level
 # directory for more details.
 
-MODULE := tinycontainer_container_wamr
+MODULE := tinycontainer_runtime_wamr
 
 include $(RIOTBASE)/Makefile.base
