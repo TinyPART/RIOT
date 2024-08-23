@@ -25,7 +25,6 @@
 #include "jerryscript.h"
 
 #include "tinycontainer/runtime/runtime_impl.h"
-#include "tinycontainer/memmgr/memmgr_runtime.h"
 #include "jerryscript_natives.h"
 
 #define MAX_CODE_SIZE 64
