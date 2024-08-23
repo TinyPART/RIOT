@@ -23,7 +23,7 @@
 #include <thread.h>
 #include <stdint.h>
 
-#include "tinycontainer/service/service_container.h"
+#include "tinycontainer/service/service_runtime.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -13,27 +13,27 @@
  * @{
  *
  * @file
- * @brief   API of Tinycontainer Service sub-module for Container sub-module
+ * @brief   API of Tinycontainer Service sub-module for Runtime sub-module
  *
- * The callee security context for a container is a shared memory as defined
- * here. It consists of two parts: one is read only, and the other is read
- * write.
+ * The callee security context for a container runtime is a shared memory as
+ * defined here. It consists of two parts: one is read only, and the other is
+ * read write.
  *
  * Currently, the read only part only contains the period in millisecond between
  * two consecutive calls to the container loop function.
  *
  * The read write part is used to performs natives syscalls.
  *
- * Whenever a container performs a natives function, the runtime shall, first,
- * fill the io structure of the read write part and, next, call the
+ * Whenever a container runtime performs a natives function call, the runtime
+ * shall fill the io structure of the read write part, and then invoke the
  * service_syscall() function.
  *
  * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 
-#ifndef TINYCONTAINER_SERVICE_SERVICE_CONTAINER_H
-#define TINYCONTAINER_SERVICE_SERVICE_CONTAINER_H
+#ifndef TINYCONTAINER_SERVICE_SERVICE_RUNTIME_H
+#define TINYCONTAINER_SERVICE_SERVICE_RUNTIME_H
 
 #include <stdint.h>
 
@@ -53,12 +53,13 @@ extern "C" {
 #define SERVICE_SYSCALL_WRITE       5
 
 /**
- * @brief perform a system call from a container
+ * @brief perform a system call from a container runtime
  */
 int32_t service_syscall(void);
 
 /**
  * @brief input output structure to communicate between service and container
+          runtime
  */
 typedef struct {
     uint32_t syscall_id;    /**< the syscall operation to perform          */
@@ -66,7 +67,7 @@ typedef struct {
                                  descriptor for io                         */
     uint8_t size;           /**< the size of the buffer to read, write     */
     //TODO: buffer size shall be configurable
-    uint8_t buffer[256];    /**< the container memory for io operations    */
+    uint8_t buffer[256];    /**< the runtime memory for io operations    */
 } service_io_t;
 
 /**
@@ -86,5 +87,5 @@ typedef struct {
 }
 #endif
 
-#endif /* TINYCONTAINER_SERVICE_SERVICE_CONTAINER_H */
+#endif /* TINYCONTAINER_SERVICE_SERVICE_RUNTIME_H */
 /** @} */

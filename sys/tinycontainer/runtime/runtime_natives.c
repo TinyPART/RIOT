@@ -29,7 +29,7 @@
 #include <string.h>
 
 #include "tinycontainer/runtime/runtime_natives.h"
-#include "tinycontainer/service/service_container.h"
+#include "tinycontainer/service/service_runtime.h"
 #include "tinycontainer/firewall/firewall_all.h"
 
 static service_io_t *get_io(void)

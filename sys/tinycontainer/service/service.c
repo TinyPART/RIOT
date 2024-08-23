@@ -31,7 +31,7 @@
 #include "tinycontainer/service/service.h"
 #include "tinycontainer/service/service_memmgr.h"
 #include "tinycontainer/service/service_controller.h"
-#include "tinycontainer/service/service_container.h"
+#include "tinycontainer/service/service_runtime.h"
 
 #include "tinycontainer/firewall/firewall_all.h"
 #include "tinycontainer/runtime/runtime.h"

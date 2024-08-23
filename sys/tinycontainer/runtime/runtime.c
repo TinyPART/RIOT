@@ -25,7 +25,7 @@
 #include "tinycontainer/runtime/runtime.h"
 #include "tinycontainer/runtime/runtime_impl.h"
 #include "tinycontainer/memmgr/memmgr_container.h"
-#include "tinycontainer/service/service_container.h"
+#include "tinycontainer/service/service_runtime.h"
 
 #include "ztimer.h"
 
@@ -60,7 +60,10 @@ void *runtime_handler(void *arg)
 
     service_shared_mem_t *shared_memory = (service_shared_mem_t *)arg;
 
-    //FIXME: the documentation said that the clock shall be acquired
+    /* note: The documentation said that the clock shall be acquired.
+     *       The code seems to work just like that. It would be necessary to
+     *       look further into this topic.
+     */
     uint32_t last_wakeup = ztimer_now(ZTIMER_MSEC);
 
     while (runtime_on_loop(handle) == 0) {
