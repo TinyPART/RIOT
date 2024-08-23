@@ -39,7 +39,7 @@
  * practice. TinyContainer metadata provides a decicated syscall mask to control
  * which natives are allowed to each containers.
  *
- * Secondly, every call to a native function from a container implies to 
+ * Secondly, every call to a native function from a container implies to
  * dynamically check some access control rules. Indeed, a call to one of these
  * functions begins with a context switching between the container and the
  * service context. The Service module controls whether the call to
