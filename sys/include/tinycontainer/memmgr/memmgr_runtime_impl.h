@@ -13,14 +13,15 @@
  * @{
  *
  * @file
- * @brief   API of TinyContainer Memory Manager sub-module for container runtimes sub-module
+ * @brief   API of TinyContainer Memory Manager sub-module for container
+            runtime implementation sub-modules
  *
  * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 
-#ifndef TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
-#define TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_IMPL_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_IMPL_H
 
 #include "tinycontainer/memmgr/memmgr_common.h"
 
@@ -32,5 +33,5 @@ extern "C" {
 }
 #endif
 
-#endif /* TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H */
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_IMPL_H */
 /** @} */

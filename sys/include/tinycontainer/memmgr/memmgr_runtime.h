@@ -13,14 +13,15 @@
  * @{
  *
  * @file
- * @brief   API of TinyContainer Memory Manager sub-module for Container sub-module
+ * @brief   API of TinyContainer Memory Manager sub-module for Runtime
+            sub-module
  *
  * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 
-#ifndef TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H
-#define TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H
+#ifndef TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
+#define TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H
 
 #include <stdint.h>
 
@@ -45,5 +46,5 @@ int memmgr_getcontainer(memmgr_block_t *container_data, memmgr_block_t *containe
 }
 #endif
 
-#endif /* TINYCONTAINER_MEMMGR_MEMMGR_CONTAINER_H */
+#endif /* TINYCONTAINER_MEMMGR_MEMMGR_RUNTIME_H */
 /** @} */

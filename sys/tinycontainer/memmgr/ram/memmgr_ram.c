@@ -24,7 +24,7 @@
 
 #include "tinycontainer/memmgr/memmgr.h"
 #include "tinycontainer/memmgr/memmgr_controller.h"
-#include "tinycontainer/memmgr/memmgr_container.h"
+#include "tinycontainer/memmgr/memmgr_runtime.h"
 #include "tinycontainer/service/service_memmgr.h"
 #include "tinycontainer/firewall/firewall_all.h"
 #include "tinycontainer/metadata/metadata_memmgr.h"

@@ -24,7 +24,7 @@
 
 #include "tinycontainer/runtime/runtime.h"
 #include "tinycontainer/runtime/runtime_impl.h"
-#include "tinycontainer/memmgr/memmgr_container.h"
+#include "tinycontainer/memmgr/memmgr_runtime_impl.h"
 #include "tinycontainer/service/service_runtime.h"
 
 #include "ztimer.h"

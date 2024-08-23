@@ -25,7 +25,7 @@
 #include <stdbool.h>
 
 #include "tinycontainer/runtime/runtime_impl.h"
-#include "tinycontainer/memmgr/memmgr_container.h"
+#include "tinycontainer/memmgr/memmgr_runtime.h"
 #include "runtime_rbpf.h"
 
 
