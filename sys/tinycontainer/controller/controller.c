@@ -28,7 +28,7 @@
 #include "tinycontainer/controller/controller.h"
 #include "tinycontainer/service/service_controller.h"
 #include "tinycontainer/memmgr/memmgr_controller.h"
-#include "tinycontainer/firewall/firewall_all.h"
+#include "tinycontainer/security/firewall_all.h"
 
 #include <stdbool.h>
 

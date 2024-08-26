@@ -26,8 +26,8 @@
 
 #include "thread.h"
 
-#include "tinycontainer/firewall/firewall.h"
-#include "tinycontainer/firewall/firewall_all.h"
+#include "tinycontainer/security/firewall.h"
+#include "tinycontainer/security/firewall_all.h"
 
 /* size que msg */
 #define RCV_QUEUE_SIZE  (8)

@@ -21,7 +21,7 @@
 #include "tinycontainer.h"
 
 #include "tinycontainer/controller/controller.h"
-#include "tinycontainer/firewall/firewall.h"
+#include "tinycontainer/security/firewall.h"
 #include "tinycontainer/memmgr/memmgr.h"
 #include "tinycontainer/service/service.h"
 
