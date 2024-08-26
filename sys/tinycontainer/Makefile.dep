@@ -21,7 +21,7 @@ ifneq (,$(filter tinycontainer,$(USEMODULE)))
     USEMODULE += tinycontainer_runtime_rbpf
   endif
   USEMODULE += tinycontainer_controller
-  USEMODULE += tinycontainer_firewall
+  USEMODULE += tinycontainer_security
   USEMODULE += tinycontainer_memmgr
   ifneq (,$(filter ram,$(TINYCONTAINER_MEMMGR)))
     USEMODULE += tinycontainer_memmgr_ram
@@ -32,7 +32,7 @@ endif
 
 ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
   USEMODULE += tinycontainer
-  USEMODULE += tinycontainer_firewall
+  USEMODULE += tinycontainer_security
   USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_metadata
 endif

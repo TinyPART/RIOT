@@ -7,5 +7,5 @@
 # directory for more details.
 
 
-MODULE := tinycontainer_firewall
+MODULE := tinycontainer_security
 include $(RIOTBASE)/Makefile.base

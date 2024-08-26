@@ -27,8 +27,8 @@ ifneq (,$(filter tinycontainer_memmgr_ram,$(USEMODULE)))
   DIRS += memmgr/ram
 endif
 
-ifneq (,$(filter tinycontainer_firewall,$(USEMODULE)))
-  DIRS += firewall
+ifneq (,$(filter tinycontainer_security,$(USEMODULE)))
+  DIRS += security
 endif
 
 ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
