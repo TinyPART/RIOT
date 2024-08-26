@@ -33,7 +33,7 @@
 #include "tinycontainer/service/service_controller.h"
 #include "tinycontainer/service/service_runtime.h"
 
-#include "tinycontainer/security/firewall_all.h"
+#include "tinycontainer/security/security_all.h"
 #include "tinycontainer/runtime/runtime.h"
 
 static kernel_pid_t service_pid = -1;

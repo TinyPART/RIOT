@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2020-2023, Orange
+ * Copyright (C) 2020-2024, Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -13,29 +13,30 @@
  * @{
  *
  * @file
- * @brief   API for Firewall sub-module of TinyContainer
+ * @brief   API for Security sub-module of TinyContainer
  *
  * @author  BERKANE Ghilas (ghilas.berkane@gmail.com)
+ * @author  samuel.legouix <samuel.legouix@orange.com>
  *
  */
 
-#ifndef TINYCONTAINER_FIREWALL_FIREWALL_H
-#define TINYCONTAINER_FIREWALL_FIREWALL_H
+#ifndef TINYCONTAINER_SECURITY_SECURITY_H
+#define TINYCONTAINER_SECURITY_SECURITY_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @brief initialize TinyContainer Firewall module
+ * @brief initialize TinyContainer Security module
  *
  * @return int (-1 on error)
  */
-int tinycontainer_firewall_init(void);
+int tinycontainer_security_init(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TINYCONTAINER_FIREWALL_FIREWALL_H */
+#endif /* TINYCONTAINER_SECURITY_SECURITY_H */
 /** @} */

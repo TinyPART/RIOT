@@ -21,7 +21,7 @@
 #include "tinycontainer.h"
 
 #include "tinycontainer/controller/controller.h"
-#include "tinycontainer/security/firewall.h"
+#include "tinycontainer/security/security.h"
 #include "tinycontainer/memmgr/memmgr.h"
 #include "tinycontainer/service/service.h"
 
@@ -51,9 +51,9 @@ kernel_pid_t tinycontainer_init(uint8_t controller_prio,
 {
     kernel_pid_t pid;
 
-    /* Intialiaze the firewall module */
+    /* Intialiaze the security module */
 
-    tinycontainer_firewall_init();
+    tinycontainer_security_init();
 
     /* Intialiaze the memmgr module */
 

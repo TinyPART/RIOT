@@ -11,7 +11,7 @@
  * @{
  *
  * @file
- * @brief       TinyContainer Firewall sub-module implementation
+ * @brief       TinyContainer Security sub-module implementation
  *
  * @author      BERKANE Ghilas (ghilas.berkane@gmail.com)
  * @author      Samuel Legouix <samuel.legouix@orange.com>
@@ -26,8 +26,8 @@
 
 #include "thread.h"
 
-#include "tinycontainer/security/firewall.h"
-#include "tinycontainer/security/firewall_all.h"
+#include "tinycontainer/security/security.h"
+#include "tinycontainer/security/security_all.h"
 
 /* size que msg */
 #define RCV_QUEUE_SIZE  (8)
@@ -80,7 +80,7 @@ static task_callback_t get_thread_callback(void)
 static void *secure_wrapper(void *arg)
 {
 
-    DEBUG("[%d] -> firewall:secure_wrapper()\n", thread_getpid());
+    DEBUG("[%d] -> security:secure_wrapper()\n", thread_getpid());
 
     /* get the thread task function from arg */
 #ifndef BOARD_NATIVE
@@ -105,7 +105,7 @@ static void *secure_wrapper(void *arg)
         callback(pid, caller_context);
     }
 
-    DEBUG("[%d] <- firewall:secure_wrapper()\n", thread_getpid());
+    DEBUG("[%d] <- security:secure_wrapper()\n", thread_getpid());
 
     return ret;
 }
@@ -117,7 +117,7 @@ static void *secure_wrapper(void *arg)
 static uintptr_t secure_context_address(char *stack, int stacksize)
 {
 
-    DEBUG("[%d] -> firewall:secure_context_address()\n", thread_getpid());
+    DEBUG("[%d] -> security:secure_context_address()\n", thread_getpid());
 
     /* the code below is duplicated from thread_create (see core/thread.c) */
     uintptr_t misalignment = (uintptr_t)stack % alignof(void *);
@@ -134,10 +134,10 @@ static uintptr_t secure_context_address(char *stack, int stacksize)
 
     uintptr_t top_of_tbc = (uintptr_t)stack + stacksize + sizeof(thread_t);
 
-    DEBUG("[%d] -- firewall:secure context address 0x%#x\n",
+    DEBUG("[%d] -- security:secure context address 0x%#x\n",
           thread_getpid(), top_of_tbc);
 
-    DEBUG("[%d] <- firewall:secure_context_address()\n", thread_getpid());
+    DEBUG("[%d] <- security:secure_context_address()\n", thread_getpid());
 
     /* we can now return the address of the secure context */
     return top_of_tbc;
@@ -166,7 +166,7 @@ kernel_pid_t secure_thread( void *caller_context,
                             thread_task_func_t task_func,
                             const char *name )
 {
-    DEBUG("[%d] -> firewall:secure_thread()\n", thread_getpid());
+    DEBUG("[%d] -> security:secure_thread()\n", thread_getpid());
 
     kernel_pid_t pid;
     uint32_t *context;
@@ -203,19 +203,19 @@ kernel_pid_t secure_thread( void *caller_context,
 
     DEBUG("[%d] -- pid %s = %d\n", thread_getpid(), name, pid);
 
-    DEBUG("[%d] <- firewall:secure_thread()\n", thread_getpid());
+    DEBUG("[%d] <- security:secure_thread()\n", thread_getpid());
 
     return pid;
 }
 
-int tinycontainer_firewall_init(void)
+int tinycontainer_security_init(void)
 {
     /*nothing to do*/
 
     return 0;
 }
 
-void *firewall_getcalleecontext(void)
+void *security_getcalleecontext(void)
 {
     return get_callee_context();
 }

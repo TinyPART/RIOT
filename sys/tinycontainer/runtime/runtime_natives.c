@@ -30,13 +30,13 @@
 
 #include "tinycontainer/runtime/runtime_natives.h"
 #include "tinycontainer/service/service_runtime.h"
-#include "tinycontainer/security/firewall_all.h"
+#include "tinycontainer/security/security_all.h"
 
 static service_io_t *get_io(void)
 {
     service_shared_mem_t *shared_mem;
 
-    shared_mem = (service_shared_mem_t *)firewall_getcalleecontext();
+    shared_mem = (service_shared_mem_t *)security_getcalleecontext();
     service_io_t *io = (service_io_t *)&(shared_mem->rw.io);
 
     return io;

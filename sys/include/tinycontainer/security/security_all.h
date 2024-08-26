@@ -13,7 +13,7 @@
  * @{
  *
  * @file
- * @brief   API of TinyContainer Firewall sub-module.
+ * @brief   API of TinyContainer Security sub-module.
  *
  * A secure thread adds some security context to a normal thread.
  *
@@ -23,7 +23,7 @@
  *     - a callback function
  *
  * The callee context can be retrieved by the secure thread as the first
- * argument of task_func() or by calling the firewall_getcalleecontex() function
+ * argument of task_func() or by calling the security_getcalleecontex() function
  * The meaning of the callee context is implementation dependent and, if not
  * relevant, can be set to NULL.
  *
@@ -37,8 +37,8 @@
  *
  */
 
-#ifndef TINYCONTAINER_FIREWALL_FIREWALL_ALL_H
-#define TINYCONTAINER_FIREWALL_FIREWALL_ALL_H
+#ifndef TINYCONTAINER_SECURITY_SECURITY_ALL_H
+#define TINYCONTAINER_SECURITY_SECURITY_ALL_H
 
 #include <stdint.h>
 
@@ -100,11 +100,11 @@ msg_t rcv_asynchrone_queue(void);
 /**
  * @brief return the callee context (from secure context) for the current thread
  */
-void *firewall_getcalleecontext(void);
+void *security_getcalleecontext(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TINYCONTAINER_FIREWALL_FIREWALL_ALL_H */
+#endif /* TINYCONTAINER_SECURITY_SECURITY_ALL_H */
 /** @} */
