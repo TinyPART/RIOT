@@ -32,17 +32,19 @@ endif
 
 ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
   USEMODULE += tinycontainer
-  USEMODULE += tinycontainer_security
+  USEMODULE += tinycontainer_security_sthread
   USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_metadata
 endif
 
 ifneq (,$(filter tinycontainer_runtime,$(USEMODULE)))
+  USEMODULE += tinycontainer_security_sthread
   USEMODULE += ztimer
   USEMODULE += ztimer_msec
 endif
 
 ifneq (,$(filter tinycontainer_memmgr,$(USEMODULE)))
+  USEMODULE += tinycontainer_security_sthread
   USEMODULE += tinycontainer_metadata
 endif
 

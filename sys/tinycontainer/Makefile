@@ -31,6 +31,10 @@ ifneq (,$(filter tinycontainer_security,$(USEMODULE)))
   DIRS += security
 endif
 
+ifneq (,$(filter tinycontainer_security_sthread,$(USEMODULE)))
+  DIRS += security/sthread
+endif
+
 ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
   DIRS += metadata
 endif
