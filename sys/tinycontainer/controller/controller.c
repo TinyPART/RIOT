@@ -28,7 +28,7 @@
 #include "tinycontainer/controller/controller.h"
 #include "tinycontainer/service/service_controller.h"
 #include "tinycontainer/memmgr/memmgr_controller.h"
-#include "tinycontainer/security/security_all.h"
+#include "tinycontainer/security/sthread/sthread.h"
 
 #include <stdbool.h>
 
@@ -675,7 +675,7 @@ int tinycontainer_controller_init(int prio, controller_io_driver_t *driver)
 
     DEBUG_PID("-- calling secure_thread()\n");
 
-    controller_pid = secure_thread(
+    controller_pid = sthread(
         NULL,                       // caller context
         NULL,                       // callee context
         NULL,                       // callback

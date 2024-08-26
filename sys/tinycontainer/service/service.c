@@ -33,7 +33,7 @@
 #include "tinycontainer/service/service_controller.h"
 #include "tinycontainer/service/service_runtime.h"
 
-#include "tinycontainer/security/security_all.h"
+#include "tinycontainer/security/sthread/sthread.h"
 #include "tinycontainer/runtime/runtime.h"
 
 static kernel_pid_t service_pid = -1;
@@ -101,7 +101,7 @@ kernel_pid_t create_container_runtime(int slot_id)
     void *callee_context = &containers[slot_id].shared_memory;
 
     /* create Container */
-    pid = secure_thread(
+    pid = sthread(
         &containers[slot_id],       // caller_context
         callee_context,             // callee_context
         container_callback,         // task_callback
@@ -350,7 +350,7 @@ int tinycontainer_service_init(int service_prio, int container_prio)
 
     container_priority = container_prio;
 
-    service_pid = secure_thread(
+    service_pid = sthread(
         NULL,                       // caller context
         NULL,                       // callee context
         NULL,                       // task callback
