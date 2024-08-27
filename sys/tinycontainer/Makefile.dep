@@ -33,6 +33,7 @@ endif
 ifneq (,$(filter tinycontainer_service,$(USEMODULE)))
   USEMODULE += tinycontainer
   USEMODULE += tinycontainer_security_sthread
+  USEMODULE += tinycontainer_security_cwt
   USEMODULE += tinycontainer_runtime
   USEMODULE += tinycontainer_metadata
 endif
@@ -46,6 +47,10 @@ endif
 ifneq (,$(filter tinycontainer_memmgr,$(USEMODULE)))
   USEMODULE += tinycontainer_security_sthread
   USEMODULE += tinycontainer_metadata
+endif
+
+ifneq (,$(filter tinycontainer_security_cwt,$(USEMODULE)))
+  USEPKG += libcose
 endif
 
 ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
