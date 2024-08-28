@@ -75,5 +75,5 @@ void *sthread_getcalleecontext(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_SECURITY_STHREAD_STHREAD_H*/
+#endif /* TINYCONTAINER_SECURITY_STHREAD_STHREAD_H */
 /** @} */

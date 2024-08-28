@@ -18,8 +18,8 @@
  * @}
  */
 
-#ifndef TINYCONTAINER_RUNTIME_RBPF_H
-#define TINYCONTAINER_RUNTIME_RBPF_H
+#ifndef RUNTIME_RBPF_H
+#define RUNTIME_RBPF_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -73,4 +73,4 @@ static void runtime_destroy(void);
 }
 #endif
 
-#endif /* TINYCONTAINER_RUNTIME_RBPF_H */
+#endif /* RUNTIME_RBPF_H */
