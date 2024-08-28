@@ -48,49 +48,49 @@ typedef struct {
     service_shared_mem_t shared_memory; /* shared memory with the container */
 } container_t;
 
-inline bool container_isprovisionning(container_t *container)
+static inline bool container_isprovisionning(container_t *container)
 {
     return container->flags & CONTAINER_FLAGS_PROVISIONNING;
 }
 
-inline bool container_isready(container_t *container)
+static inline bool container_isready(container_t *container)
 {
     return container->flags & CONTAINER_FLAGS_READY;
 }
 
-inline bool container_isrunning(container_t *container)
+static inline bool container_isrunning(container_t *container)
 {
     return container->flags & CONTAINER_FLAGS_RUNNING;
 }
 
-inline bool container_isstopping(container_t *container)
+static inline bool container_isstopping(container_t *container)
 {
     return container->flags & CONTAINER_FLAGS_STOPPING;
 }
 
-inline bool container_isdeleting(container_t *container)
+static inline bool container_isdeleting(container_t *container)
 {
     return container->flags & CONTAINER_FLAGS_DELETING;
 }
 
-inline kernel_pid_t container_getpid(container_t *container)
+static inline kernel_pid_t container_getpid(container_t *container)
 {
     return container->pid;
 }
 
-inline void container_setrunning(container_t *container)
+static inline void container_setrunning(container_t *container)
 {
     container->flags |= CONTAINER_FLAGS_RUNNING;
     container->flags &= ~CONTAINER_FLAGS_READY;
 }
 
-inline void container_setstopping(container_t *container)
+static inline void container_setstopping(container_t *container)
 {
     container->flags |= CONTAINER_FLAGS_STOPPING;
     container->flags &= ~CONTAINER_FLAGS_STOPPING;
 }
 
-inline void container_setdeleting(container_t *container)
+static inline void container_setdeleting(container_t *container)
 {
     container->flags |= CONTAINER_FLAGS_STOPPING;
     container->flags &= ~CONTAINER_FLAGS_DELETING;
