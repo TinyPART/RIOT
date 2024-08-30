@@ -50,7 +50,7 @@ ifneq (,$(filter tinycontainer_memmgr,$(USEMODULE)))
 endif
 
 ifneq (,$(filter tinycontainer_security_cwt,$(USEMODULE)))
-  USEPKG += libcose
+  USEPKG += nanocbor
 endif
 
 ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
