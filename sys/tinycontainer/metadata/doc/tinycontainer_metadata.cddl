@@ -106,19 +106,43 @@ COSE_Sign = COSE_Mac_Tagged / COSE_Mac0_Tagged
 ; from RFC8392 - CWT
 ; ==================
 
+cwt = cwt_tagged / COSE_messages
 cwt = #6.61( COSE_Tagged_Message )
 
 ; ===================
 ; from RFC8152 - COSE
 ; ===================
 
+COSE_Messages = COSE_Untagged_Message / COSE_Tagged_Message
+
 COSE_Tagged_Message = COSE_Sign_Tagged / COSE_Sign1_Tagged /
     COSE_Encrypt_Tagged / COSE_Encrypt0_Tagged /
     COSE_Mac_Tagged / COSE_Mac0_Tagged
+COSE_Untagged_Message = COSE_Sign / COSE_Sign1 /
+   COSE_Encrypt / COSE_Encrypt0 /
+   COSE_Mac / COSE_Mac0
 
-COSE_Sign_Tagged = #6.98(bstr)
-COSE_Sign1_Tagged = #6.18(bstr)
-COSE_Encrypt_Tagged = #6.96(bstr)
-COSE_Encrypt0_Tagged = #6.16(bstr)
-COSE_Mac_Tagged = #6.97(bstr)
-COSE_Mac0_Tagged = #6.17(bstr)
+COSE_Mac0_Tagged = #6.17(COSE_Mac0)
+COSE_Sign1_Tagged = #6.18(COSE_Sign1)
+;Not yet supported:
+;COSE_Mac_Tagged = #6.97(COSE_Mac)
+;COSE_Sign_Tagged = #6.98(COSE_Sign)
+;COSE_Encrypt_Tagged = #6.96(COSE_Encrypt)
+;COSE_Encrypt0_Tagged = #6.16(COSE_Encrypt0)
+
+COSE_MAC0 = [
+    Headers,
+    payload: bstr / nil,
+    tag: bstr,
+]
+COSE_Sign1 = [
+    Headers,
+    payload: bstr / nil,
+    signature : bstr
+]
+
+; headers isn't supported yet. Also we are using empty values.
+Headers = (
+    protected : bstr .size 0,
+    unprotected : {}
+)
