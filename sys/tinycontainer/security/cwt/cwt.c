@@ -21,7 +21,6 @@
 #define DEBUG_ENABLE
 #include "debug.h"
 
-#include "tinycontainer/security/cwt/cwt_verifier.h"
 #include "tinycontainer/security/cwt/cwt.h"
 #include "cwt_cbor.h"
 #include "nanocbor/nanocbor.h"
