@@ -26,6 +26,13 @@ ifneq (,$(filter tinycontainer,$(USEMODULE)))
   ifneq (,$(filter ram,$(TINYCONTAINER_MEMMGR)))
     USEMODULE += tinycontainer_memmgr_ram
   endif
+  USEMODULE += tinycontainer_security_crypto
+  ifneq (,$(filter none,$(TINYCONTAINER_CRYPTO)))
+    USEMODULE += tinycontainer_security_crypto_none
+  endif
+  ifneq (,$(filter psa,$(TINYCONTAINER_CRYPTO)))
+    USEMODULE += tinycontainer_security_crypto_psa
+  endif
 endif
 
 #submodules dependencies
@@ -55,6 +62,7 @@ endif
 
 ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
   USEPKG += nanocbor
+  USEMODULE += tinycontainer_security_crypto
 endif
 
 ifneq (,$(filter tinycontainer_runtime_wamr,$(USEMODULE)))

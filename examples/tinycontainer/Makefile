@@ -29,6 +29,19 @@ TINYCONTAINER_RUNTIME ?= wamr
 # TinyContainer supports following memory manager
 TINYCONTAINER_MEMMGR ?= ram
 
+# TinyContainer supports following crypto backend 
+TINYCONTAINER_CRYPTO ?= none
+#TINYCONTAINER_CRYPTO ?= psa
+#
+# You have to select and configure the selected backend. E.g.
+#USE_MODULE += psa_crypto
+#USE_MODULE += psa_mac
+#USE_MODULE += psa_mac_hmac_sha_256
+#USE_MODULE += psa_asymetric
+#USE_MODULE += psa_asymetric_ecc_ed25519
+#USE_MODULE += psa_cipher
+#USE_MODULE += psa_cipher_aes_128_cbc
+
 ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
   BLOBS += rbpf/example_app.bin
 endif

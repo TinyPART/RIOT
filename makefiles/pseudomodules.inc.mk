@@ -508,6 +508,8 @@ PSEUDOMODULES += suit_storage_%
 PSEUDOMODULES += sys_bus_%
 PSEUDOMODULES += tiny_strerror_as_strerror
 PSEUDOMODULES += tiny_strerror_minimal
+PSEUDOMODULES += tinycontainer_security_crypto_psa
+PSEUDOMODULES += tinycontainer_security_crypto_none
 PSEUDOMODULES += usbus_urb
 PSEUDOMODULES += vdd_lc_filter_%
 ## @defgroup pseudomodule_vfs_auto_format vfs_auto_format

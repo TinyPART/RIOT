@@ -26,6 +26,8 @@
 int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
                const uint8_t message, size_t message_size,
                uint8_t * signature, size_t signature_size) {
+#if IS_USED(TINYCONTAINER_SECURITY_CRYPTO_PSA)
+#endif /* TINYCONTAINER_SECURITY_CRYPTO_PSA */
     //TODO: not yet implemented
     (void)shared_key;
     (void)algo;
