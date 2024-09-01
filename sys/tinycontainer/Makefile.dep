@@ -65,6 +65,21 @@ ifneq (,$(filter tinycontainer_metadata,$(USEMODULE)))
   USEMODULE += tinycontainer_security_crypto
 endif
 
+ifneq (,$(filter tinycontainer_security_crypto_none,$(USEMODULE)))
+  USEMODULE += tinycontainer_security_crypto
+endif
+
+ifneq (,$(filter tinycontainer_security_crypto_psa,$(USEMODULE)))
+  USEMODULE += tinycontainer_security_crypto
+  USEMODULE += psa_crypto
+  USEMODULE += psa_mac
+  USEMODULE += psa_mac_hmac_sha_256
+  USEMODULE += psa_asymmetric
+  USEMODULE += psa_asymmetric_ecc_ed25519
+  USEMODULE += psa_cipher
+  USEMODULE += psa_cipher_aes_128_cbc
+endif
+
 ifneq (,$(filter tinycontainer_runtime_wamr,$(USEMODULE)))
   USEMODULE += tinycontainer
   USEMODULE += tinycontainer_runtime
