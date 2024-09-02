@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2020-2024, Orange
+ * Copyright (C) 2024, Orange
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -39,7 +39,7 @@ const crypto_key_t * crypto_key_new(size_t nbits, uint8_t * from);
 
 /** @brief release a crypto key
   */
-void crypto_key_delete(const crypto_key_t * key);
+void crypto_key_delete(crypto_key_t * key);
 
 /** @brief get the key slot id associated with a crypto key
   * @param  key   the crypto key
@@ -57,7 +57,7 @@ const crypto_key_t * crypto_key_get(int slot_id);
   * @param  key      the crypto key
   * @return size_t   (number of bits in the key)
   */
-size_t crypto_key_get_nbit(const crypto_key_t *);
+size_t crypto_key_get_nbit(const crypto_key_t * key);
 
 #ifdef __cplusplus
 }
