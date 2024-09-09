@@ -27,6 +27,8 @@
 #include "tinycontainer/memmgr/memmgr_runtime.h"
 #include "tinycontainer/service/service_memmgr.h"
 #include "tinycontainer/metadata/metadata_memmgr.h"
+#include "tinycontainer/security/cwt/cwt.h"
+#include "nanocbor/nanocbor.h"
 
 #include "memmgr_ram.h"
 
@@ -562,4 +564,95 @@ int memmgr_getendpoint(int slot_id, uint32_t endpoint_id,
     return metadata_endpoints_search(endpoint,
                                      metadata.endpoints, metadata.endpoints_len,
                                      endpoint_id);
+}
+
+uint32_t memmgr_getsyscallmask(int slot_id)
+{
+    metadata_t metadata;
+
+    if (metadata_parse(&metadata, containers[slot_id].meta,
+                           containers[slot_id].meta_len) != METADATA_OK) {
+        //FIXME: should not occur.
+        return 0;
+    }
+
+    metadata_container_t container;
+    if (metadata_container_parse(&container, metadata.container,
+                                 metadata.container_len) != METADATA_OK) {
+        //FIXME: should not occur.
+        return 0;
+    }
+
+    /* Parse the CWT syscall_mask */
+    cwt_t cwt;
+    if(cwt_parse(&cwt, container.syscall_mask, container.syscall_mask_len) == false) {
+        /* could not parse the CWT syscall mask */
+        return 0;
+    }
+
+    /* Check the CWT syscall mask using the key in the first slot */
+    //FIXME: the key used should be configurable
+    const crypto_key_t * key = crypto_key_get(0);
+    if(key == NULL) {
+        /* could not acquire the key in slot 0 */
+        return 0;
+    }
+
+    /* select the algo to used based on CWT type */
+    crypto_algo_t algo;
+    switch(cwt.type) {
+        case CWT_TYPE_UNKNOWN:
+            /* use SIGN1 if the CWT is not tagged */
+        case CWT_TYPE_COSE_SIGN1:
+            algo = CRYPTO_ALGO_ED25519;
+            break;
+        case CWT_TYPE_COSE_MAC0:
+            algo = CRYPTO_ALGO_HMAC_SHA256;
+            break;
+        case CWT_TYPE_COSE_ENCRYPT0:
+            algo = CRYPTO_ALGO_AES_128_CBC;
+            break;
+        case CWT_TYPE_COSE_SIGN:
+        case CWT_TYPE_COSE_MAC:
+        case CWT_TYPE_COSE_ENCRYPT:
+            /* not supported yet */
+        default:
+            /* invalid internal state */
+            return 0;
+    }
+
+    /* Verify the cwt with the key for the selected algo */
+    if(cwt_verify(&cwt, key, algo) == false) {
+        /* the CWT could not be verify with the key */
+        return 0;
+    }
+
+    /* Retrieve the CWT claim set */
+    nanocbor_value_t decoder;
+    nanocbor_decoder_init(&decoder, cwt.claim_set, cwt.claim_set_size);
+    nanocbor_value_t map;
+    if(nanocbor_enter_map(&decoder, &map) < 0) {
+        /* claim set is malformated */
+    }
+    int32_t bitmask_key;
+    if(nanocbor_get_int32(&map, &bitmask_key) < 0 && bitmask_key != -65536) { //TODO: should be properly defined!
+        /* claim set is malformated */
+        return 0;
+    }
+    const uint8_t* bitmask; size_t bitmask_size;
+    if(nanocbor_get_bstr(&map, &bitmask, &bitmask_size) < 0) {
+        /* claim set is malformated */
+        return 0;
+    }
+    if(bitmask_size > sizeof(uint32_t)) {
+        /* large bitmask is not supported yet */
+        return 0;
+    }
+    uint32_t syscall_mask = 0;
+    for (unsigned int i = 0; i < bitmask_size; i++) {
+        syscall_mask <<= 8;
+        syscall_mask |= bitmask[i];
+    }
+
+    return syscall_mask;
 }
