@@ -22,6 +22,7 @@
 #include "debug.h"
 
 #include "tinycontainer/security/cwt/cwt.h"
+#include "tinycontainer/security/crypto/crypto.h"
 #include "cwt_cbor.h"
 #include "nanocbor/nanocbor.h"
 
@@ -141,9 +142,39 @@ bool cwt_parse(cwt_t * cwt, const uint8_t * buffer, size_t buffer_len) {
     return true;
 }
 
-bool cwt_verify(cwt_t * cwt) {
-    //TODO: not yet implemented
-    (void)cwt;
+bool cwt_verify(cwt_t * cwt, const crypto_key_t * key, crypto_algo_t algo) {
+    switch(cwt->type) {
+	case CWT_TYPE_COSE_MAC0:
+            if (crypto_mac_verify(key, algo,
+                                  cwt->claim_set, cwt->claim_set_size,
+                                  cwt->security, cwt->security_size) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+            break;
+        case CWT_TYPE_UNKNOWN:
+            /* SIGN1 is assumed */
+	case CWT_TYPE_COSE_SIGN1:
+            if (crypto_sign_verify(key, algo,
+                                   cwt->claim_set, cwt->claim_set_size,
+                                   cwt->security, cwt->security_size) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+            break;
+	case CWT_TYPE_COSE_ENCRYPT0:
+	case CWT_TYPE_COSE_MAC:
+	case CWT_TYPE_COSE_SIGN:
+	case CWT_TYPE_COSE_ENCRYPT:
+            //TODO: not yet implemented
+        default:
+            //TODO: internal error: invalid state
+            return false;
+    }
+
+    /*never reached*/
     return false;
 }
 

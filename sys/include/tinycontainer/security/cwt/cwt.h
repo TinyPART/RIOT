@@ -22,6 +22,9 @@
 #ifndef TINYCONTAINER_SECURITY_CWT_CWT_H
 #define TINYCONTAINER_SECURITY_CWT_CWT_H
 
+#include "tinycontainer/security/crypto/key.h"
+#include "tinycontainer/security/crypto/algo.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,7 +57,7 @@ bool cwt_is_mac(cwt_t * cwt);
 bool cwt_is_mac0(cwt_t * cwt);
 bool cwt_is_encrypt(cwt_t * cwt);
 bool cwt_is_encrypt0(cwt_t * cwt);
-bool cwt_verify(cwt_t * cwt);
+bool cwt_verify(cwt_t * cwt, const crypto_key_t * key, crypto_algo_t algo);
 
 #ifdef __cplusplus
 }
