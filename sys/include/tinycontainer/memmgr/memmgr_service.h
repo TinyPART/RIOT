@@ -43,6 +43,13 @@ extern "C" {
 int memmgr_getendpoint(int slot_id, int endpoint_id,
                        metadata_endpoint_t *endpoint);
 
+/**
+ * @brief retrieve the bitmask for syscall of a container
+ *
+ * @param[in] slot_id     Container slot identifier
+ *
+ * @return the syscall mask (on error all bit are set to 0)
+ */
 uint32_t memmgr_getsyscallmask(int slot_id);
 
 #ifdef __cplusplus
