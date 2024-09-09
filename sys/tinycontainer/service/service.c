@@ -34,6 +34,7 @@
 #include "tinycontainer/service/service_runtime.h"
 
 #include "tinycontainer/security/sthread/sthread.h"
+#include "tinycontainer/memmgr/memmgr_service.h"
 #include "tinycontainer/runtime/runtime.h"
 
 static kernel_pid_t service_pid = -1;
@@ -207,6 +208,7 @@ void *handler_service(void *arg)
             containers[slot_id].id = slot_id;
             containers[slot_id].pid = container_pid;
             containers[slot_id].shared_memory.ro.period = 1000 /*ms*/;
+            containers[slot_id].natives_mask = memmgr_getsyscallmask(slot_id);
             LOG_PID_FUNC("slot_id=%ld, pid=%d\n", (unsigned long)slot_id,
                          container_pid);
             response_type = ok;
