@@ -46,8 +46,8 @@ struct metadata_container {
     const uint8_t *uid;
     size_t uid_len;
     uint8_t type;
-    const uint8_t *syscall;
-    size_t syscall_len;
+    const uint8_t *syscall_mask;
+    size_t syscall_mask_len;
 };
 
 /* structures for the endpoints object of metadata */

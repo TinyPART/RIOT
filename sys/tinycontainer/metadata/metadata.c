@@ -202,8 +202,8 @@ int metadata_container_parse(metadata_container_t *metadata_container,
 
         case METADATA_CONTAINER_SYSCALL_MASK:
             if (nanocbor_get_bstr(&map,
-                                  &metadata_container->syscall,
-                                  &metadata_container->syscall_len) < 0) {
+                                  &metadata_container->syscall_mask,
+                                  &metadata_container->syscall_mask_len) < 0) {
                 DEBUG("Could not get syscall value from container map");
                 return METADATA_INVALID_CBOR_STRUCTURE;
             }
