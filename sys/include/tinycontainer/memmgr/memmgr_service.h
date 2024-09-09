@@ -43,6 +43,8 @@ extern "C" {
 int memmgr_getendpoint(int slot_id, int endpoint_id,
                        metadata_endpoint_t *endpoint);
 
+uint32_t memmgr_getsyscallmask(int slot_id);
+
 #ifdef __cplusplus
 }
 #endif
