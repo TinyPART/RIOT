@@ -39,7 +39,7 @@ endif
 
 # These parameters may be used to fine tune TinyContainer configuration
 NUMBER_OF_CONTAINERS ?= 3
-MAX_SIZE_FOR_METADATA ?= 64
+MAX_SIZE_FOR_METADATA ?= 512
 MAX_SIZE_FOR_CONTAINER ?= 1024
 export WAMR_CONFIG := $(abspath wamr_config.cmake)
 
