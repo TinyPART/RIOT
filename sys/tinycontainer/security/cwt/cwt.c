@@ -102,7 +102,7 @@ bool cwt_parse(cwt_t * cwt, const uint8_t * buffer, size_t buffer_len) {
     const uint8_t *tmp;
     size_t tmp_len;
     if(nanocbor_get_bstr(&array, &tmp, &tmp_len) != NANOCBOR_OK ||
-       tmp_len == 0) {
+       tmp_len != 0) {
         return false;
     }
 
@@ -145,25 +145,15 @@ bool cwt_parse(cwt_t * cwt, const uint8_t * buffer, size_t buffer_len) {
 bool cwt_verify(cwt_t * cwt, const crypto_key_t * key, crypto_algo_t algo) {
     switch(cwt->type) {
 	case CWT_TYPE_COSE_MAC0:
-            if (crypto_mac_verify(key, algo,
-                                  cwt->claim_set, cwt->claim_set_size,
-                                  cwt->security, cwt->security_size) == 0) {
-                return true;
-            } else {
-                return false;
-            }
-            break;
+            return crypto_mac_verify(key, algo,
+                                     cwt->claim_set, cwt->claim_set_size,
+                                     cwt->security, cwt->security_size);
         case CWT_TYPE_UNKNOWN:
             /* SIGN1 is assumed */
 	case CWT_TYPE_COSE_SIGN1:
-            if (crypto_sign_verify(key, algo,
-                                   cwt->claim_set, cwt->claim_set_size,
-                                   cwt->security, cwt->security_size) == 0) {
-                return true;
-            } else {
-                return false;
-            }
-            break;
+            return crypto_sign_verify(key, algo,
+                                      cwt->claim_set, cwt->claim_set_size,
+                                      cwt->security, cwt->security_size);
 	case CWT_TYPE_COSE_ENCRYPT0:
 	case CWT_TYPE_COSE_MAC:
 	case CWT_TYPE_COSE_SIGN:
