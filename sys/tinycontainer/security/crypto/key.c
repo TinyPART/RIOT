@@ -102,7 +102,7 @@ int crypto_key_get_slot(const crypto_key_t * key) {
 }
 
 const crypto_key_t * crypto_key_get(int slot_id) {
-    if (slot_id > 0 && slot_id < NB_OF_KEY_SLOTS &&
+    if (slot_id >= 0 && slot_id < NB_OF_KEY_SLOTS &&
         key_slots[slot_id].slot_id == slot_id) {
         return &key_slots[slot_id];
     }
