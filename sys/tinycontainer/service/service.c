@@ -358,7 +358,7 @@ int tinycontainer_service_init(int service_prio, int container_prio)
 
 //TODO
 //    static char service_stack[THREAD_STACKSIZE_SMALL];
-    static char service_stack[THREAD_STACKSIZE_SMALL * 3];
+    static char service_stack[THREAD_STACKSIZE_SMALL * 4];
 
     container_priority = container_prio;
 
