@@ -29,7 +29,7 @@
 int tinycontainer_security_init(void)
 {
     /* add the public key to validate CWT signature */
-    if (crypto_key_new(240, public_key) == NULL) {
+    if (crypto_key_new(256, public_key) == NULL) {
         /* fail to add the public key */
     }
     /* private key is ignored */
