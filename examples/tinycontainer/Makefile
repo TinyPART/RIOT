@@ -32,6 +32,8 @@ TINYCONTAINER_MEMMGR ?= ram
 # TinyContainer supports following crypto backend 
 TINYCONTAINER_CRYPTO ?= none
 #TINYCONTAINER_CRYPTO ?= psa
+## Configuration for PSA crypto backend:
+#CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=1
 
 ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
   BLOBS += rbpf/example_app.bin
