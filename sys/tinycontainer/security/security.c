@@ -23,11 +23,15 @@
 #include "debug.h"
 
 #include "tinycontainer/security/security.h"
+#include "tinycontainer/security/crypto/crypto.h"
 #include "tinycontainer/security/crypto/key.h"
 #include "ed25519.h"
 
 int tinycontainer_security_init(void)
 {
+    /* initialize the crypto module */
+    crypto_init();
+
     /* add the public key to validate CWT signature */
     if (crypto_key_new(256, public_key) == NULL) {
         /* fail to add the public key */

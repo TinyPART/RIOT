@@ -29,6 +29,10 @@
 extern "C" {
 #endif
 
+/** @brief function to initialize the crypto module
+  */
+void crypto_init(void);
+
 /** @brief function to generate a mac from a message
   */
 int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,

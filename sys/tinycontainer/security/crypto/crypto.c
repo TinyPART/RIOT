@@ -30,6 +30,22 @@
 #include "psa/crypto.h"
 #endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
 
+void crypto_init(void) {
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
+
+    /* do nothing */
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE */
+
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
+
+    if( psa_crypto_init() != PSA_SUCCESS) {
+        //TODO: should be logged
+    }
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
+}
+
 int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
                const uint8_t *message, size_t message_size,
                uint8_t * mac , size_t mac_size) {
@@ -202,7 +218,10 @@ bool crypto_sign_verify(const crypto_key_t * public_key, crypto_algo_t algo,
 
     psa_key_id_t key_id = public_key->key_id;
 
-    size_t signature_len = 0;
+    size_t signature_len = PSA_SIGN_OUTPUT_SIZE(
+        PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_TWISTED_EDWARDS),
+        256,
+        PSA_ALG_PURE_EDDSA);
 
     psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
     status = psa_verify_message(key_id, PSA_ALG_PURE_EDDSA,
