@@ -370,11 +370,7 @@ static void *handler_controller(void *arg)
 
         /* set container code size */
         case msg_type_code_size:
-            /* here we are first checking metadata before continuing loading code */
-            if (memmgr_check_metadata(container_id) == false) {
-                goto loading_fail;
-            }
-            else if (_start_section_write(loading_meta, loading_code, value,
+            if (_start_section_write(loading_meta, loading_code, value,
                                           memmgr_opencodefileforcontainer)) {
                 goto reply;
             }
@@ -394,6 +390,11 @@ static void *handler_controller(void *arg)
         /* finalize container loading */
         case msg_type_load_end:
             if (loading_state != loading_data || remaining_section_size != 0) {
+                goto loading_fail;
+            }
+
+            /* We can now check metadata */
+            if (memmgr_check_metadata(container_id) == false) {
                 goto loading_fail;
             }
 
@@ -605,6 +606,8 @@ static void *handler_controller(void *arg)
 
 /* something went wrong, abort the loading */
 loading_fail:
+        memmgr_freecontainer(container_id);
+        container_id=-1;
         loading_state = loading_none;
         remaining_section_size = 0;
 
@@ -671,7 +674,11 @@ int tinycontainer_controller_init(int prio, controller_io_driver_t *driver)
         io.driver = driver;
     }
 
+#if IS_USED(MODULE_C25519)
+    static char controller_stack[THREAD_STACKSIZE_DEFAULT + 1024];
+#else
     static char controller_stack[THREAD_STACKSIZE_DEFAULT];
+#endif /*MODULE_C25519*/
 
     DEBUG_PID("-- calling secure_thread()\n");
 
