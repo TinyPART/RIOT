@@ -91,11 +91,14 @@ endpoint-token = 6
 ; ========
 
 security = [
-    metadata-token: bstr .cbor checksum
-    data-token: bstr .cbor checksum
-    code-token: bstr .cbor checksum
-    container-lifetime: uint
-    ? vendor-security: bstr
+    start-max-duration: uint ; in ms
+    loop-period: uint        ; in ms
+    loop-max-duration: uint  ; in ms
+    loop-max-lifetime: uint  ; in number of loop call
+    stop-max-duration: uint  ; in ms
+    data-token: bstr .cbor cwt
+    code-token: bstr .cbor cwt
+    metadata-token: bstr .cbor cwt
 ]
 
 checksum = COSE_Mac / COSE_Sign
@@ -107,7 +110,7 @@ COSE_Sign = COSE_Mac_Tagged / COSE_Mac0_Tagged
 ; ==================
 
 cwt = cwt_tagged / COSE_messages
-cwt = #6.61( COSE_Tagged_Message )
+cwt_tagged = #6.61( COSE_Tagged_Message )
 
 ; ===================
 ; from RFC8152 - COSE

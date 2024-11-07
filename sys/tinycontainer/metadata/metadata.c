@@ -119,9 +119,9 @@ int metadata_parse(metadata_t *metadata,
             break;
 
         case METADATA_SECURITY:
-            //TODO: Metadata security is not yet implemented
-            DEBUG("Metadata security is not yet implemented");
-            return METADATA_INVALID_CBOR_STRUCTURE;
+            metadata->security = value;
+            metadata->security_len = value_len;
+            break;
 
         default:
             /* we don't accept unknown keys */
@@ -445,14 +445,90 @@ int metadata_endpoints_search(metadata_endpoint_t *endpoint,
                                       endpoint, endpoint_id);
 }
 
-int metadata_security_parse(metadata_security_t *metadata,
+int metadata_security_parse(metadata_security_t *metadata_security,
                             const uint8_t *buf,
                             size_t len)
 {
-    (void)metadata;
-    (void)buf;
-    (void)len;
+    nanocbor_value_t it;
 
-    //TODO: not yet implemented
-    return METADATA_INVALID_CBOR_STRUCTURE;
+    /* saved the raw data structure */
+    metadata_security->raw_cbor = buf;
+    metadata_security->raw_cbor_len = len;
+
+    /* initialize the cbor decoder */
+    nanocbor_decoder_init(&it, buf, len);
+
+    /* parse the array */
+    nanocbor_value_t array;
+
+    if (nanocbor_enter_array(&it, &array) < 0) {
+        DEBUG("security array not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the max duration for the on_start() function */
+    uint32_t * pvalue = &metadata_security->start_max_duration;
+    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+        DEBUG("start-max-duration not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the period at which the on_loop() function is called */
+    pvalue = &metadata_security->loop_period;
+    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+        DEBUG("loop-period not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the max duration for the on_loop() function */
+    pvalue = &metadata_security->loop_max_duration;
+    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+        DEBUG("loop-max-duration not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the max lifetime for the on_loop() function */
+    pvalue = &metadata_security->loop_max_lifetime;
+    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+        DEBUG("loop-max-lifetime not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the max duration for the on_stop() function */
+    pvalue = &metadata_security->stop_max_duration;
+    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+        DEBUG("stop-max-duration not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the data-token */
+    const uint8_t** cwt = &metadata_security->cwt[1];
+    size_t* cwt_size = &metadata_security->cwt_size[1];
+    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+        DEBUG("data token not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the code-token */
+    cwt = &metadata_security->cwt[2];
+    cwt_size = &metadata_security->cwt_size[2];
+    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+        DEBUG("code token not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    /* parse the metadata-token */
+    cwt = &metadata_security->cwt[0];
+    cwt_size = &metadata_security->cwt_size[0];
+    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+        DEBUG("metadata token not found!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    if (!nanocbor_at_end(&array)) {
+        DEBUG("unkown security element!");
+        return METADATA_INVALID_CBOR_STRUCTURE;
+    }
+
+    return METADATA_OK;
 }

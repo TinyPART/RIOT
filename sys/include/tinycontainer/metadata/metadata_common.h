@@ -72,7 +72,13 @@ struct metadata_endpoints {
 struct metadata_security {
     const uint8_t *raw_cbor;
     size_t raw_cbor_len;
-    //TODO: not yet implemented
+    const uint8_t *cwt[3];
+    size_t cwt_size[3];
+    uint32_t start_max_duration;
+    uint32_t loop_period;
+    uint32_t loop_max_duration;
+    uint32_t loop_max_lifetime;
+    uint32_t stop_max_duration;
 };
 
 /* structures for the metadata object */

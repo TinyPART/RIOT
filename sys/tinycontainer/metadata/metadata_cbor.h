@@ -37,6 +37,11 @@ extern "C" {
 #define METADATA_CONTAINER_UID          1
 #define METADATA_CONTAINER_TYPE         2
 #define METADATA_CONTAINER_SYSCALL_MASK 3
+#define METADATA_CONTAINER_EXEC_TIME    4
+#define METADATA_CONTAINER_PERIOD       5
+#define METADATA_CONTAINER_PERIOD_MAX   6
+#define METADATA_CONTAINER_LIFETIME     7
+#define METADATA_CONTAINER_PRIORITY     8
 
 #define METADATA_CONTAINER_TYPE_UNDEFINED  0
 #define METADATA_CONTAINER_TYPE_NATIVE     1
@@ -63,6 +68,10 @@ extern "C" {
 #define METADATA_DIRECTION_IN   0
 #define METADATA_DIRECTION_OUT  1
 #define METADATA_DIRECTION_BOTH 2
+
+/* keys for metadata security */
+
+/* none yet */
 
 #ifdef __cplusplus
 }

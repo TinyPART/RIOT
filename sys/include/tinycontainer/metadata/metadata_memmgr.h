@@ -63,9 +63,8 @@ int metadata_endpoints_search(metadata_endpoint_t *endpoint,
  *
  * return METADATA_OK on success
  */
-//TODO: not yet implemented
-//int metadata_security_parse(metadata_security_t *metadata,
-//                            const uint8_t *buf, size_t len);
+int metadata_security_parse(metadata_security_t *metadata,
+                            const uint8_t *buf, size_t len);
 
 #ifdef __cplusplus
 }
