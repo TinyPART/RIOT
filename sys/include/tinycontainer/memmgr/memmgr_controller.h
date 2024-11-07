@@ -40,6 +40,14 @@ extern "C" {
 container_id_t memmgr_newcontainer(void);
 
 /**
+ * @brief   Free a container
+ *
+ * @param[in]   id    container file descriptor
+ *
+ */
+void memmgr_freecontainer(container_id_t id);
+
+/**
  * @brief   open the metadata file and return a file descriptor id
  *
  * @param[in]   id    container file descriptor

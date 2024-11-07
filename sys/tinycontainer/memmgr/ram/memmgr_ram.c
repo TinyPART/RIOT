@@ -28,6 +28,7 @@
 #include "tinycontainer/service/service_memmgr.h"
 #include "tinycontainer/metadata/metadata_memmgr.h"
 #include "tinycontainer/security/cwt/cwt.h"
+#include "tinycontainer/security/crypto/crypto.h"
 #include "nanocbor/nanocbor.h"
 
 #include "memmgr_ram.h"
@@ -232,6 +233,13 @@ int memmgr_newcontainer(void)
         }
     }
     return -1;
+}
+
+void memmgr_freecontainer(container_id_t id)
+{
+    if(id >=0 && id < CONTAINER_MAX_NUM) {
+        descriptors[id] = (const struct descriptor){0};
+    }
 }
 
 int memmgr_openmetadatafileforcontainer(container_id_t id)
@@ -509,9 +517,204 @@ bool memmgr_check_metadata(container_id_t slot_id)
         goto on_error;
     }
 
-    //TODO: parse security
-    //TODO: control checksum
+    metadata_security_t security;
 
+    if (metadata_security_parse(&security, metadata.security,
+                                metadata.security_len) != METADATA_OK) {
+        goto on_error;
+    }
+
+    /* currently all cwt are check using the key in slot 0 */
+    const crypto_key_t * key = crypto_key_get(0);
+    if(key == NULL) {
+        /* could not acquire the key in slot 0 */
+        return 0;
+    }
+
+    /* First handle the metadata token */
+
+    /* parse the CWT */
+    cwt_t cwt;
+    if(cwt_parse(&cwt, security.cwt[0], security.cwt_size[0]) == false) {
+        /* could not parse the CWT */
+        return false;
+    }
+
+    /* select the algo to used based on CWT type */
+    crypto_algo_t algo;
+    switch(cwt.type) {
+        case CWT_TYPE_UNKNOWN:
+            /* use SIGN1 if the CWT is not tagged */
+        case CWT_TYPE_COSE_SIGN1:
+            algo = CRYPTO_ALGO_ED25519;
+            break;
+        case CWT_TYPE_COSE_MAC0:
+            algo = CRYPTO_ALGO_HMAC_SHA256;
+            break;
+        case CWT_TYPE_COSE_ENCRYPT0:
+            algo = CRYPTO_ALGO_AES_128_CBC;
+            break;
+        case CWT_TYPE_COSE_SIGN:
+        case CWT_TYPE_COSE_MAC:
+        case CWT_TYPE_COSE_ENCRYPT:
+            /* not supported yet */
+        default:
+            /* invalid internal state */
+            return false;
+    }
+
+    /* Verify the cwt with the key for the selected algo */
+    if(cwt_verify(&cwt, key, algo) == false) {
+        /* the CWT could not be verify with the key */
+        return false;
+    }
+
+    /* Retrieve the metadata hash from the CWT claim set */
+    nanocbor_value_t decoder;
+    nanocbor_decoder_init(&decoder, cwt.claim_set, cwt.claim_set_size);
+    nanocbor_value_t map;
+    if(nanocbor_enter_map(&decoder, &map) < 0) {
+        /* claim set is malformated */
+        return false;
+    }
+    int32_t hash_key;
+    if(nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+        /* claim set is malformated */
+        return false;
+    }
+    const uint8_t * hash;
+    size_t hash_size;
+    if(nanocbor_get_bstr(&map, &hash, &hash_size) < 0 ||
+       hash_size != 32) {
+        /* claim set is malformated */
+        return false;
+    }
+
+    /* verify the hash */
+    if (crypto_hash_verify(CRYPTO_ALGO_SHA_256, metadata.raw_cbor,
+                           metadata.raw_cbor_len - 111 /* cwt token size */,
+                           hash, hash_size) == false) {
+        return false;
+    }
+
+    /* 2nd step: handle the data token */
+
+    /* parse the CWT */
+    if(cwt_parse(&cwt, security.cwt[1], security.cwt_size[1]) == false) {
+        /* could not parse the CWT */
+        return false;
+    }
+
+    /* select the algo to used based on CWT type */
+    switch(cwt.type) {
+        case CWT_TYPE_UNKNOWN:
+            /* use SIGN1 if the CWT is not tagged */
+        case CWT_TYPE_COSE_SIGN1:
+            algo = CRYPTO_ALGO_ED25519;
+            break;
+        case CWT_TYPE_COSE_MAC0:
+            algo = CRYPTO_ALGO_HMAC_SHA256;
+            break;
+        case CWT_TYPE_COSE_ENCRYPT0:
+            algo = CRYPTO_ALGO_AES_128_CBC;
+            break;
+        case CWT_TYPE_COSE_SIGN:
+        case CWT_TYPE_COSE_MAC:
+        case CWT_TYPE_COSE_ENCRYPT:
+            /* not supported yet */
+        default:
+            /* invalid internal state */
+            return false;
+    }
+
+    /* Verify the cwt with the key for the selected algo */
+    if(cwt_verify(&cwt, key, algo) == false) {
+        /* the CWT could not be verify with the key */
+        return false;
+    }
+
+    /* Retrieve the data hash from the CWT claim set */
+    nanocbor_decoder_init(&decoder, cwt.claim_set, cwt.claim_set_size);
+    if(nanocbor_enter_map(&decoder, &map) < 0) {
+        /* claim set is malformated */
+    }
+    if(nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+        /* claim set is malformated */
+        return false;
+    }
+    if(nanocbor_get_bstr(&map, &hash, &hash_size) < 0) {
+        /* claim set is malformated */
+        return false;
+    }
+
+    /* verify the hash */
+    if (crypto_hash_verify(CRYPTO_ALGO_SHA_256,
+                           _get_data_start(&containers[slot_id]),
+                           containers[slot_id].data_len,
+                           hash, hash_size) == false) {
+        return false;
+    }
+
+    /* 3rd step: handle the code token */
+
+    /* parse the CWT */
+    if(cwt_parse(&cwt, security.cwt[2], security.cwt_size[2]) == false) {
+        /* could not parse the CWT */
+        return false;
+    }
+
+    /* select the algo to used based on CWT type */
+    switch(cwt.type) {
+        case CWT_TYPE_UNKNOWN:
+            /* use SIGN1 if the CWT is not tagged */
+        case CWT_TYPE_COSE_SIGN1:
+            algo = CRYPTO_ALGO_ED25519;
+            break;
+        case CWT_TYPE_COSE_MAC0:
+            algo = CRYPTO_ALGO_HMAC_SHA256;
+            break;
+        case CWT_TYPE_COSE_ENCRYPT0:
+            algo = CRYPTO_ALGO_AES_128_CBC;
+            break;
+        case CWT_TYPE_COSE_SIGN:
+        case CWT_TYPE_COSE_MAC:
+        case CWT_TYPE_COSE_ENCRYPT:
+            /* not supported yet */
+        default:
+            /* invalid internal state */
+            return false;
+    }
+
+    /* Verify the cwt with the key for the selected algo */
+    if(cwt_verify(&cwt, key, algo) == false) {
+        /* the CWT could not be verify with the key */
+        return false;
+    }
+
+    /* Retrieve the code hash from the CWT claim set */
+    nanocbor_decoder_init(&decoder, cwt.claim_set, cwt.claim_set_size);
+    if(nanocbor_enter_map(&decoder, &map) < 0) {
+        /* claim set is malformated */
+        return false;
+    }
+    if(nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+        /* claim set is malformated */
+        return false;
+    }
+    if(nanocbor_get_bstr(&map, &hash, &hash_size) < 0) {
+        /* claim set is malformated */
+        return false;
+    }
+
+    /* verify the hash */
+    if (crypto_hash_verify(CRYPTO_ALGO_SHA_256,
+                           _get_code_start(&containers[slot_id]),
+                           containers[slot_id].code_len,
+                           hash, hash_size) == false) {
+        return false;
+    }
+
+    /* we had successfully checked the metadata */
     return true;
 
 on_error:
