@@ -117,7 +117,8 @@ bool cwt_parse(cwt_t * cwt, const uint8_t * buffer, size_t buffer_len) {
     /* get the payload or cyphertext */
     if(nanocbor_get_bstr(&array,
                          &cwt->claim_set,
-                         &cwt->claim_set_size) != NANOCBOR_OK) {
+                         &cwt->claim_set_size) != NANOCBOR_OK &&
+       nanocbor_get_null(&array) != NANOCBOR_OK) {
         return false;
     }
 
