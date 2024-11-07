@@ -346,3 +346,92 @@ int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
 
     return -1;
 }
+
+int crypto_hash(crypto_algo_t algo,
+                const uint8_t* message, size_t message_size,
+                uint8_t *hash, size_t hash_size) {
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
+
+    (void)algo;
+    (void)message;
+    (void)message_size;
+    (void)hash;
+    (void)hash_size;
+
+    return 0;
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE */
+
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
+
+    psa_algorithm_t alg;
+    switch (algo) {
+        case CRYPTO_ALGO_SHA_256:
+            alg = PSA_ALG_SHA_256;
+            break;
+        default:
+            /* invalid */
+            return -1;
+    }
+
+    if(hash_size != PSA_HASH_LENGTH(alg)) {
+        /* invalid hash size */
+        return -1;
+    }
+
+    size_t len;
+    psa_status_t status = psa_hash_compute(alg,
+                                           message, message_size,
+                                           hash, hash_size,
+                                           &len);
+    if(status != PSA_SUCCESS) {
+        return -1;
+    }
+
+    return 0;
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
+
+    return -1;
+}
+
+bool crypto_hash_verify(crypto_algo_t algo,
+                       const uint8_t* message, size_t message_size,
+                       const uint8_t *hash, size_t hash_size) {
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
+
+    (void)algo;
+    (void)message;
+    (void)message_size;
+    (void)hash;
+    (void)hash_size;
+
+    return true;
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE */
+
+#if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
+
+    psa_algorithm_t alg;
+    switch (algo) {
+        case CRYPTO_ALGO_SHA_256:
+            alg = PSA_ALG_SHA_256;
+            break;
+        default:
+            /* invalid */
+            return -1;
+    }
+
+    psa_status_t status = psa_hash_compare(alg,
+                                           message, message_size,
+                                           hash, hash_size);
+    if(status != PSA_SUCCESS) {
+        return false;
+    }
+
+    return true;
+
+#endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
+
+    return false;
+}

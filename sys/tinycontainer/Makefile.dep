@@ -72,6 +72,8 @@ endif
 ifneq (,$(filter tinycontainer_security_crypto_psa,$(USEMODULE)))
   USEMODULE += tinycontainer_security_crypto
   USEMODULE += psa_crypto
+  USEMODULE += psa_hash
+  USEMODULE += psa_hash_sha_256
   USEMODULE += psa_mac
   USEMODULE += psa_mac_hmac_sha_256
   USEMODULE += psa_asymmetric

@@ -33,6 +33,18 @@ extern "C" {
   */
 void crypto_init(void);
 
+/** @brief function to generate the hash of a message
+  */
+int crypto_hash(crypto_algo_t algo,
+                const uint8_t * message, size_t message_size,
+                uint8_t * hash, size_t hash_size);
+
+/** @brief function to verify the hash for a message
+  */
+bool crypto_hash_verify(crypto_algo_t algo,
+                        const uint8_t * message, size_t message_size,
+                        const uint8_t * hash, size_t hash_size);
+
 /** @brief function to generate a mac from a message
   */
 int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,

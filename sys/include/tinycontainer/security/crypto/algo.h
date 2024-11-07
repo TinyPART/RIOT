@@ -29,6 +29,8 @@ extern "C" {
 typedef enum {
     CRYPTO_ALGO_UNKNOWN,
     CRYPTO_ALGO_NONE,
+    /* hash */
+    CRYPTO_ALGO_SHA_256,
     /* mac */
     CRYPTO_ALGO_HMAC_SHA256,
     /* sign */
