@@ -112,6 +112,57 @@ COSE_Sign = COSE_Mac_Tagged / COSE_Mac0_Tagged
 cwt = cwt_tagged / COSE_messages
 cwt_tagged = #6.61( COSE_Tagged_Message )
 
+; =======================================================
+; TinyContainer private Claim Names, Keys and Value Types
+; =======================================================
+
+; TinyContainer defines two private claims:
+;
+; +---------+--------+-------------+
+; | Name    | key    | Value Type  |
+; +---------+--------+-------------+
+; | bitmask | -65536 | byte string |
+; | sha256  | -65537 | byte string |
+; | keyid   | -65538 | byte string |
+; +---------+--------+-------------+
+
+CWT_claimset /= CWT_BitMask
+             /= CWT_Code
+             /= CWT_Data
+             /= CWT_Meta
+             /= nil ; for implicilty provided claimset (for future used)
+
+CWT_BitMask = {
+    bitmask: bstr ; the least significant bit is located at position
+                  ; 0 of the rightmost byte.
+}
+CWT_Code = {
+    sha256: bstr .size 32 ; the sha256 sum of the raw bytes of the container
+                          ; code
+    ?keyid: bstr ; not yet implemented
+}
+CWT_Data = {
+    sha256: bstr .size 32 ; the sha256 sum of the raw bytes of the container
+                          ; data
+    ?keyid: bstr ; not yet implemented
+}
+CWT_Meta = {
+    sha256: bstr .size 32 ; the sha256 sum of the raw bytes of the container
+                          ; metadata with the all bytes of the metadata token
+                          ; ignored.
+                          ; One way is to populate the metadata with a fake
+                          ; metadata token, then to compute the metadata token
+                          ; based on metadata bytes minus the last 111 bytes
+                          ; (the size of the metadata token), and finally
+                          ; replace the 111 last bytes with the metadata token.
+                          ; A 111-byte string conveniently filled with 0x00
+                          ; bytes can be used as fake metadata token.
+}
+
+bitmask = -65536
+sha256 = -65537
+keyid = -65538
+
 ; ===================
 ; from RFC8152 - COSE
 ; ===================
