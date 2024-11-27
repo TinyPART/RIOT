@@ -38,7 +38,7 @@ static uint8_t handles_in_use = 0;
 
 // TODO: shall be globally configurable
 /* minimal size to run the container provided as example */
-static char global_heap_buf[250 + 4700 * MAX_HANDLES] = { 0 };
+static char global_heap_buf[250 + 4800 * MAX_HANDLES] = { 0 };
 
 static bool is_initialised = false;
 static bool runtime_init(void)
