@@ -1,64 +1,130 @@
 tinycontainer
 =============
 
-This is a simple example of the usage of TinyContainer.
+This is a example demonstrates how to use TinyContainer.
+
+Use Cases
+=========
+
+This example supports two use cases:
+
+* **build-in container management**, based on shell UI and statically
+  links containers
+* OTA container management, based on CoAP message over the IPv6/BLE network
+  stack supported by RIOT
 
 Usage
 =====
 
-To build the code, just select your board and l as usual:
+To ease all operations we provide a cli tool named `tinycontainerctl`. It can be
+used to
+
+* configure tinycontainer
+* create containers
+* create endpoints (available soon)
+* build the system
+
+To list all available commands just call it without any argument:
 
 ```
-BOARD=<YOUR_BOARD_NAME> make
+./tinycontainerctl
 ```
 
-You can use ```TINYCONTAINER_CONTAINER``` directive to select another runtime.
-By default the WebAssembly runtime is used.
+Here are the commands to run the default example on a dwm1001 board:
+
 
 ```
-TINYCONTAINER_CONTAINER=jerryscript make
+./tinycontainer setup init default
+./tinycontainer generate all flash term
 ```
 
 The example adds some TinyContainer commands to the shell prompt:
 
+* _list_, to list build-in containers
 * _load_, to load a container
+* _unload_, to unload a container
 * _start_, to start running it
 * _stop_, to stop the container
-* _status_, to check if the container is running or not
+* _status_, to check if a container is running or not
 * _wait_, to let the container run a while
 
 You can also use the _ps_ command to display a threads table.
 
-The container is prebuilt and displays some messages to the console when
-running:
-
-> WASM: start()
-> WASM: loop n=1 of 100
-> WASM: loop n=2 of 100
-> ...
-> WASM: loop n=100 of 100
-> WASM: stop()
-
 Supported Board
 ===============
 
-| Board               | WebAssembly  | Jerryscript  |
-|---------------------|:------------:|:------------:|
-| native              | build & test | build only   |
-| dwm1001             | build & test | build only   |
-| arduino-nano-33-ble | build only   | build only   |
-| nrf52840dk          | build & test | build only   |
-| others              | :x:          | :x:          |
+The tables below show how many containers is supported in different
+configurations for each supported boards.
+
+The first characters can be the symbol '1' if we have successfuly test the
+configuration with at least one container, the symbol '.' if we have
+successfuly built the configuration with at least one container, or the symbol
+'x' when the configuration could not run on at least one container.
+
+The second characters use the symbol '2', '.' and 'x' in a similar way.
+
+And so on.
+
+with network and crypto deactivated
+-----------------------------------
+
+| Board                     | WebAssembly  | rBPF         | Jerryscript  |
+|---------------------------|:------------:|:------------:|:------------:|
+| native                    | `........`   | `........`   | `........`   |
+| dwm1001                   | `1.....xx`   | `........`   | `........`   |
+| nrf52840dk                | `........`   | `........`   | `........`   |
+| arduino-nano-33-ble       | `1.......`   | `........`   | `........`   |
+| arduino-nano-33-ble-sense | `........`   | `........`   | `........`   |
+| nrf9160dk                 | `........`   | `........`   | `........`   |
+| others                    | :x:          | :x:          | :x:          |
+
+with network deactivated and crypto activated
+---------------------------------------------
+
+| Board                     | WebAssembly  | rBPF         | Jerryscript  |
+|---------------------------|:------------:|:------------:|:------------:|
+| native                    | `........`   | `........`   | `........`   |
+| dwm1001                   | `1.....xx`   | `........`   | `........`   |
+| nrf52840dk                | `........`   | `........`   | `........`   |
+| arduino-nano-33-ble       | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| arduino-nano-33-ble-sense | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| nrf9160dk                 | `........`   | `........`   | `........`   |
+| others                    | :x:          | :x:          | :x:          |
+
+with network activated and crypto deactivated
+------------------------------------------------
+
+| Board                     | WebAssembly  | rBPF         | Jerryscript  |
+|---------------------------|:------------:|:------------:|:------------:|
+| native                    | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| dwm1001                   | `1.....xx`   | `........`   | `........`   |
+| nrf52840dk                | `........`   | `........`   | `........`   |
+| arduino-nano-33-ble       | `........`   | `........`   | `........`   |
+| arduino-nano-33-ble-sense | `........`   | `........`   | `........`   |
+| nrf9160dk                 | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| others                    | :x:          | :x:          | :x:          |
+
+with network and crypto activated
+---------------------------------
+
+| Board                     | WebAssembly  | rBPF         | Jerryscript  |
+|---------------------------|:------------:|:------------:|:------------:|
+| native                    | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| dwm1001                   | `..xxxxxx`   | `....xxxx`   | `xxxxxxxx`   |
+| nrf52840dk                | `........`   | `........`   | `........`   |
+| arduino-nano-33-ble       | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| arduino-nano-33-ble-sense | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| nrf9160dk                 | `xxxxxxxx`   | `xxxxxxxx`   | `xxxxxxxx`   |
+| others                    | :x:          | :x:          | :x:          |
 
 Networking
 ==========
 
 By default, the network isn't activated. If you wish to build with networking
-capability uncomment the related line in the ```Makefile``` file or just use
-a command line directive:
+capability configure it with following command:
 
 ```
-TINYCONTAINER_NETWORK=1 make
+./tinycontainerctl setup set network on
 ```
 
 Whenever activated, the device announces itself using the string
