@@ -1,0 +1,125 @@
+# TinyContainer
+#
+#  Copyright (C) 2023-2024 Orange
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+
+CC=CLANG
+
+CCFLAGS += -Wall
+CCFLAGS += --target=wasm32-unknown-unknown-wasm
+CCFLAGS += -emit-llvm
+CCFLAGS += -Os
+CCFLAGS += -flto
+CCFLAGS += -fvisibility=hidden
+CCFLAGS += -ffunction-sections
+CCFLAGS += -fdata-sections
+CCFLAGS += -fno-builtin
+
+LDFLAGS += -z stack-size=128
+LDFLAGS += --global-base=16
+LDFLAGS += --export main
+LDFLAGS += --export=__heap_base
+LDFLAGS += --export=__data_end
+LDFLAGS += --allow-undefined
+LDFLAGS += --strip-all
+LDFLAGS += --export-dynamic
+LDFLAGS += -error-limit=0
+LDFLAGS += --lto-O3
+LDFLAGS += -O3
+LDFLAGS += --gc-sections
+LDFLAGS += --initial-memory=65536
+LDFLAGS += --no-entry
+
+DIRS = $(shell find * -type d)
+SRC = $(shell for d in $(DIRS); do \
+       grep -s -q wamr "$${d}/RUNTIME" \
+       && test -f "$${d}/$${d}.c" \
+       && test -f "$${d}/$${d}.data" \
+       && test -f "$${d}/$${d}.metadata" \
+       && echo "$${d}/$${d}.c"; \
+done)
+OBJ = $(SRC:.c=.o)
+WASM = $(OBJ:.o=.wasm)
+WASM_H = $(WASM:.wasm=.wasm.h)
+DATA = $(SRC:.c=.data)
+DATA_H = $(DATA:.data=.data.h)
+META = $(SRC:.c=.metadata)
+META_H = $(META:.metadata=.meta.h)
+ALL_NAMES = $(basename $(notdir $(SRC)))
+ALL_H = containers.h
+FILES_TO_DELETE = $(META_H) $(DATA_H) $(OBJ) $(WASM) $(WASM_H) $(ALL_H)
+
+all: containers.h Makefile.include
+
+containers.h: $(WASM_H) $(DATA_H) $(META_H)
+	> $@
+	@for f in $(META_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	@for f in $(DATA_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	@for f in $(WASM_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	echo "const char * containers_name[] = {" >> $@
+	@for name in $(ALL_NAMES); do \
+		echo "    \"$$name\"," >> $@; \
+	done
+	echo "};" >> $@
+	echo >> $@
+	@for type in meta data code; do \
+		echo "const uint8_t * containers_$$type[] = {" >> $@; \
+		for name in $(ALL_NAMES); do \
+			echo -n "    $$name" >>$@; \
+			echo "_$$type," >> $@; \
+		done; \
+		echo "};" >> $@; \
+		echo >> $@; \
+		echo "size_t containers_$${type}_size[] = {" >> $@; \
+		for name in $(ALL_NAMES); do \
+			echo "    $${name}_$${type}_len," >>$@; \
+		done; \
+		echo "};" >> $@; \
+		echo >> $@; \
+	done
+
+Makefile.include: $(SRC)
+	> $@
+	@for f in $(ALL_NAMES); do \
+		test -f "$$f/Makefile.include" && \
+		echo "include \"containers/$$f/Makefile.include\"" >> $@; \
+	done
+	echo >> $@
+
+%.meta.h: %.metadata
+	cd $(dir $<) && \
+	xxd -n $(basename $(notdir $<))_meta -i $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.data.h: %.data
+	cd $(dir $<) && \
+	xxd -i $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.wasm.h: %.wasm
+	cd $(dir $<) && \
+	xxd -i -n $$(basename $@ .wasm.h)_code $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.wasm: %.o
+	wasm-ld ${LDFLAGS} -o $@ $<
+
+%.o: %.c
+	clang -c ${CCFLAGS} -o $@ $<
+
+.SILENT: clean
+
+clean:
+	rm -f $(FILES_TO_DELETE)

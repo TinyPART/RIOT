@@ -1,0 +1,371 @@
+#!/bin/bash
+
+MY_PATH="$(dirname "$(realpath "$0")")"
+MY_NAME="${BASH_SOURCE[0]##*/}"
+
+MY_CONFIG_DIR="${MY_PATH}/config"
+MY_CONFIG_FILE="${MY_CONFIG_DIR}/tinycontainer.config"
+MY_CONFIG_INC_FILE="${MY_CONFIG_DIR}/tinycontainer.config.inc"
+
+MY_SCRIPT_DIR="${MY_PATH}/scripts"
+MY_SCRIPT_CONFIG="${MY_SCRIPT_DIR}/tinycontainer_config.sh"
+MY_SCRIPT_CONTAINER_CREATE="${MY_SCRIPT_DIR}/container_create.sh"
+MY_SCRIPT_LIST_SUBDIR="${MY_SCRIPT_DIR}/list_subdir.sh"
+
+MY_CONTAINERS_DIR="${MY_PATH}/containers"
+
+do_build() {
+    pushd $1
+    shift
+    make $*
+    popd
+}
+
+do_setup_get_board() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} BOARD
+}
+
+do_setup_get_nb_of_containers() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} NUMBER_OF_CONTAINERS
+}
+
+do_setup_get_max_size_for_metadata() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} MAX_SIZE_FOR_METADATA 
+}
+
+do_setup_get_max_size_for_data() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} MAX_SIZE_FOR_DATA
+}
+
+do_setup_get_max_size_for_code() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} MAX_SIZE_FOR_CODE
+}
+
+do_setup_get_runtime() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} RUNTIME
+}
+
+is_positive_number() {
+    [[ "$1" =~ ^[1-9][0-9]*$ ]]
+}
+
+do_setup_set_board() {
+    test "$1" = "native" -o \
+         "$1" = "dwm1001" -o \
+         "$1" = "nrf52840dk" -o \
+         "$1" = "arduino-nano-33-ble" -o \
+         "$1" = "arduino-nano-33-ble-sense" -o \
+         "$1" = "nrf9160dk" \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} BOARD $1 \
+    || echo "This board is not supported yet!"
+}
+
+do_setup_set_nb_of_containers() {
+    is_positive_number $1 \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} NB_OF_CONTAINERS $1 \
+    || echo "invalid number of containers!"
+}
+
+do_setup_set_max_size_for_metadata() {
+    is_positive_number $1 \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} MAX_SIZE_FOR_METADATA $1 \
+    || echo "invalid number of metadata max size !"
+}
+
+do_setup_set_max_size_for_data() {
+    is_positive_number $1 \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} MAX_SIZE_FOR_DATA $1 \
+    || echo "invalid number of data max size !"
+}
+
+do_setup_set_max_size_for_code() {
+    is_positive_number $1 \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} MAX_SIZE_FOR_CODE $1 \
+    || echo "invalid number of code max size !"
+}
+
+do_setup_set_runtime() {
+    test "$1" = "wamr" -o \
+         "$1" = "rbpf" -o \
+         "$1" = "jerryscript" \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} RUNTIME $1 \
+    || echo "invalid runtime!"
+}
+
+do_setup_get_crypto() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} CRYPTO
+}
+
+do_setup_set_crypto() {
+    test "$1" = "none" -o \
+         "$1" = "psa" \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} CRYPTO $1 \
+    || echo "invalid crypto backend!"
+
+    test "$1" = "psa" \
+    && ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} CRYPTO_PSA_KEY_COUNT 1 \
+    || ${MY_SCRIPT_CONFIG} del ${MY_CONFIG_FILE} CRYPTO_PSA_KEY_COUNT
+}
+
+do_setup_init_default() {
+    do_setup_set_board "dwm1001"
+    do_setup_set_runtime "wamr"
+    do_setup_set_crypto "none"
+    do_setup_set_nb_of_containers 2
+    do_setup_set_max_size_for_metadata 1024
+#    do_setup_set_max_size_for_data 1024
+    do_setup_set_max_size_for_code 1024
+}
+
+do_container_create() {
+    runtime=$(do_setup_get_runtime 2>/dev/null | cut -d" " -f2)
+    test "$runtime" != "wamr" -a \
+         "$runtime" != "rbpf" -a \
+         "$runtime" != "jerryscript" \
+    && echo "Please setup the runtime type first!" \
+    && exit
+    ${MY_SCRIPT_CONTAINER_CREATE} ${MY_PATH}/containers/$1 $runtime
+}
+
+do_container_list() {
+    runtime=$(do_setup_get_runtime 2>/dev/null | cut -d" " -f2)
+    test "${runtime}" != "wamr" -a \
+         "${runtime}" != "rbpf" -a \
+         "${runtime}" != "jerryscript" \
+    && echo "Please setup the runtime type first!" \
+    && exit
+
+    flags="---"
+    for c in $(${MY_SCRIPT_LIST_SUBDIR} ${MY_PATH}/containers); do
+        if ! grep -s -q ${runtime} ${MY_PATH}/containers/${c}/RUNTIME; then
+            continue
+        fi
+        if test "${runtime}" = "wamr" -o "${runtime}" = "rbpf"; then
+            test -f ${MY_PATH}/containers/${c}/${c}.c \
+            && flags[0]="C"
+        elif test "${runtime}" = "jerryscript" -a; then
+            test -f ${MY_PATH}/containers/${c}/${c}.c \
+            && flags[0]="C"
+        fi
+        test -f ${MY_PATH}/containers/${c}/${c}.data &&
+          flags[1]="D"
+        test -f ${MY_PATH}/containers/${c}/${c}.metadata &&
+          flags[2]="M"
+        echo -e "${flags[0]}${flags[1]}${flags[2]}\t$c"
+    done |sort
+}
+
+do_container_build() {
+    runtime=$(do_setup_get_runtime 2>/dev/null | cut -d" " -f2)
+    test "${runtime}" != "wamr" -a \
+         "${runtime}" != "rbpf" -a \
+         "${runtime}" != "jerryscript" \
+    && echo "Please setup the runtime type first!" \
+    && exit
+
+    do_build ${MY_PATH}/containers ${runtime}
+}
+
+do_generate_makefile() {
+    ${MY_SCRIPT_CONFIG} make ${MY_CONFIG_FILE} ${MY_CONFIG_INC_FILE}
+}
+
+do_generate_prebuild() {
+    case $1 in
+        c|containers)
+            do_container_build
+            ;;
+        m|makefile)
+            do_generate_makefile
+            ;;
+        a|all)
+            do_container_build
+            do_generate_makefile
+            ;;
+        *)
+            do_usage_generate
+            ;;
+    esac
+}
+
+do_generate_build() {
+    do_build ${MY_PATH} $*
+}
+
+do_usage_setup_get() {
+    echo "  ${MY_NAME} s[etup] g[et] [a]ll"
+    echo "  ${MY_NAME} s[etup] g[et] [r]untime"
+    echo "  ${MY_NAME} s[etup] g[et] [c]rypto"
+}
+
+do_usage_setup_set() {
+    echo "  ${MY_NAME} s[etup] s[et] [r]untime wamr|rbpf|jerryscript"
+    echo "  ${MY_NAME} s[etup] s[et] [c]rypto none|psa"
+}
+
+do_usage_setup_init() {
+    echo "  ${MY_NAME} s[etup] [i]nit default"
+}
+
+do_usage_setup() {
+    echo "  ${MY_NAME} s[etup] i[nit] <mode>"
+    echo "  ${MY_NAME} s[etup] g[et] <directive>"
+    echo "  ${MY_NAME} s[etup] s[et] <directive> <value>"
+}
+
+do_usage_container() {
+    echo "  ${MY_NAME} c[container] b[uild]"
+    echo "  ${MY_NAME} c[container] c[reate] <container_name>"
+    echo "  ${MY_NAME} c[container] l[ist]"
+}
+
+do_usage_generate() {
+    echo "  ${MY_NAME} g[enerate] p[rebuild] [a]ll|[c]ontainers|[m]akefile"
+    echo "  ${MY_NAME} g[enerate] b[uild] [make_arg...]"
+    echo "  ${MY_NAME} g[enerate] a[ll] [make_args...]"
+}
+
+do_usage() {
+    local cmd
+    if test $# -eq 0; then
+        cmd="setup container generate"
+    else
+        cmd=$1
+    fi
+    echo "Usage:"
+    for c in ${cmd}; do
+        do_usage_$c
+    done
+    exit
+}
+
+do_setup_init() {
+    case $1 in
+        default)
+            do_setup_init_default
+            ;;
+        *)
+            do_usage_setup_init
+            ;;
+    esac
+}
+
+do_setup_get() {
+    case $1 in
+        c|crypto)
+            do_setup_get_crypto
+            ;;
+        r|runtime)
+            do_setup_get_runtime
+            ;;
+        a|all)
+            for i in crypto runtime; do
+                do_setup_get_$i
+            done 
+            ;;
+        *)
+            do_usage_setup_get
+            ;;
+    esac
+}
+
+do_setup_set() {
+    case $1 in
+        c|crypto)
+            shift
+            do_setup_set_crypto $1
+            ;;
+        r|runtime)
+            shift
+            do_setup_set_runtime $1
+            ;;
+        *)
+            do_usage setup_set
+            ;;
+    esac
+}
+
+do_setup() {
+    case $1 in
+        i|init)
+            shift
+            do_setup_init $*
+            ;;
+        g|get)
+            shift
+            do_setup_get $*
+            ;;
+        s|set)
+            shift
+            do_setup_set $*
+            ;;
+        *)
+            do_usage setup
+            ;;
+    esac
+}
+
+do_container() {
+    case $1 in
+        b|build)
+            shift
+            do_container_build
+            ;;
+        c|create)
+            shift
+            do_container_create $*
+            ;;
+        l|list)
+            shift
+            do_container_list
+            ;;
+        *)
+            do_usage container
+            ;;
+    esac
+}
+
+do_generate() {
+    case $1 in
+        p|prebuild)
+            shift
+            do_generate_prebuild $*
+            ;;
+        b|build)
+            shift
+            do_generate_build $*
+            ;;
+        a|all)
+            shift
+            do_generate_prebuild all
+            do_generate_build $*
+            ;;
+        *)
+            do_usage generate
+            ;;
+    esac
+}
+
+# MAIN PROGRAM
+# ============
+
+test $# -eq 0 && do_usage
+
+case $1 in
+    s|setup)
+        shift
+        do_setup $*
+        ;;
+    c|container)
+        shift
+        do_container $*
+        ;;
+    g|enerate)
+        shift
+        do_generate $*
+        ;;
+    *)
+        do_usage
+esac
+
+#EOF

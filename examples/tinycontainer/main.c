@@ -19,6 +19,7 @@
  */
 
 #include <stdlib.h>
+#include <errno.h>
 
 #include "tinycontainer.h"
 
@@ -32,70 +33,93 @@
 
 #include "io_driver.h"
 
-#if defined(MODULE_TINYCONTAINER_RUNTIME_WAMR)
-#include "container_wamr.h"
-#elif defined(MODULE_TINYCONTAINER_RUNTIME_JERRYSCRIPT)
-#include "container_jerryscript.h"
-#elif defined(MODULE_TINYCONTAINER_RUNTIME_RBPF)
-#include "blob/rbpf/example_app.bin.h"
-static uint8_t meta[] =
-{ 0xdb, 0x54, 0x69, 0x6e, 0x79, 0x50, 0x41, 0x52, 0x54, 0xa1, 0x01, 0x58, 0x1d, 0xa3, 0x01, 0x47,
-  0x69, 0x78, 0xc3, 0xa2, 0x6d, 0x65, 0x73, 0x02, 0x06, 0x03, 0x4f, 0xd8, 0x3d, 0xd1, 0x4b, 0x66,
-  0x61, 0x72, 0x63, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73 };
-static const int meta_size = 0;
-static const uint8_t *data = NULL;
-static const int data_size = 0;
-#define code example_app_bin
-#define code_size example_app_bin_len
-#else
-#error "WAMR or JERRYSCRIPT or RBPF module is required"
+#if !defined(MODULE_TINYCONTAINER_RUNTIME_WAMR) \
+ && !defined(MODULE_TINYCONTAINER_RUNTIME_JERRYSCRIPT) \
+ && !defined(MODULE_TINYCONTAINER_RUNTIME_RBPF)
+
+    #error "WAMR or JERRYSCRIPT or RBPF module is required"
+
 #endif
+
+#include "containers/containers.h"
 
 #define SERVICE_PRIO     10
 #define CONTROLLER_PRIO  11
 #define CONTAINERS_PRIO  12
 
-/* Following constants shall be set according with container metadata */
-#define CONTAINER_UID_SIZE 17
-#define CONTAINER_UID_PREFIX "container--id--"
-#define CONTAINER_UID_POS 16
+static void list_array(const char** array, size_t array_size) {
+    for (unsigned int index=0; index < array_size; index++) {
+        printf("  %d. ", index + 1);
+        printf("%s\n", array[index]);
+    }
+}
 
-static uint8_t next_uid = 1;
-static uint8_t container_id[CONTAINER_UID_SIZE + 1];
+static int cmd_list(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    printf("List of registered containers:\n");
+    list_array(containers_name, sizeof(containers_name)/sizeof(char*));
+
+    return 0;
+}
+
+static int search_value(const char * value, const char** array,
+                        size_t array_size){
+    int index;
+
+    /* searching the value string */
+    for (index = 0; index < (int)array_size; index++) {
+        int len = strlen(array[index]);
+        if(strncmp(array[index], value, len) == 0) {
+            return index;
+        }
+    }
+
+    /* maybe it is the value number that is provided */
+    char * endptr;
+    index = strtol(value, &endptr, 10);
+    index--; /* because using friendly user index in cmd_list() */
+    if(errno != ERANGE && errno != EINVAL &&
+       index >= 0 && index < (int)array_size) {
+        return index;
+    }
+
+    return -1;
+}
 
 static int cmd_load(int argc, char **argv)
 {
-    memset(container_id, 0, CONTAINER_UID_SIZE + 1);
-
-    if (argc == 1) {
-        sprintf((char *)container_id, "%s%02d", CONTAINER_UID_PREFIX, next_uid % 100);
-        next_uid++;
-    }
-    else if (argc != 2) {
-        (void)puts("usage: load <container-id>");
+    if (argc != 2) {
+        (void)puts("usage: load container");
 
         return 0;
     }
-    else {
-        if (strlen(argv[1]) > CONTAINER_UID_SIZE) {
-            (void)puts("<container-id> is too long");
 
-            return 0;
+    int index = search_value(argv[1], containers_name,
+                             sizeof(containers_name)/sizeof(char*));
+    if (index < 0) {
+        printf("Value '%s' was not registered!\n", argv[1]);
 
-        }
-        else {
-            strcpy((char *)container_id, argv[1]);
-        }
+        return 0;
     }
 
-    memcpy(meta + CONTAINER_UID_POS, container_id, CONTAINER_UID_SIZE);
+    /* found the container. Try to load it */
+    const uint8_t * meta = containers_meta[index];
+    const uint8_t * data = containers_data[index];
+    const uint8_t * code = containers_code[index];
+    size_t meta_size = containers_meta_size[index];
+    size_t data_size = containers_data_size[index];
+    size_t code_size = containers_code_size[index];
 
-    if (tinycontainer_loadcontainer((uint8_t *)meta, meta_size, (uint8_t *)data, data_size,
+    if (tinycontainer_loadcontainer((uint8_t *)meta, meta_size,
+                                    (uint8_t *)data, data_size,
                                     (uint8_t *)code, code_size) == true) {
-        printf("Container '%s' loaded\n", container_id);
+        printf("Container '%s' loaded\n", containers_name[index]);
     }
     else {
-        printf("Fails to load container '%s'!\n", container_id);
+        printf("Fails to load container '%s'!\n", containers_name[index]);
     }
 
     return 0;
@@ -112,30 +136,29 @@ static int cmd_unload(int argc, char **argv)
 
 static int cmd_start(int argc, char **argv)
 {
-    memset(container_id, 0, CONTAINER_UID_SIZE + 1);
-
     if (argc != 2) {
-        (void)puts("usage: start <container-id>");
+        (void)puts("usage: start container");
 
         return 0;
     }
-    else {
-        if (strlen(argv[1]) > CONTAINER_UID_SIZE) {
-            (void)puts("<container-id> is too long");
 
-            return 0;
-
-        }
-        else {
-            strcpy((char *)container_id, argv[1]);
-        }
+    uint8_t * uid;
+    size_t uid_len;
+    int index = search_value(argv[1], containers_name,
+                             sizeof(containers_name)/sizeof(char*));
+    if (index < 0) {
+        printf("Value '%s' was not registered!\n", argv[1]);
+        return 0;
     }
 
-    if (tinycontainer_startcontainer(container_id, CONTAINER_UID_SIZE) == true) {
-        printf("Container '%s' started\n", container_id);
+    uid = (uint8_t*)containers_name[index];
+    uid_len = strlen(containers_name[index]);
+
+    if (tinycontainer_startcontainer(uid, uid_len) == true) {
+        printf("Container '%s' started\n", containers_name[index]);
     }
     else {
-        printf("Fails to start container '%s'!\n", container_id);
+        printf("Fails to start container '%s'!\n", containers_name[index]);
     }
 
     return 0;
@@ -143,30 +166,29 @@ static int cmd_start(int argc, char **argv)
 
 static int cmd_stop(int argc, char **argv)
 {
-    memset(container_id, 0, CONTAINER_UID_SIZE + 1);
-
     if (argc != 2) {
-        (void)puts("usage: stop <container-id>");
+        (void)puts("usage: stop container");
 
         return 0;
     }
-    else {
-        if (strlen(argv[1]) > CONTAINER_UID_SIZE) {
-            (void)puts("<container-id> is too long");
 
-            return 0;
-
-        }
-        else {
-            strcpy((char *)container_id, argv[1]);
-        }
+    uint8_t * uid;
+    size_t uid_len;
+    int index = search_value(argv[1], containers_name,
+                             sizeof(containers_name)/sizeof(char*));
+    if (index < 0) {
+        printf("Value '%s' was not registered!\n", argv[1]);
+        return 0;
     }
 
-    if (tinycontainer_stopcontainer(container_id, CONTAINER_UID_SIZE) ==  true) {
-        printf("Container '%s' stopped\n", container_id);
+    uid = (uint8_t*)containers_name[index];
+    uid_len = strlen(containers_name[index]);
+
+    if (tinycontainer_stopcontainer(uid, uid_len) ==  true) {
+        printf("Container '%s' stopped\n", containers_name[index]);
     }
     else {
-        printf("Fails to stop container '%s'!\n", container_id);
+        printf("Fails to stop container '%s'!\n", containers_name[index]);
     }
 
     return 0;
@@ -174,30 +196,29 @@ static int cmd_stop(int argc, char **argv)
 
 static int cmd_status(int argc, char **argv)
 {
-    memset(container_id, 0, CONTAINER_UID_SIZE + 1);
-
     if (argc != 2) {
         (void)puts("usage: status <container-id>");
 
         return 0;
     }
-    else {
-        if (strlen(argv[1]) > CONTAINER_UID_SIZE) {
-            (void)puts("<container-id> is too long");
 
-            return 0;
-
-        }
-        else {
-            strcpy((char *)container_id, argv[1]);
-        }
+    uint8_t * uid;
+    size_t uid_len;
+    int index = search_value(argv[1], containers_name,
+                             sizeof(containers_name)/sizeof(char*));
+    if (index < 0) {
+        printf("Value '%s' was not registered!\n", argv[1]);
+        return 0;
     }
 
-    if (tinycontainer_iscontainerrunning(container_id, CONTAINER_UID_SIZE) ==  true) {
-        (void)puts("container is started");
+    uid = (uint8_t*)containers_name[index];
+    uid_len = strlen(containers_name[index]);
+
+    if (tinycontainer_iscontainerrunning(uid, uid_len) ==  true) {
+        printf("container '%s' is started", containers_name[index]);
     }
     else {
-        (void)puts("container is stopped");
+        printf("container '%s' is stopped", containers_name[index]);
     }
 
     return 0;
@@ -227,11 +248,12 @@ static int cmd_wait(int argc, char **argv)
 }
 
 static const shell_command_t shell_commands[] = {
+    { "list",   "list registered",               cmd_list },
     { "load",   "load container",                cmd_load },
     { "unload", "unload container",              cmd_unload },
-    { "start",  "start the container",           cmd_start },
-    { "stop",   "stop the container",            cmd_stop },
-    { "status", "status of the container",       cmd_status },
+    { "start",  "start a loaded container",      cmd_start },
+    { "stop",   "stop a stated container",       cmd_stop },
+    { "status", "status of a container",         cmd_status },
     { "wait",   "let the container run a while", cmd_wait },
     { NULL, NULL, NULL }
 };

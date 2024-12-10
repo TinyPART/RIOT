@@ -9,48 +9,64 @@
 # name of the application
 APPLICATION = tinycontainer
 
-# If no BOARD is found in the environment, use this default:
-BOARD ?= dwm1001
-
-# Currently, TinyContainer has only been tested on native, dwm1001 and arduino-nano-33-ble
-BOARD_WHITELIST := dwm1001 arduino-nano-33-ble arduino-nano-33-ble-sense nrf52840dk nrf9160dk native
-
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../..
+
+# Comment this out to disable code in RIOT that does safety checking
+# which is not needed in a production environment but helps in the
+# development process:
+DEVELHELP ?= 1
+
+# Change this to 0 show compiler invocation lines by default:
+QUIET ?= 1
+
+# load tinycontainer configuration
+TINYCONTAINER_CONFIG = $(CURDIR)/config/tinycontainer.config.inc
+ifeq ("$(wildcard $(TINYCONTAINER_CONFIG))","")
+    $(info Check your Configuration!)
+    $(info You can use the 'tinycontainerctl' command)
+    $(error Invalid configuration)
+else
+    include $(CURDIR)/config/tinycontainer.config.inc
+endif
+
+# The configuration file should provides the following variables
+#
+# TinyContainer supports following container backend
+#TINYCONTAINER_RUNTIME ?= wamr
+#TINYCONTAINER_RUNTIME ?= rbpf
+#TINYCONTAINER_RUNTIME ?= jerryscript
+#
+# TinyContainer supports following memory manager
+#TINYCONTAINER_MEMMGR ?= ram
+#
+# TinyContainer supports following crypto backend 
+#TINYCONTAINER_CRYPTO ?= none
+#TINYCONTAINER_CRYPTO ?= psa
+## Configuration for PSA crypto backend:
+#CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=1
+#
+# These parameters may be used to fine tune TinyContainer configuration
+#NUMBER_OF_CONTAINERS ?= 3
+#MAX_SIZE_FOR_METADATA ?= 1024
+#MAX_SIZE_FOR_CONTAINER ?= 1024
+#
+# Uncomment to activate the networking
+#TINYCONTAINER_NETWORK ?= 1
 
 # required modules
 USEMODULE += tinycontainer
 
-# TinyContainer supports following container backend
-TINYCONTAINER_RUNTIME ?= wamr
-#TINYCONTAINER_RUNTIME ?= rbpf
-#TINYCONTAINER_RUNTIME ?= jerryscript
+# Currently, TinyContainer has only been tested on native, dwm1001 and arduino-nano-33-ble
+BOARD_WHITELIST := dwm1001 arduino-nano-33-ble arduino-nano-33-ble-sense nrf52840dk nrf9160dk native
 
-# TinyContainer supports following memory manager
-TINYCONTAINER_MEMMGR ?= ram
-
-# TinyContainer supports following crypto backend 
-TINYCONTAINER_CRYPTO ?= none
-#TINYCONTAINER_CRYPTO ?= psa
-## Configuration for PSA crypto backend:
-#CFLAGS += -DCONFIG_PSA_SINGLE_KEY_COUNT=1
-
-ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
-  BLOBS += rbpf/example_app.bin
-endif
-
-# These parameters may be used to fine tune TinyContainer configuration
-NUMBER_OF_CONTAINERS ?= 3
-MAX_SIZE_FOR_METADATA ?= 1024
-MAX_SIZE_FOR_CONTAINER ?= 1024
+ifneq (,$(filter wamr,$(TINYCONTAINER_RUNTIME)))
 export WAMR_CONFIG := $(abspath wamr_config.cmake)
+endif
 
 CFLAGS += -DTINYCONTAINER_NUMBER_OF_CONTAINERS=${NUMBER_OF_CONTAINERS}
 CFLAGS += -DTINYCONTAINER_MAX_SIZE_FOR_METADATA=${MAX_SIZE_FOR_METADATA}
 CFLAGS += -DTINYCONTAINER_MAX_SIZE_FOR_CONTAINER=${MAX_SIZE_FOR_CONTAINER}
-
-# Uncomment to activate the networking
-#TINYCONTAINER_NETWORK ?= 1
 
 ifeq (1,$(TINYCONTAINER_NETWORK))
 
@@ -80,28 +96,6 @@ USEMODULE += shell
 USEMODULE += shell_cmds_default
 USEMODULE += ps
 USEMODULE += xtimer
-
-# Comment this out to disable code in RIOT that does safety checking
-# which is not needed in a production environment but helps in the
-# development process:
-DEVELHELP ?= 1
-
-# Change this to 0 show compiler invocation lines by default:
-QUIET ?= 1
-
-ifneq (,$(filter rbpf,$(TINYCONTAINER_RUNTIME)))
-
-pkg-prepare: rbpf/$(RBPF_BINS)
-
-RBPF_SOURCES ?= $(wildcard rbpf/*.c)
-RBPF_BINS = $(RBPF_SOURCES:.c=.bin)
-
-$(RBPF_BINS): %.bin:%.c
-	$(MAKE) -C $(CURDIR)/rbpf
-
-all: $(RBPF_BINS)
-
-endif
 
 include $(RIOTBASE)/Makefile.include
 

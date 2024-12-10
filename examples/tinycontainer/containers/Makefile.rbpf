@@ -1,0 +1,96 @@
+# TinyContainer
+#
+#  Copyright (C) 2024 Orange
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+
+DIRS = $(shell find * -type d)
+SRC = $(shell for d in $(DIRS); do \
+       grep -s -q rbpf "$${d}/RUNTIME" \
+       && test -f "$${d}/$${d}.c" \
+       && test -f "$${d}/$${d}.data" \
+       && test -f "$${d}/$${d}.metadata" \
+       && echo "$${d}/$${d}.c"; \
+done)
+RBPF = $(SRC:.c=.bin)
+RBPF_H = $(RBPF:.bin=.bin.h)
+DATA = $(SRC:.c=.data)
+DATA_H = $(DATA:.data=.data.h)
+META = $(SRC:.c=.metadata)
+META_H = $(META:.metadata=.meta.h)
+ALL_NAMES = $(basename $(notdir $(SRC)))
+ALL_H = containers.h
+FILES_TO_DELETE = $(META_H) $(DATA_H) $(RBPF) $(RBPF_H) $(ALL_H)
+
+all: containers.h Makefile.include
+
+containers.h: $(RBPF_H) $(DATA_H) $(META_H)
+	> $@
+	@for f in $(META_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	@for f in $(DATA_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	@for f in $(RBPF_H); do \
+		echo "#include \"$$f\"" >> $@; \
+	done
+	echo >> $@
+	echo "const char * containers_name[] = {" >> $@
+	@for name in $(ALL_NAMES); do \
+		echo "    \"$$name\"," >> $@; \
+	done
+	echo "};" >> $@
+	echo >> $@
+	@for type in meta data code; do \
+		echo "const uint8_t * containers_$$type[] = {" >> $@; \
+		for name in $(ALL_NAMES); do \
+			echo -n "    $$name" >>$@; \
+			echo "_$$type," >> $@; \
+		done; \
+		echo "};" >> $@; \
+		echo >> $@; \
+		echo "size_t containers_$${type}_size[] = {" >> $@; \
+		for name in $(ALL_NAMES); do \
+			echo "    $${name}_$${type}_len," >>$@; \
+		done; \
+		echo "};" >> $@; \
+		echo >> $@; \
+	done
+
+Makefile.include: $(SRC)
+	> $@
+	@for f in $(ALL_NAMES); do \
+		test -f "$$f/Makefile.include" && \
+		echo "include \"containers/$$f/Makefile.include\"" >> $@; \
+	done
+	echo >> $@
+
+%.meta.h: %.metadata
+	cd $(dir $<) && \
+	xxd -n $(basename $(notdir $<))_meta -i $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.data.h: %.data
+	cd $(dir $<) && \
+	xxd -i $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.bin.h: %.bin
+	cd $(dir $<) && \
+	xxd -i -n $$(basename $@ .bin.h)_code $(notdir $<) $(notdir $@) && \
+	sed -i -E 's/^unsigned int(.*) = (.*);/$/#define \1 \2/' $(notdir $@)
+
+%.bin: %.c
+	cd $(dir $<) && \
+	make -f ../Makefile_sub.rbpf && \
+	rm *.o
+
+.SILENT: clean
+
+clean:
+	rm -f $(FILES_TO_DELETE)
