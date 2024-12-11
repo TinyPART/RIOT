@@ -26,6 +26,9 @@
 extern "C" {
 #endif
 
+/**
+ * type definition for crypto_algo_t
+ */
 typedef enum {
     CRYPTO_ALGO_UNKNOWN,
     CRYPTO_ALGO_NONE,
