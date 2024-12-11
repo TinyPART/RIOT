@@ -72,7 +72,7 @@ do_make() {
 
     # number of containers
     value=$(get_value "${config_file}" "NUMBER_OF_CONTAINERS" 1)
-    echo "NUMBER_OF_CONTAINERS ?= ${value}" >> ${make_file}
+    echo "NUMBER_OF_CONTAINERS ?= ${value}" >> "${make_file}"
 
     # max size for container metadata
     value=$(get_value "${config_file}" "MAX_SIZE_FOR_METADATA" 1024)
