@@ -34,4 +34,4 @@ static uint8_t private_key[] = {
 }
 #endif
 
-#endif /*ED25519_H*/
+#endif /* ED25519_H */
