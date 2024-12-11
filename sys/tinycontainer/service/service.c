@@ -207,7 +207,7 @@ void *handler_service(void *arg)
             //memset(&containers[slot_id], 0, sizeof(container_t));
             containers[slot_id].id = slot_id;
             containers[slot_id].pid = container_pid;
-            containers[slot_id].shared_memory.ro.period = 1000 /*ms*/;
+            containers[slot_id].shared_memory.ro.period = 1000; /* in ms */
             containers[slot_id].natives_mask = memmgr_getsyscallmask(slot_id);
             LOG_PID_FUNC("slot_id=%ld, pid=%d\n", (unsigned long)slot_id,
                          container_pid);

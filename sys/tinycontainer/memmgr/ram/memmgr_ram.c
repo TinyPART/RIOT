@@ -578,7 +578,8 @@ bool memmgr_check_metadata(container_id_t slot_id)
         return false;
     }
     int32_t hash_key;
-    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+    //TODO: the key claim shall be properly defined!
+    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) {
         /* claim set is malformated */
         return false;
     }
@@ -638,7 +639,8 @@ bool memmgr_check_metadata(container_id_t slot_id)
     if (nanocbor_enter_map(&decoder, &map) < 0) {
         /* claim set is malformated */
     }
-    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+    //TODO: the claim key should be properly defined!
+    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) {
         /* claim set is malformated */
         return false;
     }
@@ -697,7 +699,8 @@ bool memmgr_check_metadata(container_id_t slot_id)
         /* claim set is malformated */
         return false;
     }
-    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) { //TODO: should be properly defined!
+    //TODO: the claim key should be properly defined!
+    if (nanocbor_get_int32(&map, &hash_key) < 0 || hash_key != -65537) {
         /* claim set is malformated */
         return false;
     }
@@ -838,7 +841,8 @@ uint32_t memmgr_getsyscallmask(int slot_id)
         /* claim set is malformated */
     }
     int32_t bitmask_key;
-    if (nanocbor_get_int32(&map, &bitmask_key) < 0 && bitmask_key != -65536) { //TODO: should be properly defined!
+    //TODO: the claim key should be properly defined!
+    if (nanocbor_get_int32(&map, &bitmask_key) < 0 && bitmask_key != -65536) {
         /* claim set is malformated */
         return 0;
     }
