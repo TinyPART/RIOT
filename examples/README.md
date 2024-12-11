@@ -142,3 +142,4 @@ Here is a quick overview of the examples available in the RIOT:
 | [twr_aloha](./twr_aloha/README.md) | This example allows testing different two-way ranging algorithms between two boards supporting a dw1000 device. This makes use of the uwb-core pkg. |
 | [senml_saul](./senml_saul/README.md) | This example demonstrates the usage of the SAUL (Sensor Actuator Uber Layer) module with the SenML (Sensor Measurement Lists) format. |
 | [opendsme](./opendsme/README.md) | This example demonstrates the usage of the OpenDSME module in RIOT. |
+| [TinyContainer](./tinycontainer/README.md) | This example demonstrates the usage of TinyContainer framework. |
