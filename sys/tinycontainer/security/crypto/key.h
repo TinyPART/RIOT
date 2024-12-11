@@ -22,6 +22,10 @@
 
 #include "tinycontainer/security/crypto/key.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
 #include "psa/crypto.h"
 #endif
