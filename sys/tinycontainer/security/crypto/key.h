@@ -17,8 +17,8 @@
  * @}
  */
 
-#ifndef CRYPTO_KEY_H
-#define CRYPTO_KEY_H
+#ifndef KEY_H
+#define KEY_H
 
 #include "tinycontainer/security/crypto/key.h"
 
@@ -45,4 +45,4 @@ struct crypto_key {
 }
 #endif
 
-#endif /* CRYPTO_KEY_H */
+#endif /* KEY_H */

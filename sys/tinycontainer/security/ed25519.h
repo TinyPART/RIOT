@@ -6,6 +6,7 @@
  */
 
 #ifndef ED25519_H
+#define ED25519_H
 
 #ifdef __cplusplus
 extern "C" {

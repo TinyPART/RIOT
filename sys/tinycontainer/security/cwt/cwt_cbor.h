@@ -16,8 +16,8 @@
  * @}
  */
 
-#ifndef SECURITY_CWT_CWT_CBOR_H
-#define SECURITY_CWT_CWT_CBOR_H
+#ifndef CWT_CBOR_H
+#define CWT_CBOR_H
 
 #include <thread.h>
 #include <stdint.h>
@@ -41,4 +41,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SECURITY_CWT_CWT_CBOR_H */
+#endif /* CWT_CBOR_H */

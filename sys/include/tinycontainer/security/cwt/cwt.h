@@ -128,5 +128,5 @@ bool cwt_verify(cwt_t *cwt, const crypto_key_t *key, crypto_algo_t algo);
 }
 #endif
 
-#endif /* TINYCONTAINER_SECURITY_CWT_CWT_VERIFIER_H*/
+#endif /* TINYCONTAINER_SECURITY_CWT_CWT_H*/
 /** @} */
