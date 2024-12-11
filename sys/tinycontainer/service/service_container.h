@@ -39,13 +39,20 @@ extern "C" {
 #define CONTAINER_FLAGS_DELETING       BIT(4)
 
 typedef struct {
-    uint8_t id; /* internal slot id of the container */
-    uint8_t uid[UID_MAXSIZE]; /* container uid retrieving from metadata */
-    uint8_t stack[4 * THREAD_STACKSIZE_SMALL]; /* thread stack size */
-    kernel_pid_t pid; /* pid of the thread that run this container */
-    uint32_t flags; /* bit array to manage the container state */
-    uint32_t natives_mask; /* bitmask for native calls (from metadata) */
-    service_shared_mem_t shared_memory; /* shared memory with the container */
+    /* internal slot id of the container */
+    uint8_t id;
+    /* container uid retrieving from metadata */
+    uint8_t uid[UID_MAXSIZE];
+    /* thread stack size */
+    uint8_t stack[4 * THREAD_STACKSIZE_SMALL];
+    /* pid of the thread that run this container */
+    kernel_pid_t pid;
+    /* bit array to manage the container state */
+    uint32_t flags;
+    /* bitmask for native calls (from metadata) */
+    uint32_t natives_mask;
+    /* shared memory with the container */
+    service_shared_mem_t shared_memory;
 } container_t;
 
 static inline bool container_isprovisionning(container_t *container)

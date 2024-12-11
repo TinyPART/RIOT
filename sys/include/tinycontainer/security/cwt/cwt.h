@@ -46,13 +46,13 @@ typedef enum {
  * structure definition for cwt_t
  */
 typedef struct {
-    const uint8_t * claim_set; /**< payload of COSE_Mac0 or COSE_Sign1, or
-                                    cyphertext of COSE_Encrypt1 */
-    size_t claim_set_size;     /**< memory size of the claim_set */
-    cwt_type_t type;           /**< type of the cwt */
-    const uint8_t * security;  /**< tag of a COSE_Mac0 object
-                                    or signature of a COSE_Sign1 object */
-    size_t security_size;      /**< memory size of the security */
+    const uint8_t *claim_set;   /**< payload of COSE_Mac0 or COSE_Sign1, or
+                                     cyphertext of COSE_Encrypt1 */
+    size_t claim_set_size;      /**< memory size of the claim_set */
+    cwt_type_t type;            /**< type of the cwt */
+    const uint8_t *security;    /**< tag of a COSE_Mac0 object
+                                     or signature of a COSE_Sign1 object */
+    size_t security_size;       /**< memory size of the security */
 } cwt_t;
 
 /**
@@ -60,69 +60,69 @@ typedef struct {
  *
  * @return boolean true if buffer is a CWT and false otherwise
  */
-bool cwt_parse(cwt_t * cwt, const uint8_t * buffer, size_t buffer_size);
+bool cwt_parse(cwt_t *cwt, const uint8_t *buffer, size_t buffer_size);
 
 /**
  * function to parse a CWT from a buffer
  *
  * @return boolean true if buffer is a CWT and false otherwise
  */
-void cwt_set_type(cwt_t * cwt, cwt_type_t type);
+void cwt_set_type(cwt_t *cwt, cwt_type_t type);
 
 /**
  * function to set the claimset of a CWT
  *
  */
-void cwt_set_claimet(cwt_t * cwt, const uint8_t * claim_set, size_t size);
+void cwt_set_claimet(cwt_t *cwt, const uint8_t *claim_set, size_t size);
 
 /**
  * function to check if a CWT is a COSE Sign object
  *
  * @return boolean true if the CWT is COSE Sign object and false otherwise
  */
-bool cwt_is_sign(cwt_t * cwt);
+bool cwt_is_sign(cwt_t *cwt);
 
 /**
  * function to check if a CWT is a COSE Sign1 object
  *
  * @return boolean true if the CWT is a COSE Sign1 object and false otherwise
  */
-bool cwt_is_sign1(cwt_t * cwt);
+bool cwt_is_sign1(cwt_t *cwt);
 
 /**
  * function to check if a CWT is a COSE Mac object
  *
  * @return boolean true if the CWT is a COSE Mac object and false otherwise
  */
-bool cwt_is_mac(cwt_t * cwt);
+bool cwt_is_mac(cwt_t *cwt);
 
 /**
  * function to check if a CWT is a COSE Mac0 object
  *
  * @return boolean true the CWT is a COSE Mac0 object and false otherwise
  */
-bool cwt_is_mac0(cwt_t * cwt);
+bool cwt_is_mac0(cwt_t *cwt);
 
 /**
  * function to check if a CWT is a COSE Encrypt object
  *
  * @return boolean true if the CWT is a COSE Encrypt object and false otherwise
  */
-bool cwt_is_encrypt(cwt_t * cwt);
+bool cwt_is_encrypt(cwt_t *cwt);
 
 /**
  * function to check if a CWT is a COSE Encrypt0 object
  *
  * @return boolean true if the CWT is a COSE Encrypt0 object and false otherwise
  */
-bool cwt_is_encrypt0(cwt_t * cwt);
+bool cwt_is_encrypt0(cwt_t *cwt);
 
 /**
  * function to validate a CWT
  *
  * @return boolean true is the CWT is valid and false otherwise
  */
-bool cwt_verify(cwt_t * cwt, const crypto_key_t * key, crypto_algo_t algo);
+bool cwt_verify(cwt_t *cwt, const crypto_key_t *key, crypto_algo_t algo);
 
 #ifdef __cplusplus
 }

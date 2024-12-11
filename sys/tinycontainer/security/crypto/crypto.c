@@ -30,7 +30,8 @@
 #include "psa/crypto.h"
 #endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
 
-void crypto_init(void) {
+void crypto_init(void)
+{
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
     /* do nothing */
@@ -39,16 +40,17 @@ void crypto_init(void) {
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
 
-    if( psa_crypto_init() != PSA_SUCCESS) {
+    if (psa_crypto_init() != PSA_SUCCESS) {
         //TODO: should be logged
     }
 
 #endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
 }
 
-int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
+int crypto_mac(const crypto_key_t *shared_key, crypto_algo_t algo,
                const uint8_t *message, size_t message_size,
-               uint8_t * mac , size_t mac_size) {
+               uint8_t *mac, size_t mac_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
@@ -88,7 +90,7 @@ int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
     status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
                              message, message_size, mac, mac_size,
                              &output_len);
-    if(status != PSA_SUCCESS || output_len != mac_size) {
+    if (status != PSA_SUCCESS || output_len != mac_size) {
         return -1;
     }
 
@@ -99,9 +101,10 @@ int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
     return -1;
 }
 
-bool crypto_mac_verify(const crypto_key_t * shared_key, crypto_algo_t algo,
+bool crypto_mac_verify(const crypto_key_t *shared_key, crypto_algo_t algo,
                        const uint8_t *message, size_t message_size,
-                       const uint8_t * mac , size_t mac_size) {
+                       const uint8_t *mac, size_t mac_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
     /* Let's be happy whatever the mac value is */
@@ -134,7 +137,7 @@ bool crypto_mac_verify(const crypto_key_t * shared_key, crypto_algo_t algo,
     psa_status_t status = PSA_ERROR_DOES_NOT_EXIST;
     status = psa_mac_verify(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
                             message, message_size, mac, mac_size);
-    if(status != PSA_SUCCESS) {
+    if (status != PSA_SUCCESS) {
         return false;
     }
 
@@ -145,9 +148,10 @@ bool crypto_mac_verify(const crypto_key_t * shared_key, crypto_algo_t algo,
     return false;
 }
 
-int crypto_sign(const crypto_key_t * private_key, crypto_algo_t algo,
-                const uint8_t * message, size_t message_size,
-                uint8_t * signature, size_t signature_size) {
+int crypto_sign(const crypto_key_t *private_key, crypto_algo_t algo,
+                const uint8_t *message, size_t message_size,
+                uint8_t *signature, size_t signature_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
@@ -179,7 +183,7 @@ int crypto_sign(const crypto_key_t * private_key, crypto_algo_t algo,
     status = psa_sign_message(key_id, PSA_ALG_PURE_EDDSA,
                               message, message_size, signature, signature_size,
                               &signature_len);
-    if(status != PSA_SUCCESS || signature_len != signature_size) {
+    if (status != PSA_SUCCESS || signature_len != signature_size) {
         return -1;
     }
 
@@ -190,9 +194,10 @@ int crypto_sign(const crypto_key_t * private_key, crypto_algo_t algo,
     return -1;
 }
 
-bool crypto_sign_verify(const crypto_key_t * public_key, crypto_algo_t algo,
-                       const uint8_t * message, size_t message_size,
-                       const uint8_t * signature, size_t signature_size) {
+bool crypto_sign_verify(const crypto_key_t *public_key, crypto_algo_t algo,
+                        const uint8_t *message, size_t message_size,
+                        const uint8_t *signature, size_t signature_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
@@ -227,7 +232,7 @@ bool crypto_sign_verify(const crypto_key_t * public_key, crypto_algo_t algo,
     status = psa_verify_message(key_id, PSA_ALG_PURE_EDDSA,
                                 message, message_size,
                                 signature, signature_size);
-    if(status != PSA_SUCCESS || signature_len != signature_size) {
+    if (status != PSA_SUCCESS || signature_len != signature_size) {
         return false;
     }
 
@@ -238,24 +243,25 @@ bool crypto_sign_verify(const crypto_key_t * public_key, crypto_algo_t algo,
     return false;
 }
 
-int crypto_encrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
-                   const uint8_t * iv, size_t iv_size,
-                   const uint8_t * cleartext, size_t cleartext_size,
-                   uint8_t * ciphertext, size_t ciphertext_size) {
+int crypto_encrypt(const crypto_key_t *shared_key, crypto_algo_t algo,
+                   const uint8_t *iv, size_t iv_size,
+                   const uint8_t *cleartext, size_t cleartext_size,
+                   uint8_t *ciphertext, size_t ciphertext_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
     /* just copy cleartext to ciphertext */
 
-    if(cleartext_size != ciphertext_size) {
+    if (cleartext_size != ciphertext_size) {
         return -1;
     }
     memcpy(ciphertext, cleartext, cleartext_size);
 
-    (void) shared_key;
-    (void) algo;
-    (void) iv;
-    (void) iv_size;
+    (void)shared_key;
+    (void)algo;
+    (void)iv;
+    (void)iv_size;
 
     return 0;
 
@@ -269,7 +275,7 @@ int crypto_encrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
     }
 
     /* no iv for AES_128_CBC */
-    if(iv != NULL || iv_size != 0) {
+    if (iv != NULL || iv_size != 0) {
         return -1;
     }
 
@@ -282,7 +288,7 @@ int crypto_encrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
                                 cleartext, cleartext_size,
                                 ciphertext, ciphertext_size,
                                 &output_len);
-    if(status != PSA_SUCCESS || output_len != ciphertext_size) {
+    if (status != PSA_SUCCESS || output_len != ciphertext_size) {
         return -1;
     }
 
@@ -293,15 +299,16 @@ int crypto_encrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
     return -1;
 }
 
-int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
-                   const uint8_t * iv, size_t iv_size,
-                   const uint8_t * ciphertext, size_t ciphertext_size,
-                   uint8_t * cleartext, size_t cleartext_size) {
+int crypto_decrypt(const crypto_key_t *shared_key, crypto_algo_t algo,
+                   const uint8_t *iv, size_t iv_size,
+                   const uint8_t *ciphertext, size_t ciphertext_size,
+                   uint8_t *cleartext, size_t cleartext_size)
+{
 
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
     /* just copy ciphertext to cleartext */
-    if(ciphertext_size != cleartext_size) {
+    if (ciphertext_size != cleartext_size) {
         return -1;
     }
     memcpy(cleartext, ciphertext, ciphertext_size);
@@ -323,7 +330,7 @@ int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
     }
 
     /* no iv for AES_128_CBC */
-    if(iv != NULL || iv_size != 0) {
+    if (iv != NULL || iv_size != 0) {
         return -1;
     }
 
@@ -336,7 +343,7 @@ int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
                                 ciphertext, ciphertext_size,
                                 cleartext, cleartext_size,
                                 &output_len);
-    if(status != PSA_SUCCESS || output_len != cleartext_size) {
+    if (status != PSA_SUCCESS || output_len != cleartext_size) {
         return -1;
     }
 
@@ -348,8 +355,9 @@ int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
 }
 
 int crypto_hash(crypto_algo_t algo,
-                const uint8_t* message, size_t message_size,
-                uint8_t *hash, size_t hash_size) {
+                const uint8_t *message, size_t message_size,
+                uint8_t *hash, size_t hash_size)
+{
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
     (void)algo;
@@ -366,15 +374,15 @@ int crypto_hash(crypto_algo_t algo,
 
     psa_algorithm_t alg;
     switch (algo) {
-        case CRYPTO_ALGO_SHA_256:
-            alg = PSA_ALG_SHA_256;
-            break;
-        default:
-            /* invalid */
-            return -1;
+    case CRYPTO_ALGO_SHA_256:
+        alg = PSA_ALG_SHA_256;
+        break;
+    default:
+        /* invalid */
+        return -1;
     }
 
-    if(hash_size != PSA_HASH_LENGTH(alg)) {
+    if (hash_size != PSA_HASH_LENGTH(alg)) {
         /* invalid hash size */
         return -1;
     }
@@ -384,7 +392,7 @@ int crypto_hash(crypto_algo_t algo,
                                            message, message_size,
                                            hash, hash_size,
                                            &len);
-    if(status != PSA_SUCCESS) {
+    if (status != PSA_SUCCESS) {
         return -1;
     }
 
@@ -396,8 +404,9 @@ int crypto_hash(crypto_algo_t algo,
 }
 
 bool crypto_hash_verify(crypto_algo_t algo,
-                       const uint8_t* message, size_t message_size,
-                       const uint8_t *hash, size_t hash_size) {
+                        const uint8_t *message, size_t message_size,
+                        const uint8_t *hash, size_t hash_size)
+{
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_NONE)
 
     (void)algo;
@@ -414,18 +423,18 @@ bool crypto_hash_verify(crypto_algo_t algo,
 
     psa_algorithm_t alg;
     switch (algo) {
-        case CRYPTO_ALGO_SHA_256:
-            alg = PSA_ALG_SHA_256;
-            break;
-        default:
-            /* invalid */
-            return -1;
+    case CRYPTO_ALGO_SHA_256:
+        alg = PSA_ALG_SHA_256;
+        break;
+    default:
+        /* invalid */
+        return -1;
     }
 
     psa_status_t status = psa_hash_compare(alg,
                                            message, message_size,
                                            hash, hash_size);
-    if(status != PSA_SUCCESS) {
+    if (status != PSA_SUCCESS) {
         return false;
     }
 

@@ -30,58 +30,58 @@ extern "C" {
 #endif
 
 /** @brief function to initialize the crypto module
-  */
+ */
 void crypto_init(void);
 
 /** @brief function to generate the hash of a message
-  */
+ */
 int crypto_hash(crypto_algo_t algo,
-                const uint8_t * message, size_t message_size,
-                uint8_t * hash, size_t hash_size);
+                const uint8_t *message, size_t message_size,
+                uint8_t *hash, size_t hash_size);
 
 /** @brief function to verify the hash for a message
-  */
+ */
 bool crypto_hash_verify(crypto_algo_t algo,
-                        const uint8_t * message, size_t message_size,
-                        const uint8_t * hash, size_t hash_size);
+                        const uint8_t *message, size_t message_size,
+                        const uint8_t *hash, size_t hash_size);
 
 /** @brief function to generate a mac from a message
-  */
-int crypto_mac(const crypto_key_t * shared_key, crypto_algo_t algo,
-               const uint8_t * message, size_t message_size,
-               uint8_t * mac, size_t mac_size);
+ */
+int crypto_mac(const crypto_key_t *shared_key, crypto_algo_t algo,
+               const uint8_t *message, size_t message_size,
+               uint8_t *mac, size_t mac_size);
 
 /** @brief function to verify a mac for a message
-  */
-bool crypto_mac_verify(const crypto_key_t * shared_key, crypto_algo_t algo,
-                       const uint8_t * message, size_t message_size,
-                       const uint8_t * mac, size_t mac_size);
+ */
+bool crypto_mac_verify(const crypto_key_t *shared_key, crypto_algo_t algo,
+                       const uint8_t *message, size_t message_size,
+                       const uint8_t *mac, size_t mac_size);
 
 /** @brief function to generate a digital signature from a message
-  */
-int crypto_sign(const crypto_key_t * private_key, crypto_algo_t algo,
-                const uint8_t * message, size_t message_size,
-                uint8_t * signature, size_t signature_size);
+ */
+int crypto_sign(const crypto_key_t *private_key, crypto_algo_t algo,
+                const uint8_t *message, size_t message_size,
+                uint8_t *signature, size_t signature_size);
 
 /** @brief function to verify a digital signature for a message
-  */
-bool crypto_sign_verify(const crypto_key_t * private_key, crypto_algo_t algo,
-                        const uint8_t * message, size_t message_size,
-                        const uint8_t * signature, size_t signature_size);
+ */
+bool crypto_sign_verify(const crypto_key_t *private_key, crypto_algo_t algo,
+                        const uint8_t *message, size_t message_size,
+                        const uint8_t *signature, size_t signature_size);
 
 /** @brief function to encrypt a message
-  */
-int crypto_encrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
-                   const uint8_t * iv, size_t iv_size,
-                   const uint8_t * cleartext, size_t cleartext_size,
-                   uint8_t * ciphertext, size_t ciphertext_size);
+ */
+int crypto_encrypt(const crypto_key_t *shared_key, crypto_algo_t algo,
+                   const uint8_t *iv, size_t iv_size,
+                   const uint8_t *cleartext, size_t cleartext_size,
+                   uint8_t *ciphertext, size_t ciphertext_size);
 
 /** @brief function to decrypt an encrypted message
-  */
-int crypto_decrypt(const crypto_key_t * shared_key, crypto_algo_t algo,
-                   const uint8_t * iv, size_t iv_size,
-                   const uint8_t * ciphertext, size_t ciphertext_size,
-                   uint8_t * cleartext, size_t cleartext_size);
+ */
+int crypto_decrypt(const crypto_key_t *shared_key, crypto_algo_t algo,
+                   const uint8_t *iv, size_t iv_size,
+                   const uint8_t *ciphertext, size_t ciphertext_size,
+                   uint8_t *cleartext, size_t cleartext_size);
 
 #ifdef __cplusplus
 }

@@ -173,6 +173,9 @@ kernel_pid_t sthread( void *caller_context,
     *context = (uint32_t)caller_callback;
 
     /* call the thread*/
+    /* HACK: the following ugly cast on task_func is required for the native
+     *       board. Please, see the code of function secure_wrapper() above.
+     */
     pid = thread_create(   stack,
                            stacksize,
                            priority,
@@ -181,9 +184,6 @@ kernel_pid_t sthread( void *caller_context,
 #ifndef BOARD_NATIVE
                            task_func,       /*arg*/
 #else /*BOARD_NATIVE*/
-                           /* HACK: the following ugly cast is required for.
-                            *       native. See secure_wrapper() above.
-                            */
                            (void *)*(uint32_t *)&task_func,
 #endif /*BOARD_NATIVE*/
                            name

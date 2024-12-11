@@ -34,8 +34,8 @@
 #include "io_driver.h"
 
 #if !defined(MODULE_TINYCONTAINER_RUNTIME_WAMR) \
- && !defined(MODULE_TINYCONTAINER_RUNTIME_JERRYSCRIPT) \
- && !defined(MODULE_TINYCONTAINER_RUNTIME_RBPF)
+    && !defined(MODULE_TINYCONTAINER_RUNTIME_JERRYSCRIPT) \
+    && !defined(MODULE_TINYCONTAINER_RUNTIME_RBPF)
 
     #error "WAMR or JERRYSCRIPT or RBPF module is required"
 
@@ -47,8 +47,9 @@
 #define CONTROLLER_PRIO  11
 #define CONTAINERS_PRIO  12
 
-static void list_array(const char** array, size_t array_size) {
-    for (unsigned int index=0; index < array_size; index++) {
+static void list_array(const char **array, size_t array_size)
+{
+    for (unsigned int index = 0; index < array_size; index++) {
         printf("  %d. ", index + 1);
         printf("%s\n", array[index]);
     }
@@ -60,29 +61,30 @@ static int cmd_list(int argc, char **argv)
     (void)argv;
 
     printf("List of registered containers:\n");
-    list_array(containers_name, sizeof(containers_name)/sizeof(char*));
+    list_array(containers_name, sizeof(containers_name) / sizeof(char *));
 
     return 0;
 }
 
-static int search_value(const char * value, const char** array,
-                        size_t array_size){
+static int search_value(const char *value, const char **array,
+                        size_t array_size)
+{
     int index;
 
     /* searching the value string */
     for (index = 0; index < (int)array_size; index++) {
         int len = strlen(array[index]);
-        if(strncmp(array[index], value, len) == 0) {
+        if (strncmp(array[index], value, len) == 0) {
             return index;
         }
     }
 
     /* maybe it is the value number that is provided */
-    char * endptr;
+    char *endptr;
     index = strtol(value, &endptr, 10);
     index--; /* because using friendly user index in cmd_list() */
-    if(errno != ERANGE && errno != EINVAL &&
-       index >= 0 && index < (int)array_size) {
+    if (errno != ERANGE && errno != EINVAL &&
+        index >= 0 && index < (int)array_size) {
         return index;
     }
 
@@ -98,7 +100,7 @@ static int cmd_load(int argc, char **argv)
     }
 
     int index = search_value(argv[1], containers_name,
-                             sizeof(containers_name)/sizeof(char*));
+                             sizeof(containers_name) / sizeof(char *));
     if (index < 0) {
         printf("Value '%s' was not registered!\n", argv[1]);
 
@@ -106,9 +108,9 @@ static int cmd_load(int argc, char **argv)
     }
 
     /* found the container. Try to load it */
-    const uint8_t * meta = containers_meta[index];
-    const uint8_t * data = containers_data[index];
-    const uint8_t * code = containers_code[index];
+    const uint8_t *meta = containers_meta[index];
+    const uint8_t *data = containers_data[index];
+    const uint8_t *code = containers_code[index];
     size_t meta_size = containers_meta_size[index];
     size_t data_size = containers_data_size[index];
     size_t code_size = containers_code_size[index];
@@ -142,16 +144,16 @@ static int cmd_start(int argc, char **argv)
         return 0;
     }
 
-    uint8_t * uid;
+    uint8_t *uid;
     size_t uid_len;
     int index = search_value(argv[1], containers_name,
-                             sizeof(containers_name)/sizeof(char*));
+                             sizeof(containers_name) / sizeof(char *));
     if (index < 0) {
         printf("Value '%s' was not registered!\n", argv[1]);
         return 0;
     }
 
-    uid = (uint8_t*)containers_name[index];
+    uid = (uint8_t *)containers_name[index];
     uid_len = strlen(containers_name[index]);
 
     if (tinycontainer_startcontainer(uid, uid_len) == true) {
@@ -172,16 +174,16 @@ static int cmd_stop(int argc, char **argv)
         return 0;
     }
 
-    uint8_t * uid;
+    uint8_t *uid;
     size_t uid_len;
     int index = search_value(argv[1], containers_name,
-                             sizeof(containers_name)/sizeof(char*));
+                             sizeof(containers_name) / sizeof(char *));
     if (index < 0) {
         printf("Value '%s' was not registered!\n", argv[1]);
         return 0;
     }
 
-    uid = (uint8_t*)containers_name[index];
+    uid = (uint8_t *)containers_name[index];
     uid_len = strlen(containers_name[index]);
 
     if (tinycontainer_stopcontainer(uid, uid_len) ==  true) {
@@ -202,16 +204,16 @@ static int cmd_status(int argc, char **argv)
         return 0;
     }
 
-    uint8_t * uid;
+    uint8_t *uid;
     size_t uid_len;
     int index = search_value(argv[1], containers_name,
-                             sizeof(containers_name)/sizeof(char*));
+                             sizeof(containers_name) / sizeof(char *));
     if (index < 0) {
         printf("Value '%s' was not registered!\n", argv[1]);
         return 0;
     }
 
-    uid = (uint8_t*)containers_name[index];
+    uid = (uint8_t *)containers_name[index];
     uid_len = strlen(containers_name[index]);
 
     if (tinycontainer_iscontainerrunning(uid, uid_len) ==  true) {

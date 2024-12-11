@@ -273,9 +273,9 @@ void *handler_service(void *arg)
             uint32_t syscall_id = container->shared_memory.rw.syscall_id;
 
             /* check if the container is allowed to use the syscall */
-            uint32_t one_bit = 1 << (syscall_id-1);
+            uint32_t one_bit = 1 << (syscall_id - 1);
             uint32_t is_allowed = one_bit & containers[slot_id].natives_mask;
-            if(!is_allowed) {
+            if (!is_allowed) {
                 /* the container is not allowed  */
                 LOG_PID_FUNC("syscall_id %ld is not allowed to %d\n", (long)syscall_id, slot_id);
                 response_type = ko;

@@ -371,7 +371,7 @@ static void *handler_controller(void *arg)
         /* set container code size */
         case msg_type_code_size:
             if (_start_section_write(loading_meta, loading_code, value,
-                                          memmgr_opencodefileforcontainer)) {
+                                     memmgr_opencodefileforcontainer)) {
                 goto reply;
             }
             else {
@@ -607,7 +607,7 @@ static void *handler_controller(void *arg)
 /* something went wrong, abort the loading */
 loading_fail:
         memmgr_freecontainer(container_id);
-        container_id=-1;
+        container_id = -1;
         loading_state = loading_none;
         remaining_section_size = 0;
 

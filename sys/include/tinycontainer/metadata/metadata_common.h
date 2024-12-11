@@ -54,14 +54,14 @@ extern "C" {
  * structure for the container object of metadata
  */
 struct metadata_container {
-    const uint8_t *raw_cbor;      /**< the metadata container object as a
-                                       binary cbor bytes string */
-    size_t raw_cbor_len;          /**< the size of the raw cbor data          */
-    const uint8_t *uid;           /**< a pointer to the container uid         */
-    size_t uid_len;               /**< the size of the container uid          */
-    uint8_t type;                 /**< a pointer to the type of container     */
-    const uint8_t *syscall_mask;  /**< a pointer to the syscall_mask          */
-    size_t syscall_mask_len;      /**< the size of the syscall_maxsk          */
+    const uint8_t *raw_cbor;        /**< the metadata container object as a
+                                         binary cbor bytes string             */
+    size_t raw_cbor_len;            /**< the size of the raw cbor data        */
+    const uint8_t *uid;             /**< a pointer to the container uid       */
+    size_t uid_len;                 /**< the size of the container uid        */
+    uint8_t type;                   /**< a pointer to the type of containe    */
+    const uint8_t *syscall_mask;    /**< a pointer to the syscall_mask        */
+    size_t syscall_mask_len;        /**< the size of the syscall_maxsk        */
 };
 
 /**
@@ -79,31 +79,31 @@ struct metadata_endpoint {
  * structure for the endpoints array of metdata
  */
 struct metadata_endpoints {
-    const uint8_t *raw_cbor;  /**< the metadata endpoints array as a binary
-                                   cbor bytes string                          */
-    size_t raw_cbor_len;      /**< the size of the raw cbor data              */
-    uint8_t *next_endpoint;   /**< the current parse/search endpoint          */
+    const uint8_t *raw_cbor;    /**< the metadata endpoints array as a binary
+                                     cbor bytes string                        */
+    size_t raw_cbor_len;        /**< the size of the raw cbor data            */
+    uint8_t *next_endpoint;     /**< the current parse/search endpoint        */
 };
 
 /**
  * structure for the security object of metadata
  */
 struct metadata_security {
-    const uint8_t *raw_cbor;      /**< the metadata security array as a binary
-                                        cbor bytes string                     */
-    size_t raw_cbor_len;          /**< the size of the raw cbor data          */
-    const uint8_t *cwt[3];        /**< the data, code and metadata CWT        */
-    size_t cwt_size[3];           /**< the size of the CWTs                   */
-    uint32_t start_max_duration;  /**< how many time is allocated to the
-                                       container on_start() function          */
-    uint32_t loop_period;         /**< the frequency period the container
-                                       on_loop() function is called           */
-    uint32_t loop_max_duration;   /**< how many time is allocated to the
-                                       container on_loop() function           */
-    uint32_t loop_max_lifetime;   /**< the max number of time the container
-                                       on_loop() function is called           */
-    uint32_t stop_max_duration;   /**< how many time is allocated to the
-                                       container on_stop() function           */
+    const uint8_t *raw_cbor;        /**< the metadata security array as a
+                                          binary cbor bytes string            */
+    size_t raw_cbor_len;            /**< the size of the raw cbor data        */
+    const uint8_t *cwt[3];          /**< the data, code and metadata CWT      */
+    size_t cwt_size[3];             /**< the size of the CWTs                 */
+    uint32_t start_max_duration;    /**< how many time is allocated to the
+                                         container on_start() function        */
+    uint32_t loop_period;           /**< the frequency period the container
+                                         on_loop() function is called         */
+    uint32_t loop_max_duration;     /**< how many time is allocated to the
+                                         container on_loop() function         */
+    uint32_t loop_max_lifetime;     /**< the max number of time the container
+                                         on_loop() function is called         */
+    uint32_t stop_max_duration;     /**< how many time is allocated to the
+                                         container on_stop() function         */
 };
 
 /**

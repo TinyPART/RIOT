@@ -27,37 +27,37 @@ extern "C" {
 #endif
 
 /** @brief Key type used for crypto operations
-  */
+ */
 typedef struct crypto_key crypto_key_t;
 
 /** @brief create a new crypto key
-  * @param  nbits           number of bits in the key
-  * @param  from            if non nul, used to to import the key
-  * @return crypto_key_t*   (a new key or null on error)
-  */
-const crypto_key_t * crypto_key_new(size_t nbits, uint8_t * from);
+ * @param  nbits           number of bits in the key
+ * @param  from            if non nul, used to to import the key
+ * @return crypto_key_t*   (a new key or null on error)
+ */
+const crypto_key_t *crypto_key_new(size_t nbits, uint8_t *from);
 
 /** @brief release a crypto key
-  */
-void crypto_key_delete(crypto_key_t * key);
+ */
+void crypto_key_delete(crypto_key_t *key);
 
 /** @brief get the key slot id associated with a crypto key
-  * @param  key   the crypto key
-  * @return int   (slot id)
-  */
-int crypto_key_get_slot(const crypto_key_t * key);
+ * @param  key   the crypto key
+ * @return int   (slot id)
+ */
+int crypto_key_get_slot(const crypto_key_t *key);
 
 /** @brief get the crypto key associated with a key slot
-  * @param  slot_id
-  * @return crypto_key_t*  (the crypto key store in the slot or null)
-  */
-const crypto_key_t * crypto_key_get(int slot_id);
+ * @param  slot_id
+ * @return crypto_key_t*  (the crypto key store in the slot or null)
+ */
+const crypto_key_t *crypto_key_get(int slot_id);
 
 /** @brief get the length of the crypto key
-  * @param  key      the crypto key
-  * @return size_t   (number of bits in the key)
-  */
-size_t crypto_key_get_nbit(const crypto_key_t * key);
+ * @param  key      the crypto key
+ * @return size_t   (number of bits in the key)
+ */
+size_t crypto_key_get_nbit(const crypto_key_t *key);
 
 #ifdef __cplusplus
 }

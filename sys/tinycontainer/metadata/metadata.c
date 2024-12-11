@@ -467,44 +467,44 @@ int metadata_security_parse(metadata_security_t *metadata_security,
     }
 
     /* parse the max duration for the on_start() function */
-    uint32_t * pvalue = &metadata_security->start_max_duration;
-    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+    uint32_t *pvalue = &metadata_security->start_max_duration;
+    if (nanocbor_get_uint32(&array, pvalue) < 0) {
         DEBUG("start-max-duration not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 
     /* parse the period at which the on_loop() function is called */
     pvalue = &metadata_security->loop_period;
-    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+    if (nanocbor_get_uint32(&array, pvalue) < 0) {
         DEBUG("loop-period not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 
     /* parse the max duration for the on_loop() function */
     pvalue = &metadata_security->loop_max_duration;
-    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+    if (nanocbor_get_uint32(&array, pvalue) < 0) {
         DEBUG("loop-max-duration not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 
     /* parse the max lifetime for the on_loop() function */
     pvalue = &metadata_security->loop_max_lifetime;
-    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+    if (nanocbor_get_uint32(&array, pvalue) < 0) {
         DEBUG("loop-max-lifetime not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 
     /* parse the max duration for the on_stop() function */
     pvalue = &metadata_security->stop_max_duration;
-    if(nanocbor_get_uint32(&array, pvalue) < 0) {
+    if (nanocbor_get_uint32(&array, pvalue) < 0) {
         DEBUG("stop-max-duration not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 
     /* parse the data-token */
-    const uint8_t** cwt = &metadata_security->cwt[1];
-    size_t* cwt_size = &metadata_security->cwt_size[1];
-    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+    const uint8_t **cwt = &metadata_security->cwt[1];
+    size_t *cwt_size = &metadata_security->cwt_size[1];
+    if (nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
         DEBUG("data token not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
@@ -512,7 +512,7 @@ int metadata_security_parse(metadata_security_t *metadata_security,
     /* parse the code-token */
     cwt = &metadata_security->cwt[2];
     cwt_size = &metadata_security->cwt_size[2];
-    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+    if (nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
         DEBUG("code token not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
@@ -520,7 +520,7 @@ int metadata_security_parse(metadata_security_t *metadata_security,
     /* parse the metadata-token */
     cwt = &metadata_security->cwt[0];
     cwt_size = &metadata_security->cwt_size[0];
-    if(nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
+    if (nanocbor_get_bstr(&array, cwt, cwt_size) < 0) {
         DEBUG("metadata token not found!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
