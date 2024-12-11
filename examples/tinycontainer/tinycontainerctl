@@ -30,7 +30,7 @@ do_setup_get_nb_of_containers() {
 }
 
 do_setup_get_max_size_for_metadata() {
-    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} MAX_SIZE_FOR_METADATA 
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} MAX_SIZE_FOR_METADATA
 }
 
 do_setup_get_max_size_for_data() {
@@ -286,7 +286,7 @@ do_setup_get() {
         a|all)
             for i in crypto runtime networking; do
                 do_setup_get_$i
-            done 
+            done
             ;;
         *)
             do_usage_setup_get

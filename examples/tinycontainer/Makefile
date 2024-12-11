@@ -40,7 +40,7 @@ endif
 # TinyContainer supports following memory manager
 #TINYCONTAINER_MEMMGR ?= ram
 #
-# TinyContainer supports following crypto backend 
+# TinyContainer supports following crypto backend
 #TINYCONTAINER_CRYPTO ?= none
 #TINYCONTAINER_CRYPTO ?= psa
 ## Configuration for PSA crypto backend:
