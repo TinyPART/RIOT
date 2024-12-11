@@ -526,7 +526,7 @@ int metadata_security_parse(metadata_security_t *metadata_security,
     }
 
     if (!nanocbor_at_end(&array)) {
-        DEBUG("unkown security element!");
+        DEBUG("unknown security element!");
         return METADATA_INVALID_CBOR_STRUCTURE;
     }
 

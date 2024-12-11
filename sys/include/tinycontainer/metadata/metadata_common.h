@@ -59,7 +59,7 @@ struct metadata_container {
     size_t raw_cbor_len;            /**< the size of the raw cbor data        */
     const uint8_t *uid;             /**< a pointer to the container uid       */
     size_t uid_len;                 /**< the size of the container uid        */
-    uint8_t type;                   /**< a pointer to the type of containe    */
+    uint8_t type;                   /**< a pointer to the type of container   */
     const uint8_t *syscall_mask;    /**< a pointer to the syscall_mask        */
     size_t syscall_mask_len;        /**< the size of the syscall_maxsk        */
 };
@@ -76,7 +76,7 @@ struct metadata_endpoint {
 };
 
 /**
- * structure for the endpoints array of metdata
+ * structure for the endpoints array of metadata
  */
 struct metadata_endpoints {
     const uint8_t *raw_cbor;    /**< the metadata endpoints array as a binary

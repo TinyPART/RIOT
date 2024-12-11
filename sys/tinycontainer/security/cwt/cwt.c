@@ -117,7 +117,7 @@ bool cwt_parse(cwt_t *cwt, const uint8_t *buffer, size_t buffer_len)
     }
     nanocbor_leave_container(&array, &unprotected);
 
-    /* get the payload or cyphertext */
+    /* get the payload or ciphertext */
     if (nanocbor_get_bstr(&array,
                           &cwt->claim_set,
                           &cwt->claim_set_size) != NANOCBOR_OK &&

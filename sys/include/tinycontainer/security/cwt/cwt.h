@@ -47,7 +47,7 @@ typedef enum {
  */
 typedef struct {
     const uint8_t *claim_set;   /**< payload of COSE_Mac0 or COSE_Sign1, or
-                                     cyphertext of COSE_Encrypt1 */
+                                     ciphertext of COSE_Encrypt1 */
     size_t claim_set_size;      /**< memory size of the claim_set */
     cwt_type_t type;            /**< type of the cwt */
     const uint8_t *security;    /**< tag of a COSE_Mac0 object

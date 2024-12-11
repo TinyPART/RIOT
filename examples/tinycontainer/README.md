@@ -8,7 +8,7 @@ Use Cases
 
 This example supports two use cases:
 
-* **build-in container management**, based on shell UI and statically
+* **built-in container management**, based on shell UI and statically
   links containers
 * OTA container management, based on CoAP message over the IPv6/BLE network
   stack supported by RIOT
@@ -40,7 +40,7 @@ Here are the commands to run the default example on a dwm1001 board:
 
 The example adds some TinyContainer commands to the shell prompt:
 
-* _list_, to list build-in containers
+* _list_, to list built-in containers
 * _load_, to load a container
 * _unload_, to unload a container
 * _start_, to start running it
@@ -56,9 +56,9 @@ Supported Board
 The tables below show how many containers is supported in different
 configurations for each supported boards.
 
-The first characters can be the symbol '1' if we have successfuly test the
+The first characters can be the symbol '1' if we have successfully test the
 configuration with at least one container, the symbol '.' if we have
-successfuly built the configuration with at least one container, or the symbol
+successfully built the configuration with at least one container, or the symbol
 'x' when the configuration could not run on at least one container.
 
 The second characters use the symbol '2', '.' and 'x' in a similar way.
