@@ -45,6 +45,10 @@ do_setup_get_runtime() {
     ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} RUNTIME
 }
 
+do_setup_get_networking() {
+    ${MY_SCRIPT_CONFIG} get ${MY_CONFIG_FILE} NETWORKING
+}
+
 is_positive_number() {
     [[ "$1" =~ ^[1-9][0-9]*$ ]]
 }
@@ -107,6 +111,21 @@ do_setup_set_crypto() {
     || ${MY_SCRIPT_CONFIG} del ${MY_CONFIG_FILE} CRYPTO_PSA_KEY_COUNT
 }
 
+do_setup_set_networking_on() {
+    ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} NETWORKING on
+}
+
+do_setup_set_networking_off() {
+    ${MY_SCRIPT_CONFIG} set ${MY_CONFIG_FILE} NETWORKING off
+}
+
+do_setup_set_networking() {
+    test "$1" = "on" -o \
+         "$1" = "off" \
+    && do_setup_set_networking_$1 \
+    || do_usage_setup_set
+}
+
 do_setup_init_default() {
     do_setup_set_board "dwm1001"
     do_setup_set_runtime "wamr"
@@ -115,6 +134,7 @@ do_setup_init_default() {
     do_setup_set_max_size_for_metadata 1024
 #    do_setup_set_max_size_for_data 1024
     do_setup_set_max_size_for_code 1024
+    do_setup_set_networking_off
 }
 
 do_container_create() {
@@ -196,11 +216,13 @@ do_usage_setup_get() {
     echo "  ${MY_NAME} s[etup] g[et] [a]ll"
     echo "  ${MY_NAME} s[etup] g[et] [r]untime"
     echo "  ${MY_NAME} s[etup] g[et] [c]rypto"
+    echo "  ${MY_NAME} s[etup] g[et] [n]etwork"
 }
 
 do_usage_setup_set() {
     echo "  ${MY_NAME} s[etup] s[et] [r]untime wamr|rbpf|jerryscript"
     echo "  ${MY_NAME} s[etup] s[et] [c]rypto none|psa"
+    echo "  ${MY_NAME} s[etup] s[et] [n]etworking on|off"
 }
 
 do_usage_setup_init() {
@@ -258,8 +280,11 @@ do_setup_get() {
         r|runtime)
             do_setup_get_runtime
             ;;
+        n|network|networking)
+            do_setup_get_networking
+            ;;
         a|all)
-            for i in crypto runtime; do
+            for i in crypto runtime networking; do
                 do_setup_get_$i
             done 
             ;;
@@ -278,6 +303,10 @@ do_setup_set() {
         r|runtime)
             shift
             do_setup_set_runtime $1
+            ;;
+        n|network|networking)
+            shift
+            do_setup_set_networking $1
             ;;
         *)
             do_usage setup_set

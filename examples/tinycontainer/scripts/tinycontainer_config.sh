@@ -87,7 +87,11 @@ do_make() {
 
     # networking
     value=$(get_value ${config_file} "NETWORKING" 0)
-    echo "TINYCONTAINER_NETWORK ?= ${value}" >> ${make_file}
+    if test "value" = "on"; then
+        echo "TINYCONTAINER_NETWORK ?= 1" >> ${make_file}
+    else
+        echo "TINYCONTAINER_NETWORK ?= 0" >> ${make_file}
+    fi
 
 }
 
