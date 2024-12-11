@@ -14,19 +14,19 @@ test "$RUNTIME_TYPE" != "wamr" -a \
 && echo "Usage: $0 <container_directory> wamr|rbpf|jerryscript" \
 && exit
 
-test -d ${CONTAINER_DIR} &&
+test -d "${CONTAINER_DIR}" &&
     echo "Error: this container already exit!" &&
-    exit -1
+    exit 1
 
-mkdir ${CONTAINER_DIR} ||
+mkdir "${CONTAINER_DIR}" ||
 (
     echo "Error: could not create container directory!"
-    exit -1
+    exit 1
 )
 
-echo $RUNTIME > ${CONTAINER_DIR}/RUNTIME
+echo "$RUNTIME_TYPE" > "${CONTAINER_DIR}/RUNTIME"
 
-if test "$RUNTIME" = "wamr"; then
+if test "$RUNTIME_TYPE" = "wamr"; then
     echo "\
 /*
  * This file implement a WebAssembly container named ${CONTAINER_NAME}
@@ -64,18 +64,18 @@ WASM_EXPORT void stop(void)
     logger(\"${CONTAINER_NAME}: stopping\n\");
 }
 
-/*EOF*/" > ${CONTAINER_DIR}/${CONTAINER_NAME}.c;
-elif test "$RUNTIME" = "rbpf"; then
-    touch ${CONTAINER_DIR}/${CONTAINER_NAME}.c
+/*EOF*/" > "${CONTAINER_DIR}/${CONTAINER_NAME}.c";
+elif test "$RUNTIME_TYPE" = "rbpf"; then
+    touch "${CONTAINER_DIR}/${CONTAINER_NAME}.c"
     echo "Please update file '${CONTAINER_DIR}/${CONTAINER_NAME}.c'"
-elif test "$RUNTIME" = "jerryscript"; then
-    touch ${CONTAINER_DIR}/${CONTAINER_NAME}.js
+elif test "$RUNTIME_TYPE" = "jerryscript"; then
+    touch "${CONTAINER_DIR}/${CONTAINER_NAME}.js"
     echo "Please update file '${CONTAINER_DIR}/${CONTAINER_NAME}.js'"
 else
     echo "Error: this runtime is not supported!"
     exit
 fi
 
-echo "not yet implemented" > ${CONTAINER_DIR}/${CONTAINER_NAME}.data
+echo "not yet implemented" > "${CONTAINER_DIR}/${CONTAINER_NAME}.data"
 
 echo "Please copy the container metadata into the file '${CONTAINER_DIR}/${CONTAINER_NAME}.metadata'"
