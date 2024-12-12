@@ -308,8 +308,6 @@ static int parse_and_search_endpoints(
             int32_t key;
             const uint8_t *peer_uid;
             size_t peer_uid_len;
-            const uint8_t *token;
-            size_t token_len;
 
             /* parse the key */
             if (nanocbor_get_int32(&map, &key) < 0) {
