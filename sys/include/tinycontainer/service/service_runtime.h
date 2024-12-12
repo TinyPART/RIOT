@@ -41,6 +41,7 @@
 extern "C" {
 #endif
 
+/** Size of the io buffer of the service_io_t structure */
 #ifdef TINYCONTAINER_IO_BUFFER_SIZE
 #define IO_BUFFER_SIZE TINYCONTAINER_IO_BUFFER_SIZE
 #else
