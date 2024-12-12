@@ -46,15 +46,15 @@ typedef enum {
  * definition of claim keys
  */
 typedef enum {
-    CWT_CLAIM_KEY_BITMASK = -65536,    /**< a cbor bytes string that represents
+    CWT_CLAIM_KEY_BITMASK   = -65536,   /**< a cbor bytes string that represents
                                          *  a bit array with the least
                                          *  significant bit located at position
                                          *  0 of the rightmost byte
                                          */
-    CWT_CLAIM_KEY_SHA256  = -65537,    /**< a cbor bytes string that represents
+    CWT_CLAIM_KEY_SHA256    = -65537,   /**< a cbor bytes string that represents
                                          *  the 32 bytes of a sha256
                                          */
-    CWT_CLAIM_KEY_KEYID   = -65538,    /**<  a cbor bytes string that represents
+    CWT_CLAIM_KEY_KEYID     = -65538,   /**< a cbor bytes string that represents
                                          *   a key identifier
                                          */
 } cwt_claim_key_t;

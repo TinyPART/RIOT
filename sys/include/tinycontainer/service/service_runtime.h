@@ -68,13 +68,13 @@ int32_t service_syscall(void);
           runtime
  */
 typedef struct {
-    uint32_t syscall_id;               /**< the syscall operation to perform  */
-    int8_t fd;                         /**< the peer endpoint id or the file
-                                            descriptor for io                 */
-    uint8_t size;                      /**< the size of the buffer to read,
-                                            write                             */
-    uint8_t buffer[IO_BUFFER_SIZE];    /**< the runtime memory for io
-                                            operations                        */
+    uint32_t syscall_id;                /**< the syscall operation to perform */
+    int8_t fd;                          /**< the peer endpoint id or the file
+                                             descriptor for io                */
+    uint8_t size;                       /**< the size of the buffer to read,
+                                             write                            */
+    uint8_t buffer[IO_BUFFER_SIZE];     /**< the runtime memory for io
+                                             operations                       */
 } service_io_t;
 
 /**
