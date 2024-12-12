@@ -28,7 +28,11 @@
  */
 
 /* max number of fd supported by the system */
-#define MAX_FD 10 //TODO: to be move to a global config file
+#ifdef TINYCONTAINER_MAX_FD
+#define MAX_FD TINYCONTAINER_MAX_FD
+#else
+#define MAX_FD 10
+#endif /* TINYCONTAINER_MAX_FD */
 
 /* local variables
  * ---------------
