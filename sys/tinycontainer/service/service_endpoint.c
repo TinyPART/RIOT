@@ -24,6 +24,9 @@
 #include "tinycontainer/memmgr/memmgr_service.h"
 #include "tinycontainer/controller/controller_service.h"
 
+#define ENABLE_DEBUG 0
+#include "debug.h"
+
 uint32_t endpoint_open(container_t *container)
 {
 
