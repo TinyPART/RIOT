@@ -383,18 +383,6 @@ static int parse_and_search_endpoints(
                 has.direction = 1;
                 break;
 
-            case METADATA_ENDPOINT_TOKEN:
-                if (has.token ||
-                    nanocbor_get_bstr(&map, &token, &token_len) < 0) {
-                    DEBUG("Could not get token hex string from endpoint map");
-                    return METADATA_INVALID_CBOR_STRUCTURE;
-                }
-
-                //TODO: parse token
-
-                has.token = 1;
-                break;
-
             default:
                 /* we don't accept unknown keys */
                 DEBUG("Endpoint map contain an unknown key");
