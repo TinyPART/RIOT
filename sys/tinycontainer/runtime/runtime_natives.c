@@ -19,8 +19,9 @@
  * @}
  */
 
-//TODO: using ENABLE_DEBUG isn't clean: add a global directive to
-//      activate/deactivate console logging
+/* note: using ENABLE_DEBUG isn't clean: we should add a global directive to
+ *       activate/deactivate console logging
+ */
 /* by default all messages from containers are send to the console */
 #define ENABLE_DEBUG 1
 #include "debug.h"

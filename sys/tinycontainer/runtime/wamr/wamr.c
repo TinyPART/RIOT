@@ -36,8 +36,10 @@
 static struct InterpHandle handles[MAX_HANDLES];
 static uint8_t handles_in_use = 0;
 
-// TODO: shall be globally configurable
-/* minimal size to run the container provided as example */
+/* note: the size should be globally configurable.
+ *       Next, is the minimal size that seems required to be able to run
+ *       the container provided as example
+ */
 static char global_heap_buf[250 + 4800 * MAX_HANDLES] = { 0 };
 
 static bool is_initialised = false;
@@ -164,7 +166,8 @@ static bool handle_destroy(runtime_handle_t handle)
 
 runtime_handle_t runtime_create(memmgr_block_t *data, memmgr_block_t *code)
 {
-    (void)data; //TODO: data usage is not yet implemented
+    /* note: data usage is not yet implemented */
+    (void)data;
 
     LOG_ENTER();
 

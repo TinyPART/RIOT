@@ -245,7 +245,9 @@ static inline bool io_trylockfor(kernel_pid_t pid)
     io.locked = true;
     io.locked_by = pid;
 
-    //TODO: add a security guard alarm to unlock the io structure
+    /* note: a security guard alarm should be introduced to prevent the io
+     *       structure being locked forever.
+     */
 
     return true;
 }

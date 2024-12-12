@@ -736,14 +736,14 @@ int memmgr_get_slot_id(uint8_t *uid, size_t size)
 
         if (metadata_parse(&metadata, containers[slot_id].meta,
                            containers[slot_id].meta_len) != METADATA_OK) {
-            //FIXME: should not occur.
+            /* note: should not occur. Maybe an errror should be raised here */
             continue;
         }
 
         metadata_container_t container;
         if (metadata_container_parse(&container, metadata.container,
                                      metadata.container_len) != METADATA_OK) {
-            //FIXME: should not occur.
+            /* note: should not occur. Maybe an errror should be raised here */
             continue;
         }
 
@@ -763,7 +763,7 @@ int memmgr_getendpoint(int slot_id, uint32_t endpoint_id,
 
     if (metadata_parse(&metadata, containers[slot_id].meta,
                        containers[slot_id].meta_len) != METADATA_OK) {
-        //FIXME: should not occur.
+        /* note: should not occur */
         return METADATA_NOT_FOUND;
     }
 
@@ -778,14 +778,14 @@ uint32_t memmgr_getsyscallmask(int slot_id)
 
     if (metadata_parse(&metadata, containers[slot_id].meta,
                        containers[slot_id].meta_len) != METADATA_OK) {
-        //FIXME: should not occur.
+        /* note: should not occur */
         return 0;
     }
 
     metadata_container_t container;
     if (metadata_container_parse(&container, metadata.container,
                                  metadata.container_len) != METADATA_OK) {
-        //FIXME: should not occur.
+        /* note: should not occur */
         return 0;
     }
 

@@ -218,7 +218,6 @@ void *handler_service(void *arg)
 
             LOG_PID_FUNC("type %d -> stop\n", service_msg_req.type);
 
-            //TODO: not yet implemented
             LOG_PID_FUNC("not yet implemented\n");
 
             response_type = ko;
@@ -286,7 +285,6 @@ void *handler_service(void *arg)
             switch (syscall_id) {
             case SERVICE_SYSCALL_HEARTBEAT:
 
-                //TODO: not yet implemented
                 LOG_PID_FUNC("not yet implemented\n");
 
                 response_type = ko;
@@ -356,8 +354,6 @@ int tinycontainer_service_init(int service_prio, int container_prio)
         return -1;
     }
 
-//TODO
-//    static char service_stack[THREAD_STACKSIZE_SMALL];
     static char service_stack[THREAD_STACKSIZE_SMALL * 4];
 
     container_priority = container_prio;

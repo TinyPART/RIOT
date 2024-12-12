@@ -89,7 +89,11 @@ uint32_t endpoint_close(container_t *container)
 
     service_io_t *io = (service_io_t *)&container->shared_memory.rw.io;
 
-    if (io->size == 0) {   //FIXME: is size shall be non null?
+    /* FIXME: the size probably won't be zero.
+     *        When confirmed, this if-block can be safety removed.
+     *        In the meantime, we check the size.
+     */
+    if (io->size == 0) {
         io->fd = -1;
         return -1;
     }
@@ -106,7 +110,8 @@ uint32_t endpoint_close(container_t *container)
 
     switch (type) {
     case 0: /*container peer*/
-        //TODO: not yet implemented
+        /* not yet implemented! */
+        return -1;
         break;
     case 1: /*local peer*/
         peer_fd = fd_get_peer_local_fd(fd);
@@ -151,7 +156,8 @@ static uint32_t read_or_write(container_t *container, allowed_t allowed,
 
     switch (type) {
     case 0: /*container peer*/
-        //TODO: not yet implemented
+        /* not yet implemented! */
+        return -1;
         break;
     case 1: /*local peer*/
         peer_fd = fd_get_peer_local_fd(io->fd);

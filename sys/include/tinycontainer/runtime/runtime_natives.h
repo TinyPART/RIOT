@@ -128,7 +128,6 @@ int32_t native_close(int32_t fd);
  *       runtime.
  *
  */
-//TODO: not yet implemented
 int32_t native_heartbeat(void);
 
 #ifdef __cplusplus
