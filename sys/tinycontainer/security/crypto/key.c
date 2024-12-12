@@ -28,7 +28,12 @@
 #include "psa/crypto.h"
 #endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
 
-#define NB_OF_KEY_SLOTS 3 //TODO: shall be globally configurable
+#ifdef TINYCONTAINER_CRYPTO_NUMBER_OF_KEY_SLOTS
+#define NB_OF_KEY_SLOTS TINYCONTAINER_CRYPTO_NUMBER_OF_KEY_SLOTS
+#else
+#define NB_OF_KEY_SLOTS 3
+#endif /* TINYCONTAINER_CRYPTO_NUMBER_OF_KEY_SLOTS */
+
 static crypto_key_t key_slots[NB_OF_KEY_SLOTS];
 static bool key_slots_initialized = false;
 
@@ -79,7 +84,9 @@ const crypto_key_t *crypto_key_new(size_t nbits, uint8_t *from)
     key->nbits = nbits;
 
 #elif IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
-    //FIXME: current implementation only support ED25519 to verify signature
+    /* note: the current implementation only support ED25519 to verify the
+     *       signature
+     */
     psa_key_attributes_t attr = psa_key_attributes_init();
     psa_set_key_algorithm(&attr, PSA_ALG_PURE_EDDSA);
     psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_VERIFY_MESSAGE);
