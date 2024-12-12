@@ -163,9 +163,9 @@ bool cwt_verify(cwt_t *cwt, const crypto_key_t *key, crypto_algo_t algo)
     case CWT_TYPE_COSE_MAC:
     case CWT_TYPE_COSE_SIGN:
     case CWT_TYPE_COSE_ENCRYPT:
-        DEGUG("ERROR: verification of this type of CWT isn't supported yet!")
+        DEBUG("ERROR: verification of this type of CWT isn't supported yet!")
     default:
-        DEGUG("ERROR: invalid type for a CWT!")
+        DEBUG("ERROR: invalid type for a CWT!")
         return false;
     }
 
