@@ -41,7 +41,7 @@ void crypto_init(void)
 #if IS_USED(MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA)
 
     if (psa_crypto_init() != PSA_SUCCESS) {
-        //TODO: should be logged
+        DEBUG("ERROR: could not initialize PSA Crypto");
     }
 
 #endif /* MODULE_TINYCONTAINER_SECURITY_CRYPTO_PSA */
