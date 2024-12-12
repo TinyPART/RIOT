@@ -736,14 +736,14 @@ int memmgr_get_slot_id(uint8_t *uid, size_t size)
 
         if (metadata_parse(&metadata, containers[slot_id].meta,
                            containers[slot_id].meta_len) != METADATA_OK) {
-            /* note: should not occur. Maybe an errror should be raised here */
+            /* note: should not occur. Maybe an error should be raised here */
             continue;
         }
 
         metadata_container_t container;
         if (metadata_container_parse(&container, metadata.container,
                                      metadata.container_len) != METADATA_OK) {
-            /* note: should not occur. Maybe an errror should be raised here */
+            /* note: should not occur. Maybe an error should be raised here */
             continue;
         }
 
