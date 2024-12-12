@@ -55,8 +55,9 @@ uint32_t endpoint_open(container_t *container)
 
     switch (endpoint.peer_type) {
     case 0: /* container peer */
-        //TODO: how to get peer slot?
-        //fd_set_container_peer(fd, slot_id, endpoint.peer_endpoint_id);
+        /* not yet implemented! */
+        DEBUG("ERROR: container peer is not yet supported");
+        return -1;
         break;
     case 1: /* local peer */
         peer_fd = tinycontainer_controller_open(endpoint.peer_endpoint_id);
