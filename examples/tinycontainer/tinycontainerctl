@@ -389,7 +389,7 @@ case $1 in
         shift
         do_container $*
         ;;
-    g|enerate)
+    g|generate)
         shift
         do_generate $*
         ;;
