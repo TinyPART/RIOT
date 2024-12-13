@@ -94,7 +94,8 @@ Makefile.include: $(SRC)
 	> $@
 	@for f in $(ALL_NAMES); do \
 		test -f "$$f/Makefile.include" && \
-		echo "include \"containers/$$f/Makefile.include\"" >> $@; \
+		echo "include \"containers/$$f/Makefile.include\"" >> $@ || \
+                : ; \
 	done
 	echo >> $@
 
