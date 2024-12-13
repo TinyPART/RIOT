@@ -6,6 +6,18 @@
  * directory of the TinyContainer module for more details.
  */
 
+/**
+ * @ingroup     examples
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer example
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
+ */
+
 #include "tinycontainer.h"
 
 #include <stdio.h>

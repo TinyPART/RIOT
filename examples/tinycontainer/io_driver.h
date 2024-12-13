@@ -6,6 +6,18 @@
  * directory of the TinyContainer module for more details.
  */
 
+/**
+ * @ingroup     examples
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer example io driver
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
+ */
+
 #ifndef IO_DRIVER_H
 #define IO_DRIVER_H
 

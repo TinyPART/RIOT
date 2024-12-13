@@ -16,6 +16,7 @@
  * @brief   shared definitions of TinyContainer Memory Manager sub-module
  *
  * @author  Gregory Holder <gregory.holder76@gmail.com>
+ * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 

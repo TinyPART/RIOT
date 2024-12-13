@@ -4,6 +4,19 @@
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
  * directory of the TinyContainer module for more details.
+ *
+*/
+
+/**
+ * @ingroup     sys_tinycontainer
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer example - wamr container example
+ *
+ * @author      Samuel legouix <samuel.legouix@orange.com>
+ *
+ *}
  */
 
 #include <stdint.h>

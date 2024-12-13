@@ -6,6 +6,18 @@
  * directory of the TinyContainer module for more details.
  */
 
+/**
+ * @ingroup     examples
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer example - coap server
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
+ */
+
 #ifndef COAP_SERVER_H
 #define COAP_SERVER_H
 

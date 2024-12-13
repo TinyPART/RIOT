@@ -1,8 +1,21 @@
 /*
- * Copyright (C) 2024, Orange.
+ * Copyright (C) 2024, Orange
  *
- * Please, refer to the README.md and LICENSE files of TinyContainer
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
+/**
+ * @ingroup     sys_tinycontainer
+ * @{
  *
+ * @file
+ * @brief       TinyContainer Security sub-module - static master key
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
  */
 
 #ifndef ED25519_H

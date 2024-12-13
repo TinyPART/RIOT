@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2022-2023, Orange.
+ * Copyright (C) 2022-2024, Orange.
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -21,6 +21,7 @@
  *          function name for LOG_ENTER and LOG_EXIT
  *
  * @author  Gregory Holder <gregory.holder76@gmail.com>
+ * @author  Samuel Legouix <samuel.legouix@orange.com>
  *
  */
 

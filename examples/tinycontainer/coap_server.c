@@ -6,6 +6,18 @@
  * directory of the TinyContainer module for more details.
  */
 
+/**
+ * @ingroup     examples
+ * @{
+ *
+ * @file
+ * @brief       TinyContainer example - coap server
+ *
+ * @author      Samuel Legouix <samuel.legouix@orange.com>
+ *
+ * @}
+ */
+
 #include "kernel_defines.h"
 
 #if IS_USED(MODULE_GCOAP)
