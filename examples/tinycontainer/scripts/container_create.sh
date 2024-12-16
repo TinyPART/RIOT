@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (C) 2024 Orange
 #
 # This file is subject to the terms and conditions of the GNU Lesser
@@ -5,8 +7,6 @@
 # directory for more details.
 #
 # @author      Samuel legouix <samuel.legouix@orange.com>
-
-#!/bin/bash
 
 test $# -ne 2 \
 && echo "Usage: $0 <container_directory> wamr|rbpf|jerryscript" \

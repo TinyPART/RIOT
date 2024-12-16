@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (C) 2024 Orange
 #
 # This file is subject to the terms and conditions of the GNU Lesser
@@ -6,8 +8,6 @@
 #
 # @author      Samuel legouix <samuel.legouix@orange.com>
 
-
-#!/bin/bash
 
 do_get() {
     config_file=$1
