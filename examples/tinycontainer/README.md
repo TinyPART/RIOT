@@ -1,69 +1,70 @@
 tinycontainer
 =============
 
-This is a example demonstrates how to use TinyContainer.
+This application example demonstrate how to use TinyContainer.
 
 Use Cases
 =========
 
 This example supports two use cases:
 
-* **built-in container management**, based on shell UI and statically
-  links containers
-* OTA container management, based on CoAP message over the IPv6/BLE network
-  stack supported by RIOT
+* **built-in container management**, utilizing a shell UI and statically
+  links containers.
+* **OTA container management**, leveraging CoAP messages over the IPv6/BLE
+  network stack supported by RIOT
 
 Usage
 =====
 
 To ease all operations we provide a cli tool named `tinycontainerctl`. It can be
-used to
+used to:
 
-* configure tinycontainer
-* create containers
-* create endpoints (available soon)
-* build the system
+* Ronfigure TinyContainer
+* Create containers
+* Create endpoints (comming soon)
+* Build the system
 
-To list all available commands just call it without any argument:
+To list all available commands, simply execute it without any argument:
 
 ```
 ./tinycontainerctl
 ```
 
-Here are the commands to run the default example on a dwm1001 board:
-
+Below are the commands to run the default example on a dwm1001 board:
 
 ```
 ./tinycontainer setup init default
 ./tinycontainer generate all flash term
 ```
 
-The example adds some TinyContainer commands to the shell prompt:
+The example adds several TinyContainer commands to the shell prompt:
 
-* _list_, to list built-in containers
+* _list_, to display built-in containers
 * _load_, to load a container
 * _unload_, to unload a container
 * _start_, to start running it
-* _stop_, to stop the container
-* _status_, to check if a container is running or not
-* _wait_, to let the container run a while
+* _stop_, to halt the container
+* _status_, to check if a container is running
+* _wait_, to allow the container run for a while
 
-You can also use the _ps_ command to display a threads table.
+You can also use the _ps_ command to display a table of threads.
 
 Supported Board
 ===============
 
-The tables below show how many containers is supported in different
+The tables below show the number of containers supported in different
 configurations for each supported boards.
 
-The first characters can be the symbol '1' if we have successfully test the
-configuration with at least one container, the symbol '.' if we have
-successfully built the configuration with at least one container, or the symbol
-'x' when the configuration could not run on at least one container.
+The first characters can be:
 
-The second characters use the symbol '2', '.' and 'x' in a similar way.
+- '1', if we have successfully tested the configuration with at least one
+  container.
+- '.' if we have successfully built the configuration with at least one
+  container.
+- 'x' if the configuration could not run on at least one container.
 
-And so on.
+The second characters use the symbol '2', '.' and 'x' in a similar way. And so
+on for next characters.
 
 with network and crypto deactivated
 -----------------------------------
@@ -120,15 +121,15 @@ with network and crypto activated
 Networking
 ==========
 
-By default, the network isn't activated. If you wish to build with networking
-capability configure it with following command:
+By default, the network isn't activated. To build with networking capability
+configure it with following command:
 
 ```
 ./tinycontainerctl setup set network on
 ```
 
-Whenever activated, the device announces itself using the string
-_TinyContainerNetwork_ as BLE node id and can be remotely managed through CoAP
+Once activated, the device announces itself using the string
+_TinyContainerNetwork_ as BLE node ID and can be remotely managed through CoAP
 commands.
 
 The supported CoAP commands are describes in the file
