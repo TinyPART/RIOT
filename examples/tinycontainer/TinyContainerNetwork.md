@@ -2,16 +2,19 @@
 CoAP specification for TinyContainerNetwork
 ============================================
 
-TinyContainer IoT devices that advertising the ble name _TinyContainerNetwork_ can be managed using CoAP.
+TinyContainer IoT devices that advertising the ble name _TinyContainerNetwork_
+can be managed using CoAP.
 
 CoAP URI
 --------
 
-All TinyContainer actions on the IoT are made using the following CoAP Request URI:
+All TinyContainer actions on the IoT are made using the following CoAP Request
+URI:
 
     coap://[ipv6_address]/container/
 
-IoT nodes of TinyContainerNetwork also support an URI to request or update an IoT device identifier.
+IoT nodes of TinyContainerNetwork also support an URI to request or update an
+IoT device identifier.
 
     coap://[ipv6_address]/device-id/
 
@@ -25,12 +28,14 @@ This paragraph defines the set of CoAP Method that is used for TinyContainerNetw
     PUT     = 0.03, as stated in RFC 7252
     DELETE  = 0.04, as stated in RFC 7252
 
-The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details which CoAP method shall be used for each supported messages.
+The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details
+which CoAP method shall be used for each supported messages.
 
 CoAP Response Code
 ------------------
 
-This paragraph defines the set of CoAP Response Code that is used for TinyContainerNetwork.
+This paragraph defines the set of CoAP Response Code that is used for
+TinyContainerNetwork.
 
     COAP_CODE_CREATE                   = 2.01, as stated in RFC 7252
     COAP_CODE_CHANGED                  = 2.04, as stated in RFC 7252
@@ -41,16 +46,19 @@ This paragraph defines the set of CoAP Response Code that is used for TinyContai
     COAP_CODE_REQUEST_ENTITY_TOO_LARGE = 4.13, as stated in RFC 7252
     COAP_CODE_INTERNAL_SERVER_ERROR    = 5.00, as stated in RFC 7252
 
-The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details which CoAP Response Code shall be used for each supported messages.
+The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details
+which CoAP Response Code shall be used for each supported messages.
 
 CoAP Options
 ------------
 
-This paragraph defines the set of CoAP Option that is used for TinyContainerNetwork.
+This paragraph defines the set of CoAP Option that is used for
+TinyContainerNetwork.
 
     COAP_OPT_SIZE1 = 60, as stated in RFC 7252
 
-We have defined some new CoAP Option. To conform with RFC7254 their number have been chosen in the reserved range for experiments.
+We have defined some new CoAP Option. To conform with RFC7254 their number have
+been chosen in the reserved range for experiments.
 
     OPTION_ACTION   = 65001, with a value of uint type
     OPTION_METADATA = 65002, with a value of opaque type
@@ -59,10 +67,13 @@ We have defined some new CoAP Option. To conform with RFC7254 their number have 
     OPTION_UID      = 65005, with a value of opaque type
     OPTION_STATUS   = 65006, with a value of uint type
 
-The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details which CoAP Options shall be used for each supported messages.
+The section [CoAP Messages](#coap-messages-for-tinycontainernetwork) details
+which CoAP Options shall be used for each supported messages.
 
-When the type of value of a CoAP Option is _opaque_, the IoT parses it as an array of bytes.
-When the type of value of a CoAP Option is _uint_, the defined values are described below.
+When the type of value of a CoAP Option is _opaque_, the IoT parses it as an
+array of bytes.
+When the type of value of a CoAP Option is _uint_, the defined values are
+described below.
 
 ### Values for ```OPTION_ACTION```
 
@@ -132,11 +143,13 @@ _none_
 
 * ```COAP_CODE_CHANGED```, if identifier has been updated
 * ```COAP_CODE_BAD_REQUEST```, if payload is empty
-* ```COAP_CODE_REQUEST_ENTITY_TOO_LARGE```, the provided identifier is too long and the CoAP Option ```COAP_OPT_SIZE1``` is set in response
+* ```COAP_CODE_REQUEST_ENTITY_TOO_LARGE```, the provided identifier is too long
+  and the CoAP Option ```COAP_OPT_SIZE1``` is set in response
 
 ####  CoAP Options in response:
 
-* ```COAP_OPT_SIZE1```, used in response to provide the maximal size of the identifier supported by the IoT device
+* ```COAP_OPT_SIZE1```, used in response to provide the maximal size of the
+  identifier supported by the IoT device
 
 ### Load a container
 
@@ -210,7 +223,8 @@ _none_
 
 #### CoAP Response:
 
-* ```COAP_CODE_CONTENT```, the container status is set in the option OPTION_STATUS
+* ```COAP_CODE_CONTENT```, the container status is set in the option
+  OPTION_STATUS
 * ```COAP_CODE_METHOD_NOT_ALLOWED```, if method is not ```GET```
 * ```COAP_CODE_BAD_OPTION```, if the container uid is missing
 

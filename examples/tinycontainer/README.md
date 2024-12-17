@@ -1,7 +1,7 @@
 tinycontainer
 =============
 
-This application example demonstrate how to use TinyContainer.
+This application example demonstrates how to use TinyContainer.
 
 Use Cases
 =========
@@ -19,12 +19,12 @@ Usage
 To ease all operations we provide a cli tool named `tinycontainerctl`. It can be
 used to:
 
-* Ronfigure TinyContainer
+* Configure TinyContainer
 * Create containers
 * Create endpoints (comming soon)
 * Build the system
 
-To list all available commands, simply execute it without any argument:
+To list all available commands, simply execute it without any arguments:
 
 ```
 ./tinycontainerctl
@@ -36,6 +36,9 @@ Below are the commands to run the default example on a dwm1001 board:
 ./tinycontainer setup init default
 ./tinycontainer generate all flash term
 ```
+
+For another board just add a `BOARD=<board_name>` directive on the commnand
+line.
 
 The example adds several TinyContainer commands to the shell prompt:
 
@@ -121,7 +124,7 @@ with network and crypto activated
 Networking
 ==========
 
-By default, the network isn't activated. To build with networking capability
+By default, the network isn't activated. To build with networking capability,
 configure it with following command:
 
 ```
